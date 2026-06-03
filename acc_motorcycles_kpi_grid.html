@@ -3803,7 +3803,9 @@ window.BQ_DATA = {
     <div class="refresh-area">
       <div class="last-update-chip">
         <div class="dot"></div>
-        Última actualización: <span id="last-update-ts">01/06/2026 10:38</span>
+        Datos BQ: <span id="last-update-ts">01/06/2026 10:38</span>
+        &nbsp;&middot;&nbsp;
+        Cargado: <span id="page-load-ts" style="color:#86efac;">—</span>
       </div>
       <button class="btn-refresh" onclick="openRefreshModal()">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
@@ -7014,6 +7016,11 @@ window.BQ_DATA = {
       var el = document.getElementById('last-update-ts');
       if (el) el.textContent = window.BQ_LAST_UPDATE;
     }
+    var now = new Date();
+    var pad = function(n){ return n < 10 ? '0'+n : n; };
+    var loadTs = pad(now.getDate())+'/'+pad(now.getMonth()+1)+'/'+now.getFullYear()+' '+pad(now.getHours())+':'+pad(now.getMinutes())+':'+pad(now.getSeconds());
+    var loadEl = document.getElementById('page-load-ts');
+    if (loadEl) loadEl.textContent = loadTs;
     renderAccionables();
   });
 
