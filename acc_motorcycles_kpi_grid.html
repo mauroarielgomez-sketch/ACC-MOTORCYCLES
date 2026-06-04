@@ -7036,8 +7036,8 @@ window.BQ_DATA = {
     var MONTH_COLS = ['Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
     var DASH = '—';
 
-    function yoyCls(v)    { return !v||v===DASH?'td-yoy td-yoy-neu':(v[0]==='+'?'td-yoy td-yoy-pos':'td-yoy td-yoy-neg'); }
-    function yoyMtdCls(v) { return !v||v===DASH?'td-yoy-neu td-val-mtd':((v[0]==='+'?'td-yoy-pos':'td-yoy-neg')+' td-val-mtd'); }
+    function yoyCls(v)    { return !v||v===DASH?'td-yoy td-yoy-neu':(v[0]==='-'?'td-yoy td-yoy-neg':'td-yoy td-yoy-pos'); }
+    function yoyMtdCls(v) { return !v||v===DASH?'td-yoy-neu td-val-mtd':((v[0]==='-'?'td-yoy-neg':'td-yoy-pos')+' td-val-mtd'); }
 
     TAB_SEG.forEach(function(ts) {
       var tabEl  = document.getElementById(ts[0]);
