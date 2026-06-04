@@ -7899,7 +7899,7 @@ window.BQ_DATA = {
   // ── Export MVR table as PNG ──
   function exportMVRTable() {
     var btn = document.getElementById('btn-export-mvr');
-    var target = document.getElementById('mvr-capture-area');
+    var target = document.querySelector('#mvr-capture-area .mvr-table');
     if (!target) return;
 
     btn.textContent = '⏳ Generando...';
