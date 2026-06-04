@@ -7006,8 +7006,14 @@ window.BQ_DATA = {
 .mvr-tbd{color:#f59e0b!important;font-style:italic;}
 </style>
 
-<div class="section-label" style="margin-bottom:16px;">MVR · ACC Motorcycles · <span id="mvr-period-label">Mayo 2026</span> &mdash; Actual / YoY / vs Plan</div>
+<div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+  <div class="section-label" style="margin-bottom:0;">MVR · ACC Motorcycles · <span id="mvr-period-label">Mayo 2026</span> &mdash; Actual / YoY / vs Plan</div>
+  <button id="btn-export-mvr" onclick="exportMVRTable()" style="background:#a855f7;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+    <span>📷</span> Exportar como imagen
+  </button>
+</div>
 
+<div id="mvr-capture-area">
 <div class="mvr-wrapper">
 <table class="mvr-table">
 <thead>
@@ -7221,6 +7227,7 @@ window.BQ_DATA = {
 </tbody>
 </table>
 </div>
+</div><!-- /mvr-capture-area -->
 </div><!-- /tab-mvr -->
 
 
@@ -7887,6 +7894,65 @@ window.BQ_DATA = {
     var elHeader = document.getElementById('mvr-period-header');
     if (elLabel)  elLabel.textContent  = periodFull + (window.BQ_LAST_UPDATE ? ' · Datos al ' + window.BQ_LAST_UPDATE : '');
     if (elHeader) elHeader.textContent = periodShort;
+  }
+
+  // ── Export MVR table as PNG ──
+  function exportMVRTable() {
+    var btn = document.getElementById('btn-export-mvr');
+    var target = document.getElementById('mvr-capture-area');
+    if (!target) return;
+
+    btn.textContent = '⏳ Generando...';
+    btn.disabled = true;
+
+    // Load html2canvas on demand
+    if (typeof html2canvas === 'undefined') {
+      var s = document.createElement('script');
+      s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+      s.onload = function() { _doExport(target, btn); };
+      document.head.appendChild(s);
+    } else {
+      _doExport(target, btn);
+    }
+  }
+
+  function _doExport(target, btn) {
+    html2canvas(target, {
+      scale: 2,
+      backgroundColor: '#0f172a',
+      useCORS: true,
+      logging: false
+    }).then(function(canvas) {
+      var filename = 'MVR_ACC_Motorcycles_' + (new Date().toISOString().slice(0,10)) + '.png';
+      // Try clipboard first
+      canvas.toBlob(function(blob) {
+        var tryClipboard = false;
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
+            navigator.clipboard.write([new ClipboardItem({'image/png': blob})]).then(function() {
+              btn.textContent = '✅ Copiada al portapapeles';
+              btn.style.background = '#22c55e';
+            }).catch(function() { _download(canvas, filename, btn); });
+            tryClipboard = true;
+          }
+        } catch(e) {}
+        if (!tryClipboard) _download(canvas, filename, btn);
+        setTimeout(function() {
+          btn.innerHTML = '<span>📷</span> Exportar como imagen';
+          btn.style.background = '#a855f7';
+          btn.disabled = false;
+        }, 3000);
+      });
+    });
+  }
+
+  function _download(canvas, filename, btn) {
+    var link = document.createElement('a');
+    link.download = filename;
+    link.href = canvas.toDataURL('image/png');
+    link.click();
+    btn.textContent = '✅ Imagen descargada';
+    btn.style.background = '#22c55e';
   }
 
   // ── REFRESH MODAL ──
