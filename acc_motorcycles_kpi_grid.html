@@ -7407,15 +7407,36 @@ window.BQ_DATA = {
     });
   }
 
-  // ── Populate MVR tab from BQ_DATA ──
+  // ── Populate MVR tab from BQ_DATA — shows last CLOSED month ──
   function populateMVR() {
     var d = window.BQ_DATA && window.BQ_DATA['all'];
     if (!d) return;
     var DASH = '—';
 
-    function act(k) { return (d[k] && d[k].latest_actual) || DASH; }
-    function yoy(k) { return (d[k] && d[k].latest_yoy)    || DASH; }
-    function vsp(k) { return (d[k] && d[k].latest_vsp)    || DASH; }
+    // Determine last closed month (month before current)
+    var now = new Date();
+    var prevIdx = now.getMonth() - 1; // 0=Jan … 4=May
+    if (prevIdx < 0) prevIdx = 11;
+    var EN_MONTHS = ['Jan 26','Feb 26','Mar 26','Apr 26','May 26','Jun 26','Jul 26','Aug 26','Sep 26','Oct 26','Nov 26','Dec 26'];
+    var ES_MONTHS = ['Ene','Feb','Mar','Abr','May','Jun','Jul','Ago','Sep','Oct','Nov','Dic'];
+    var ES_FULL   = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+    var closedEN  = EN_MONTHS[prevIdx];  // "May 26"
+    var closedES  = ES_MONTHS[prevIdx];  // "May"
+    var yr = prevIdx === 11 ? now.getFullYear()-1 : now.getFullYear();
+    var periodFull = ES_FULL[prevIdx] + ' ' + yr;  // "Mayo 2026"
+    var periodShort = closedES + '\'' + String(yr).slice(2); // "May'26"
+
+    // Get value for the closed month from a kpi dict
+    function mval(k, field, monthKey) {
+      var kd = d[k]; if (!kd) return DASH;
+      return (kd[field] && kd[field][monthKey]) || DASH;
+    }
+    function act(k)        { return mval(k, 'actual', closedEN); }
+    function yoy(k)        { return mval(k, 'yoy',    closedEN); }
+    function vsp(k)        { return mval(k, 'vsp',    closedEN); }
+    function actES(k)      { return mval(k, 'actual', closedES); }
+    function yoyES(k)      { return mval(k, 'yoy',    closedES); }
+    function vspES(k)      { return mval(k, 'vsp',    closedES); }
 
     function setVal(id, v) {
       var el = document.getElementById(id);
@@ -7426,8 +7447,7 @@ window.BQ_DATA = {
       if (!el || !v || v === DASH) return;
       el.textContent = v;
       var isPos = v.charAt(0) !== '-';
-      var cls = (invert ? !isPos : isPos) ? 'pos' : 'neg';
-      el.className = 'mvr-yoy ' + cls;
+      el.className = 'mvr-yoy ' + ((invert ? !isPos : isPos) ? 'pos' : 'neg');
     }
     function setVsp(id, v) {
       var el = document.getElementById(id);
@@ -7436,13 +7456,16 @@ window.BQ_DATA = {
       el.className = 'mvr-vsp ' + (v.includes('-') ? 'neg' : 'pos');
     }
 
-    // NMV (special)
+    // NMV — BT_ORD_ORDERS uses Spanish month keys
     var nmvD = d['nmv'] || {};
-    setVal('mvr-nmv-act',  nmvD.latest_actual || DASH);
-    setYoy('mvr-nmv-yoy',  nmvD.latest_yoy || DASH,    false);
-    setVsp('mvr-nmv-vsp',  nmvD.latest_vsp || DASH);
+    var nmvAct = (nmvD.actual && nmvD.actual[closedES]) || DASH;
+    var nmvYoy = (nmvD.yoy    && nmvD.yoy[closedES])    || DASH;
+    var nmvVsp = (nmvD.vsp    && nmvD.vsp[closedES])    || DASH;
+    setVal('mvr-nmv-act', nmvAct);
+    setYoy('mvr-nmv-yoy', nmvYoy, false);
+    setVsp('mvr-nmv-vsp', nmvVsp);
 
-    // Overall
+    // Overall (roadmap KPIs — English month keys)
     setVal('mvr-nsi-act',  act('nsi'));   setYoy('mvr-nsi-yoy',  yoy('nsi'),  false); setVsp('mvr-nsi-vsp',  vsp('nsi'));
     setVal('mvr-nasp-act', act('nasp'));  setYoy('mvr-nasp-yoy', yoy('nasp'), true);  setVsp('mvr-nasp-vsp', vsp('nasp'));
     setVal('mvr-vc-act',   act('vcpct')); setYoy('mvr-vc-yoy',   yoy('vcpct'), true);
@@ -7450,32 +7473,30 @@ window.BQ_DATA = {
     setVal('mvr-bm-act',   act('bm'));    setYoy('mvr-bm-yoy',   yoy('bm'),    false);
 
     // Demand
-    setVal('mvr-vis-act',       act('visitas'));       setYoy('mvr-vis-yoy',       yoy('visitas'),       false);
-    setVal('mvr-cvr-act',       act('cvr_orders___visits')); setYoy('mvr-cvr-yoy', yoy('cvr_orders___visits'), false);
-    setVal('mvr-freq-act',      act('frequency'));     setYoy('mvr-freq-yoy',      yoy('frequency'),     false);
-    setVal('mvr-clips-num-act', act('num_clips'));     setYoy('mvr-clips-num-yoy', yoy('num_clips'),     false);
-    setVal('mvr-clips-pct-act', act('pct_nmv_clips')); setYoy('mvr-clips-pct-yoy', yoy('pct_nmv_clips'), false);
-    setVal('mvr-afil-num-act',  act('num_afiliados')); setYoy('mvr-afil-num-yoy',  yoy('num_afiliados'), false);
-    setVal('mvr-afil-pct-act',  act('pct_nmv_affiliates')); setYoy('mvr-afil-pct-yoy', yoy('pct_nmv_affiliates'), false);
+    setVal('mvr-vis-act',       act('visitas'));             setYoy('mvr-vis-yoy',       yoy('visitas'),           false);
+    setVal('mvr-cvr-act',       act('cvr_orders___visits')); setYoy('mvr-cvr-yoy',       yoy('cvr_orders___visits'),false);
+    setVal('mvr-freq-act',      act('frequency'));           setYoy('mvr-freq-yoy',      yoy('frequency'),         false);
+    setVal('mvr-clips-num-act', act('num_clips'));           setYoy('mvr-clips-num-yoy', yoy('num_clips'),         false);
+    setVal('mvr-clips-pct-act', act('pct_nmv_clips'));       setYoy('mvr-clips-pct-yoy', yoy('pct_nmv_clips'),    false);
+    setVal('mvr-afil-num-act',  act('num_afiliados'));       setYoy('mvr-afil-num-yoy',  yoy('num_afiliados'),    false);
+    setVal('mvr-afil-pct-act',  act('pct_nmv_affiliates')); setYoy('mvr-afil-pct-yoy',  yoy('pct_nmv_affiliates'),false);
 
     // Selection / Commercial / Price / Shipping / Benefits / Ads
-    setVal('mvr-bb-act',     act('pct_nmv_buy_box'));           setYoy('mvr-bb-yoy',     yoy('pct_nmv_buy_box'),           false);
-    setVal('mvr-cbt-act',    act('cbt_penetration_pctnmv'));    setYoy('mvr-cbt-yoy',    yoy('cbt_penetration_pctnmv'),    false);
+    setVal('mvr-bb-act',     act('pct_nmv_buy_box'));              setYoy('mvr-bb-yoy',     yoy('pct_nmv_buy_box'),           false);
+    setVal('mvr-cbt-act',    act('cbt_penetration_pctnmv'));       setYoy('mvr-cbt-yoy',    yoy('cbt_penetration_pctnmv'),    false);
     setVal('mvr-bpckmi-act', act('pct_bpc_kmi'));
     setVal('mvr-kmi-act',    act('kmi_scrapping_coverage_pctvisits'));
-    setVal('mvr-fbm-act',    act('pct_nsi_fbm'));               setYoy('mvr-fbm-yoy',    yoy('pct_nsi_fbm'),               false);
-    setVal('mvr-stk-act',    act('stockouts_as_pct_of_fbm_gmv')); setYoy('mvr-stk-yoy', yoy('stockouts_as_pct_of_fbm_gmv'), true);
-    setVal('mvr-prom-act',   act('pct_promesas_en_vip_lte2d')); setYoy('mvr-prom-yoy',  yoy('pct_promesas_en_vip_lte2d'), false);
-    setVal('mvr-ben-act',    act('benefits_meli_investment_pct')); setYoy('mvr-ben-yoy', yoy('benefits_meli_investment_pct'), false);
-    setVal('mvr-mads-act',   act('mads_pct_nmv'));              setYoy('mvr-mads-yoy',   yoy('mads_pct_nmv'),              false);
+    setVal('mvr-fbm-act',    act('pct_nsi_fbm'));                  setYoy('mvr-fbm-yoy',    yoy('pct_nsi_fbm'),               false);
+    setVal('mvr-stk-act',    act('stockouts_as_pct_of_fbm_gmv')); setYoy('mvr-stk-yoy',    yoy('stockouts_as_pct_of_fbm_gmv'),true);
+    setVal('mvr-prom-act',   act('pct_promesas_en_vip_lte2d'));    setYoy('mvr-prom-yoy',   yoy('pct_promesas_en_vip_lte2d'), false);
+    setVal('mvr-ben-act',    act('benefits_meli_investment_pct')); setYoy('mvr-ben-yoy',    yoy('benefits_meli_investment_pct'),false);
+    setVal('mvr-mads-act',   act('mads_pct_nmv'));                 setYoy('mvr-mads-yoy',   yoy('mads_pct_nmv'),              false);
 
-    // Update period label
-    if (window.BQ_LAST_UPDATE) {
-      var el = document.getElementById('mvr-period-label');
-      var el2 = document.getElementById('mvr-period-header');
-      if (el) el.textContent = 'MTD May\'26 · Datos al ' + window.BQ_LAST_UPDATE;
-      if (el2) el2.textContent = 'MTD May\'26';
-    }
+    // Update period labels
+    var elLabel  = document.getElementById('mvr-period-label');
+    var elHeader = document.getElementById('mvr-period-header');
+    if (elLabel)  elLabel.textContent  = periodFull + (window.BQ_LAST_UPDATE ? ' · Datos al ' + window.BQ_LAST_UPDATE : '');
+    if (elHeader) elHeader.textContent = periodShort;
   }
 
   // ── REFRESH MODAL ──
