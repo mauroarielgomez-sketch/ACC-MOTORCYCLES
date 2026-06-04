@@ -3888,6 +3888,9 @@ window.BQ_DATA = {
   <button class="tab-btn" onclick="switchTab(this,'tab-trans')">
     <div class="tab-dot" style="background:#ef4444;box-shadow:0 0 4px #ef4444;"></div>Transactional Motorcycles
   </button>
+  <button class="tab-btn" onclick="switchTab(this,'tab-mvr')" style="margin-left:8px;">
+    <div class="tab-dot" style="background:#a855f7;box-shadow:0 0 4px #a855f7;"></div>MVR · ACC Motorcycles
+  </button>
 </nav>
 
 <!-- ══════════════ MAIN ══════════════ -->
@@ -6596,6 +6599,240 @@ window.BQ_DATA = {
 </div>
 </div><!-- /tab-trans -->
 
+<!-- ━━━━━━━━━━━━━━━━━━━━ TAB 6: MVR ACC MOTORCYCLES ━━━━━━━━━━━━━━━━━━━━ -->
+<div id="tab-mvr" class="tab-panel">
+<style>
+.mvr-wrapper{overflow-x:auto;margin-bottom:32px;}
+.mvr-table{border-collapse:collapse;font-size:11px;width:960px;table-layout:fixed;background:#fff;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.12);overflow:hidden;}
+.mvr-table thead tr:first-child th{background:#1a1a2e;color:#fff;padding:6px 10px;font-weight:700;font-size:13px;text-align:left;}
+.mvr-table thead tr:first-child th.mvr-ph{background:#FFE600;color:#111;text-align:center;font-size:13px;}
+.mvr-table thead tr:last-child th{background:#FFE600;color:#111;font-weight:700;font-size:10px;text-align:right;padding:4px 10px;}
+.mvr-table thead tr:last-child th:nth-child(1),.mvr-table thead tr:last-child th:nth-child(2){background:#1a1a2e;}
+.mvr-sec{background:#404040;color:#fff;font-size:8px;text-transform:uppercase;letter-spacing:.5px;text-align:center;vertical-align:middle;padding:4px;border-bottom:1px solid rgba(255,255,255,.08);width:80px;}
+.mvr-kpi{color:#1a1a1a;font-size:11px;text-align:left;padding:4px 10px;border-bottom:1px solid #f0f2f5;width:210px;}
+.mvr-val,.mvr-eoy{color:#333;text-align:right;padding:4px 10px;font-weight:600;border-bottom:1px solid #f0f2f5;width:134px;}
+.mvr-yoy,.mvr-vsp{text-align:right;padding:4px 10px;font-weight:600;border-bottom:1px solid #f0f2f5;width:134px;color:#bbb;}
+.mvr-yoy.pos,.mvr-vsp.pos{color:#1b8a3f;}
+.mvr-yoy.neg,.mvr-vsp.neg{color:#c0392b;}
+.mvr-tbd{color:#f59e0b!important;font-style:italic;}
+</style>
+
+<div class="section-label" style="margin-bottom:16px;">MVR · ACC Motorcycles · <span id="mvr-period-label">Mayo 2026</span> &mdash; Actual / YoY / vs Plan</div>
+
+<div class="mvr-wrapper">
+<table class="mvr-table">
+<thead>
+  <tr>
+    <th rowspan="2" style="width:80px;">Sección</th>
+    <th rowspan="2" style="width:210px;">KPI</th>
+    <th class="mvr-ph" colspan="3" id="mvr-period-header">Mayo 2026</th>
+    <th class="mvr-ph" style="width:134px;text-align:center;">EOY / Target FY'26</th>
+  </tr>
+  <tr>
+    <th style="width:134px;">Actual</th>
+    <th style="width:134px;">YoY</th>
+    <th style="width:134px;">vs Plan</th>
+  </tr>
+</thead>
+<tbody>
+  <!-- OVERALL PERFORMANCE -->
+  <tr>
+    <td class="mvr-sec" rowspan="6">Overall Performance</td>
+    <td class="mvr-kpi">NMV (B ARS)</td>
+    <td class="mvr-val" id="mvr-nmv-act">—</td>
+    <td class="mvr-yoy" id="mvr-nmv-yoy">—</td>
+    <td class="mvr-vsp" id="mvr-nmv-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NSI (K unidades)</td>
+    <td class="mvr-val" id="mvr-nsi-act">—</td>
+    <td class="mvr-yoy" id="mvr-nsi-yoy">—</td>
+    <td class="mvr-vsp" id="mvr-nsi-vsp">—</td>
+    <td class="mvr-eoy">4.7M</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NASP (ARS)</td>
+    <td class="mvr-val" id="mvr-nasp-act">—</td>
+    <td class="mvr-yoy" id="mvr-nasp-yoy">—</td>
+    <td class="mvr-vsp" id="mvr-nasp-vsp">—</td>
+    <td class="mvr-eoy">47.6K</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">VC %</td>
+    <td class="mvr-val" id="mvr-vc-act">—</td>
+    <td class="mvr-yoy" id="mvr-vc-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">DC %</td>
+    <td class="mvr-val" id="mvr-dc-act">—</td>
+    <td class="mvr-yoy" id="mvr-dc-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">BM</td>
+    <td class="mvr-val" id="mvr-bm-act">—</td>
+    <td class="mvr-yoy" id="mvr-bm-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <!-- DEMAND & ENGAGEMENT -->
+  <tr>
+    <td class="mvr-sec" rowspan="8">Demand &amp; Engagement</td>
+    <td class="mvr-kpi">Visitas</td>
+    <td class="mvr-val" id="mvr-vis-act">—</td>
+    <td class="mvr-yoy" id="mvr-vis-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">CVR (Orders/Visits)</td>
+    <td class="mvr-val" id="mvr-cvr-act">—</td>
+    <td class="mvr-yoy" id="mvr-cvr-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Frequency</td>
+    <td class="mvr-val" id="mvr-freq-act">—</td>
+    <td class="mvr-yoy" id="mvr-freq-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">1.3</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi"># Clips</td>
+    <td class="mvr-val" id="mvr-clips-num-act">—</td>
+    <td class="mvr-yoy" id="mvr-clips-num-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Share de Clips (%LL con Clips)</td>
+    <td class="mvr-val mvr-tbd">TBD</td>
+    <td class="mvr-yoy mvr-tbd">TBD</td>
+    <td class="mvr-vsp mvr-tbd">TBD</td>
+    <td class="mvr-eoy mvr-tbd">TBD</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% NMV con Clips</td>
+    <td class="mvr-val" id="mvr-clips-pct-act">—</td>
+    <td class="mvr-yoy" id="mvr-clips-pct-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">19.8%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi"># Afiliados</td>
+    <td class="mvr-val" id="mvr-afil-num-act">—</td>
+    <td class="mvr-yoy" id="mvr-afil-num-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">377</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% NMV Affiliates</td>
+    <td class="mvr-val" id="mvr-afil-pct-act">—</td>
+    <td class="mvr-yoy" id="mvr-afil-pct-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">3%</td>
+  </tr>
+  <!-- SELECTION -->
+  <tr>
+    <td class="mvr-sec">Selection Mgmt</td>
+    <td class="mvr-kpi">% NMV Buy Box</td>
+    <td class="mvr-val" id="mvr-bb-act">—</td>
+    <td class="mvr-yoy" id="mvr-bb-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">9.5%</td>
+  </tr>
+  <!-- COMMERCIAL EXCELLENCE -->
+  <tr>
+    <td class="mvr-sec" rowspan="2">Commercial Excellence</td>
+    <td class="mvr-kpi">CBT Penetration (%NMV)</td>
+    <td class="mvr-val" id="mvr-cbt-act">—</td>
+    <td class="mvr-yoy" id="mvr-cbt-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">2.0%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NMV 1P</td>
+    <td class="mvr-val mvr-tbd">TBD</td>
+    <td class="mvr-yoy mvr-tbd">TBD</td>
+    <td class="mvr-vsp mvr-tbd">TBD</td>
+    <td class="mvr-eoy mvr-tbd">TBD</td>
+  </tr>
+  <!-- PRICE COMPETITIVENESS -->
+  <tr>
+    <td class="mvr-sec" rowspan="2">Price Competitiveness</td>
+    <td class="mvr-kpi">% BPC KMI</td>
+    <td class="mvr-val" id="mvr-bpckmi-act">—</td>
+    <td class="mvr-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">KMI Scrapping Coverage (%Visits)</td>
+    <td class="mvr-val" id="mvr-kmi-act">—</td>
+    <td class="mvr-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">—</td>
+  </tr>
+  <!-- SHIPPING -->
+  <tr>
+    <td class="mvr-sec" rowspan="3">Shipping &amp; Availability Mgmt</td>
+    <td class="mvr-kpi">% NSI FBM</td>
+    <td class="mvr-val" id="mvr-fbm-act">—</td>
+    <td class="mvr-yoy" id="mvr-fbm-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">13.2%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Stockouts (As % of FBM GMV)</td>
+    <td class="mvr-val" id="mvr-stk-act">—</td>
+    <td class="mvr-yoy" id="mvr-stk-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">37.9%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% Promesas en VIP &le;2D</td>
+    <td class="mvr-val" id="mvr-prom-act">—</td>
+    <td class="mvr-yoy" id="mvr-prom-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">34.5%</td>
+  </tr>
+  <!-- BENEFITS -->
+  <tr>
+    <td class="mvr-sec">Benefits &amp; Discounts</td>
+    <td class="mvr-kpi">Benefits Meli Investment %</td>
+    <td class="mvr-val" id="mvr-ben-act">—</td>
+    <td class="mvr-yoy" id="mvr-ben-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">0.64%</td>
+  </tr>
+  <!-- ADS -->
+  <tr>
+    <td class="mvr-sec">Ads</td>
+    <td class="mvr-kpi">MAds % NMV</td>
+    <td class="mvr-val" id="mvr-mads-act">—</td>
+    <td class="mvr-yoy" id="mvr-mads-yoy">—</td>
+    <td class="mvr-vsp">—</td>
+    <td class="mvr-eoy">1.9%</td>
+  </tr>
+  <!-- KB #1 -->
+  <tr>
+    <td class="mvr-sec">KB #1</td>
+    <td class="mvr-kpi">% NMV Sellers 80/20 &ge; Cluster In Mature &amp; UP</td>
+    <td class="mvr-val mvr-tbd">TBD</td>
+    <td class="mvr-yoy mvr-tbd">TBD</td>
+    <td class="mvr-vsp mvr-tbd">TBD</td>
+    <td class="mvr-eoy mvr-tbd">TBD</td>
+  </tr>
+</tbody>
+</table>
+</div>
+</div><!-- /tab-mvr -->
+
 
 </main><!-- /main -->
 
@@ -7029,6 +7266,7 @@ window.BQ_DATA = {
     renderAccionables();
     updateEvoCellsFromBQ();
     reverseEvoColumns();
+    populateMVR();
   });
 
   // ── Reverse column order: YTD | MTD | most-recent → oldest month ──
@@ -7167,6 +7405,77 @@ window.BQ_DATA = {
         if (cells[3] && cells[3].textContent.trim() === DASH && d.latest_yoy)    cells[3].textContent = d.latest_yoy;
       });
     });
+  }
+
+  // ── Populate MVR tab from BQ_DATA ──
+  function populateMVR() {
+    var d = window.BQ_DATA && window.BQ_DATA['all'];
+    if (!d) return;
+    var DASH = '—';
+
+    function act(k) { return (d[k] && d[k].latest_actual) || DASH; }
+    function yoy(k) { return (d[k] && d[k].latest_yoy)    || DASH; }
+    function vsp(k) { return (d[k] && d[k].latest_vsp)    || DASH; }
+
+    function setVal(id, v) {
+      var el = document.getElementById(id);
+      if (el) el.textContent = v;
+    }
+    function setYoy(id, v, invert) {
+      var el = document.getElementById(id);
+      if (!el || !v || v === DASH) return;
+      el.textContent = v;
+      var isPos = v.charAt(0) !== '-';
+      var cls = (invert ? !isPos : isPos) ? 'pos' : 'neg';
+      el.className = 'mvr-yoy ' + cls;
+    }
+    function setVsp(id, v) {
+      var el = document.getElementById(id);
+      if (!el || !v || v === DASH) return;
+      el.textContent = v;
+      el.className = 'mvr-vsp ' + (v.includes('-') ? 'neg' : 'pos');
+    }
+
+    // NMV (special)
+    var nmvD = d['nmv'] || {};
+    setVal('mvr-nmv-act',  nmvD.latest_actual || DASH);
+    setYoy('mvr-nmv-yoy',  nmvD.latest_yoy || DASH,    false);
+    setVsp('mvr-nmv-vsp',  nmvD.latest_vsp || DASH);
+
+    // Overall
+    setVal('mvr-nsi-act',  act('nsi'));   setYoy('mvr-nsi-yoy',  yoy('nsi'),  false); setVsp('mvr-nsi-vsp',  vsp('nsi'));
+    setVal('mvr-nasp-act', act('nasp'));  setYoy('mvr-nasp-yoy', yoy('nasp'), true);  setVsp('mvr-nasp-vsp', vsp('nasp'));
+    setVal('mvr-vc-act',   act('vcpct')); setYoy('mvr-vc-yoy',   yoy('vcpct'), true);
+    setVal('mvr-dc-act',   act('dcpct')); setYoy('mvr-dc-yoy',   yoy('dcpct'), true);
+    setVal('mvr-bm-act',   act('bm'));    setYoy('mvr-bm-yoy',   yoy('bm'),    false);
+
+    // Demand
+    setVal('mvr-vis-act',       act('visitas'));       setYoy('mvr-vis-yoy',       yoy('visitas'),       false);
+    setVal('mvr-cvr-act',       act('cvr_orders___visits')); setYoy('mvr-cvr-yoy', yoy('cvr_orders___visits'), false);
+    setVal('mvr-freq-act',      act('frequency'));     setYoy('mvr-freq-yoy',      yoy('frequency'),     false);
+    setVal('mvr-clips-num-act', act('num_clips'));     setYoy('mvr-clips-num-yoy', yoy('num_clips'),     false);
+    setVal('mvr-clips-pct-act', act('pct_nmv_clips')); setYoy('mvr-clips-pct-yoy', yoy('pct_nmv_clips'), false);
+    setVal('mvr-afil-num-act',  act('num_afiliados')); setYoy('mvr-afil-num-yoy',  yoy('num_afiliados'), false);
+    setVal('mvr-afil-pct-act',  act('pct_nmv_affiliates')); setYoy('mvr-afil-pct-yoy', yoy('pct_nmv_affiliates'), false);
+
+    // Selection / Commercial / Price / Shipping / Benefits / Ads
+    setVal('mvr-bb-act',     act('pct_nmv_buy_box'));           setYoy('mvr-bb-yoy',     yoy('pct_nmv_buy_box'),           false);
+    setVal('mvr-cbt-act',    act('cbt_penetration_pctnmv'));    setYoy('mvr-cbt-yoy',    yoy('cbt_penetration_pctnmv'),    false);
+    setVal('mvr-bpckmi-act', act('pct_bpc_kmi'));
+    setVal('mvr-kmi-act',    act('kmi_scrapping_coverage_pctvisits'));
+    setVal('mvr-fbm-act',    act('pct_nsi_fbm'));               setYoy('mvr-fbm-yoy',    yoy('pct_nsi_fbm'),               false);
+    setVal('mvr-stk-act',    act('stockouts_as_pct_of_fbm_gmv')); setYoy('mvr-stk-yoy', yoy('stockouts_as_pct_of_fbm_gmv'), true);
+    setVal('mvr-prom-act',   act('pct_promesas_en_vip_lte2d')); setYoy('mvr-prom-yoy',  yoy('pct_promesas_en_vip_lte2d'), false);
+    setVal('mvr-ben-act',    act('benefits_meli_investment_pct')); setYoy('mvr-ben-yoy', yoy('benefits_meli_investment_pct'), false);
+    setVal('mvr-mads-act',   act('mads_pct_nmv'));              setYoy('mvr-mads-yoy',   yoy('mads_pct_nmv'),              false);
+
+    // Update period label
+    if (window.BQ_LAST_UPDATE) {
+      var el = document.getElementById('mvr-period-label');
+      var el2 = document.getElementById('mvr-period-header');
+      if (el) el.textContent = 'MTD May\'26 · Datos al ' + window.BQ_LAST_UPDATE;
+      if (el2) el2.textContent = 'MTD May\'26';
+    }
   }
 
   // ── REFRESH MODAL ──
