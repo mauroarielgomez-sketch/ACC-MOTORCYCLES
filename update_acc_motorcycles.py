@@ -43,17 +43,25 @@ INICIATIVA   = "ALL"
 SINCE_FY26   = "2026-01-01"
 SINCE_FY25   = "2025-01-01"
 
-# KPIs to fetch for each sub-segment
+MONTH_ABBR = {
+    '01': 'Ene', '02': 'Feb', '03': 'Mar', '04': 'Abr',
+    '05': 'May', '06': 'Jun', '07': 'Jul', '08': 'Ago',
+    '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
+}
+
+# KPIs to fetch for each sub-segment (names match DM_VPA_ROADMAP_FINAL KPI column)
 MAIN_KPIS = [
     "NMV", "NSI", "NASP", "DC%", "VC%", "BM",
-    "Visitas", "CVR (Orders / Visits)", "Buyers", "New Buyers",
+    "Visitas", "CVR (Orders / Visits)",
     "Frequency",
+    "# Clips",
     "% NMV Clips", "% NMV Affiliates", "# Afiliados",
     "% NMV Buy Box", "CBT Penetration (%NMV)",
-    "% NMV FBM", "Stockouts (As % of FBM GMV)",
-    "% Promesas en VIP ≤2D ",
-    "Benefits Meli Investment %", "Meli Investments in Rebates %",
-    "MAds % NMV", "NMV Top Brands KB1",
+    "KMI Scrapping Coverage (%Visits)", "% BPC KMI",
+    "% NSI FBM", "Stockouts (As % of FBM GMV)",
+    "% Promesas en VIP ≤2D",
+    "Benefits Meli Investment %",
+    "MAds % NMV",
 ]
 
 AGG2_SEGMENTS = [
@@ -294,8 +302,6 @@ def main():
         seg_key = seg.lower().replace(" ", "_")
         print(f"  → Consultando AGG2={seg!r} ...")
         try:
-            df = query_roadmap(client, seg, MAIN_KPIS, since=SINCE_FY25)
-            # Also get FY26 with plan values
             df26 = query_roadmap(client, seg, MAIN_KPIS, since=SINCE_FY26)
         except Exception as e:
             print(f"  ⚠  Error en consulta de {seg}: {e}")
@@ -315,6 +321,20 @@ def main():
             )
         all_data[seg_key] = seg_data
 
+    # 2b. Replace NMV with local currency (ARS) from BT_ORD_ORDERS
+    print("  → Consultando NMV en ARS (BT_ORD_ORDERS) ...")
+    for seg in AGG2_SEGMENTS:
+        seg_key = seg.lower().replace(" ", "_")
+        if seg_key not in all_data:
+            continue
+        try:
+            agg2_filter = None if seg == "ALL" else seg
+            df_nmv = query_nmv_ars(client, agg2_filter)
+            all_data[seg_key]["nmv"] = build_nmv_ars_summary(df_nmv)
+            print(f"    ✓ NMV ARS actualizado para {seg}")
+        except Exception as e:
+            print(f"  ⚠  Error en NMV ARS para {seg}: {e}")
+
     # 3. Load existing HTML
     print(f"  → Leyendo {HTML_PATH} ...")
     html = HTML_PATH.read_text(encoding="utf-8")
@@ -331,15 +351,18 @@ def main():
         df_total = query_roadmap(client, "ALL", MAIN_KPIS, since=SINCE_FY26)
         html = update_span_ids(html, df_total, HERO_IDS_TOTAL)
 
-    # 7. Update hero card values using a targeted replacement for known patterns
+    # 7. Update NMV (B ARS) table cells with correct ARS values and YoY
+    html = update_nmv_cells_in_html(html, all_data)
+
+    # 8. Update hero card values using a targeted replacement for known patterns
     html = _update_hero_values(html, all_data)
 
-    # 8. Save
+    # 9. Save
     HTML_PATH.write_text(html, encoding="utf-8")
     print(f"  ✅ HTML actualizado exitosamente → {HTML_PATH}")
     print(f"  📅 Timestamp: {ts}")
 
-    # 9. Push to GitHub automatically
+    # 10. Push to GitHub automatically
     _push_to_github(ts)
 
 
@@ -349,6 +372,191 @@ def _update_hero_values(html, all_data):
     # Currently the JS data block is the primary data injection mechanism.
     # To make hero cards fully dynamic, add span IDs to the HTML elements
     # and update them here using update_span_ids().
+    return html
+
+
+def query_nmv_ars(client, agg2_filter=None):
+    """Query NMV in local currency (ARS) from BT_ORD_ORDERS."""
+    agg2_condition = ""
+    if agg2_filter and agg2_filter != "ALL":
+        safe = agg2_filter.replace("'", "\\'")
+        agg2_condition = f"AND item_domains.DOM_DOMAIN_AGG2 = '{safe}'"
+
+    sql = f"""
+    SELECT
+        FORMAT_DATE('%Y-%m', orders.ORD_CLOSED_DT) AS month,
+        EXTRACT(YEAR FROM orders.ORD_CLOSED_DT) AS year,
+        COALESCE(SUM(CASE
+            WHEN (NOT COALESCE(orders.ORD_ORDER_MSHOPS_FLG, FALSE))
+                AND (orders.ORD_CATEGORY.MARKETPLACE_ID = 'TM')
+                AND orders.ORD_GMV_FLG
+                AND (NOT COALESCE(orders.ORD_ORDER_PROXIMITY_FLG, FALSE))
+            THEN CASE
+                WHEN orders.ORD_CLOSED_DT >= CURRENT_DATE - 45 THEN transactional_forecast.F_TGMVELC
+                WHEN orders.ORD_TGMV_FLG = true THEN orders.ORD_ITEM.QTY * orders.ORD_ITEM.UNIT_PRICE
+            END
+            ELSE NULL
+        END), 0) AS nmv_ars
+    FROM `meli-bi-data.WHOWNER.BT_ORD_ORDERS` AS orders
+    LEFT JOIN `meli-bi-data.WHOWNER.BT_ORD_ORDERS_TRANSACTIONAL_FORECAST` AS transactional_forecast
+        ON transactional_forecast.ORD_ORDER_ID = orders.ORD_ORDER_ID
+    LEFT JOIN `meli-bi-data.WHOWNER.LK_ITE_ITEM_DOMAINS` AS item_domains
+        ON item_domains.SIT_SITE_ID = orders.SIT_SITE_ID
+        AND item_domains.ITE_ITEM_ID = orders.ORD_ITEM.ID
+    WHERE orders.SIT_SITE_ID = 'MLA'
+        AND (
+            (orders.ORD_CLOSED_DT >= DATE('{SINCE_FY26}') AND orders.ORD_CLOSED_DT < DATE_ADD(DATE('{SINCE_FY26}'), INTERVAL 1 YEAR))
+            OR
+            (orders.ORD_CLOSED_DT >= DATE('{SINCE_FY25}') AND orders.ORD_CLOSED_DT < DATE_ADD(DATE('{SINCE_FY25}'), INTERVAL 1 YEAR))
+        )
+        AND item_domains.DOM_DOMAIN_AGG1 = 'ACC MOTORCYCLES'
+        {agg2_condition}
+    GROUP BY 1, 2
+    ORDER BY 1
+    """
+    return client.query(sql).to_dataframe()
+
+
+def build_nmv_ars_summary(df_nmv):
+    """Build NMV summary dict from BT_ORD_ORDERS data in billions of ARS."""
+    df26 = df_nmv[df_nmv['year'] == 2026].copy()
+    df25 = df_nmv[df_nmv['year'] == 2025].copy()
+
+    def to_monthly(df):
+        result = {}
+        for _, row in df.iterrows():
+            month_num = str(row['month']).split('-')[1]
+            abbr = MONTH_ABBR.get(month_num, month_num)
+            result[abbr] = float(row['nmv_ars']) if row['nmv_ars'] else 0.0
+        return result
+
+    act26 = to_monthly(df26)
+    act25 = to_monthly(df25)
+
+    def fmt_b(val):
+        if val is None or val == 0:
+            return "—"
+        return f"{val / 1e9:.1f}B"
+
+    actual_str = {m: fmt_b(v) for m, v in act26.items()}
+
+    yoy_str = {}
+    for m, v26 in act26.items():
+        v25 = act25.get(m)
+        if v25 and v25 != 0:
+            pct = (v26 / v25 - 1) * 100
+            yoy_str[m] = f"{'+' if pct >= 0 else ''}{pct:.0f}%"
+        else:
+            yoy_str[m] = "—"
+
+    l_act = list(act26.values())[-1] if act26 else None
+    l_act_str = fmt_b(l_act)
+    l_yoy_str = list(yoy_str.values())[-1] if yoy_str else "—"
+
+    latest_month = list(act26.keys())[-1] if act26 else None
+    v25_same = act25.get(latest_month) if latest_month else None
+    l_yoy_n = ((l_act / v25_same - 1) * 100
+               if l_act and v25_same and v25_same != 0 else None)
+
+    yoy_nums = {}
+    for m, v26 in act26.items():
+        v25 = act25.get(m)
+        yoy_nums[m] = ((v26 / v25 - 1) * 100) if (v25 and v25 != 0) else None
+
+    return {
+        "actual":          actual_str,
+        "yoy":             yoy_str,
+        "plan":            {},
+        "vsp":             {},
+        "latest_actual":   l_act_str,
+        "latest_yoy":      l_yoy_str,
+        "latest_plan":     "—",
+        "latest_vsp":      "—",
+        "latest_actual_n": l_act,
+        "latest_yoy_n":    l_yoy_n,
+        "latest_vsp_n":    None,
+        "color_coding":    None,
+        "status":          None,
+        "yoy_direction":   ("pos" if l_yoy_n and l_yoy_n > 0
+                            else "neg" if l_yoy_n and l_yoy_n < 0
+                            else "neu"),
+        "trend":           trend_str(actual_str, yoy_str),
+        "actual_nums":     dict(act26),
+        "yoy_nums":        yoy_nums,
+    }
+
+
+TAB_SEG_MAP = [
+    ("tab-total",       "all"),
+    ("tab-helmets",     "motorcycle_helmets"),
+    ("tab-accessories", "motorcycle_accessories"),
+    ("tab-parts",       "motorcycle_replacement_parts"),
+    ("tab-trans",       "transactional_motorcycles"),
+]
+
+MONTH_ORDER = ["Ene","Feb","Mar","Abr","May","Jun","Jul","Ago","Sep","Oct","Nov","Dic"]
+
+
+def update_nmv_cells_in_html(html, all_data):
+    """Rewrite NMV (B ARS) table rows with correct ARS values and YoY from BT_ORD_ORDERS."""
+    for tab_id, seg_key in TAB_SEG_MAP:
+        if seg_key not in all_data or "nmv" not in all_data[seg_key]:
+            continue
+        nmv = all_data[seg_key]["nmv"]
+        actual_nums = nmv.get("actual_nums", {})
+        yoy_nums    = nmv.get("yoy_nums", {})
+        if not actual_nums:
+            continue
+
+        months = [m for m in MONTH_ORDER if m in actual_nums]
+
+        def fmt_b(v):
+            return f"{v/1e9:.1f}B" if v else "—"
+
+        def fmt_yoy(y):
+            if y is None:
+                return "—", "neu"
+            return f"{'+' if y >= 0 else ''}{y:.0f}%", ("pos" if y >= 0 else "neg")
+
+        ytd = sum(v for v in actual_nums.values() if v)
+        cells = (
+            f'<td class="td-val-ytd">{fmt_b(ytd)}</td>'
+            f'<td class="td-yoy-neu td-val-ytd">&mdash;</td>'
+            f'<td class="td-vsp td-empty td-val-ytd">&mdash;</td>\n      '
+        )
+        for i, m in enumerate(months):
+            v   = actual_nums.get(m, 0)
+            yoy, d = fmt_yoy(yoy_nums.get(m))
+            if i < len(months) - 1:
+                cells += (
+                    f'<td class="td-val">{fmt_b(v)}</td>'
+                    f'<td class="td-yoy td-yoy-{d}">{yoy}</td>'
+                    f'<td class="td-vsp td-empty">&mdash;</td>\n      '
+                )
+            else:
+                cells += (
+                    f'<td class="td-val-mtd">{fmt_b(v)}</td>'
+                    f'<td class="td-yoy-{d} td-val-mtd">{yoy}</td>'
+                    f'<td class="td-vsp td-empty">&mdash;</td>'
+                )
+
+        new_row = (
+            f'<tr>\n      <td class="td-sec">Overall</td>\n'
+            f'      <td class="td-kpi">NMV (B ARS)</td>\n      {cells}\n    </tr>'
+        )
+
+        tab_start = html.find(f'id="{tab_id}"')
+        tab_end   = html.find('</div><!-- /tab-', tab_start)
+        if tab_start == -1 or tab_end == -1:
+            continue
+
+        section     = html[tab_start:tab_end]
+        nmv_pattern = (r'<tr>\s*<td class="td-sec">Overall</td>\s*'
+                       r'<td class="td-kpi">NMV \(B ARS\)</td>.*?</tr>')
+        new_section = re.sub(nmv_pattern, new_row, section, count=1, flags=re.DOTALL)
+        html = html[:tab_start] + new_section + html[tab_end:]
+        print(f"    ✓ NMV celdas HTML actualizadas para {seg_key}")
+
     return html
 
 

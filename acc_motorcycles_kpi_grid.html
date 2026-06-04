@@ -6881,7 +6881,94 @@ window.BQ_DATA = {
     var loadEl = document.getElementById('page-load-ts');
     if (loadEl) loadEl.textContent = loadTs;
     renderAccionables();
+    updateEvoCellsFromBQ();
   });
+
+  // ── Update Evolución cells from BQ_DATA (fills "—" with real data) ──
+  function updateEvoCellsFromBQ() {
+    if (!window.BQ_DATA) return;
+
+    var TAB_SEG = [
+      ['tab-total',       'all'],
+      ['tab-helmets',     'motorcycle_helmets'],
+      ['tab-accessories', 'motorcycle_accessories'],
+      ['tab-parts',       'motorcycle_replacement_parts'],
+      ['tab-trans',       'transactional_motorcycles']
+    ];
+
+    var KPI_KEY = {
+      'NSI (K unidades)':                 'nsi',
+      'NASP (ARS)':                       'nasp',
+      'NASP (K ARS)':                     'nasp',
+      'DC %':                             'dcpct',
+      'VC %':                             'vcpct',
+      'BM %':                             'bm',
+      'Visitas':                          'visitas',
+      'CVR (Orders/Visits)':              'cvr_orders___visits',
+      'Frequency':                        'frequency',
+      '# Clips':                          'num_clips',
+      '% NMV con Clips':                  'pct_nmv_clips',
+      '# Afiliados':                      'num_afiliados',
+      '% NMV Affiliates':                 'pct_nmv_affiliates',
+      '% NMV Buy Box':                    'pct_nmv_buy_box',
+      'CBT Penetration (%NMV)':           'cbt_penetration_pctnmv',
+      'KMI Scrapping Coverage (%Visits)': 'kmi_scrapping_coverage_pctvisits',
+      '% BPC KMI':                        'pct_bpc_kmi',
+      '% NSI FBM':                        'pct_nsi_fbm',
+      'Stockouts (% FBM GMV)':            'stockouts_as_pct_of_fbm_gmv',
+      'Stockouts (As % of FBM GMV)':      'stockouts_as_pct_of_fbm_gmv',
+      '% Promesas en VIP ≤2D':       'pct_promesas_en_vip_lte2d',
+      'Benefits Meli Investment %':       'benefits_meli_investment_pct',
+      'MAds % NMV':                       'mads_pct_nmv'
+    };
+
+    var MONTH_COLS = ['Jan 26','Feb 26','Mar 26','Apr 26','May 26'];
+    var DASH = '—';
+
+    function yoyCls(v)    { return !v||v===DASH?'td-yoy td-yoy-neu':(v[0]==='+'?'td-yoy td-yoy-pos':'td-yoy td-yoy-neg'); }
+    function yoyMtdCls(v) { return !v||v===DASH?'td-yoy-neu td-val-mtd':((v[0]==='+'?'td-yoy-pos':'td-yoy-neg')+' td-val-mtd'); }
+
+    TAB_SEG.forEach(function(ts) {
+      var tabEl  = document.getElementById(ts[0]);
+      var segDat = window.BQ_DATA[ts[1]];
+      if (!tabEl || !segDat) return;
+
+      tabEl.querySelectorAll('tr').forEach(function(row) {
+        var kpiCell = row.querySelector('td.td-kpi');
+        if (!kpiCell) return;
+        var bqKey = KPI_KEY[kpiCell.textContent.trim()];
+        if (!bqKey) return;
+        var d = segDat[bqKey];
+        if (!d) return;
+        var cells = row.querySelectorAll('td');
+        if (cells.length < 8) return;
+
+        // Monthly columns (index 5-7, 8-10, 11-13, 14-16, 17-19)
+        MONTH_COLS.forEach(function(mKey, i) {
+          var b = 5 + i * 3;
+          var act = (d.actual && d.actual[mKey]) || DASH;
+          var yoy = (d.yoy   && d.yoy[mKey])    || DASH;
+          var vsp = (d.vsp   && d.vsp[mKey])    || DASH;
+          if (cells[b]   && cells[b].textContent.trim()   === DASH) cells[b].textContent   = act;
+          if (cells[b+1] && cells[b+1].textContent.trim() === DASH) { cells[b+1].textContent = yoy; cells[b+1].className = yoyCls(yoy); }
+          if (cells[b+2] && cells[b+2].textContent.trim() === DASH) cells[b+2].textContent = vsp;
+        });
+
+        // MTD column (last 3 cells)
+        var n = cells.length;
+        var actM = (d.actual && d.actual['MTD']) || DASH;
+        var yoyM = (d.yoy   && d.yoy['MTD'])    || DASH;
+        var vspM = (d.vsp   && d.vsp['MTD'])    || DASH;
+        if (cells[n-3] && cells[n-3].textContent.trim() === DASH) cells[n-3].textContent = actM;
+        if (cells[n-2] && cells[n-2].textContent.trim() === DASH) { cells[n-2].textContent = yoyM; cells[n-2].className = yoyMtdCls(yoyM); }
+        if (cells[n-1] && cells[n-1].textContent.trim() === DASH) cells[n-1].textContent = vspM;
+
+        // YTD column (cells 2,3,4) — fill "—" with latest_actual
+        if (cells[2] && cells[2].textContent.trim() === DASH && d.latest_actual) cells[2].textContent = d.latest_actual;
+        if (cells[3] && cells[3].textContent.trim() === DASH && d.latest_yoy)    cells[3].textContent = d.latest_yoy;
+      });
+    });
+  }
 
   // ── REFRESH MODAL ──
   function openRefreshModal() {
