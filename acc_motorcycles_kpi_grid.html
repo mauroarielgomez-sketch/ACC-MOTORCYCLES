@@ -7095,14 +7095,14 @@ window.BQ_DATA = {
     <td class="mvr-kpi">Frequency</td>
     <td class="mvr-val" id="mvr-freq-act">—</td>
     <td class="mvr-yoy" id="mvr-freq-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-freq-vsp">—</td>
     <td class="mvr-eoy">1.3</td>
   </tr>
   <tr>
     <td class="mvr-kpi"># Clips</td>
     <td class="mvr-val" id="mvr-clips-num-act">—</td>
     <td class="mvr-yoy" id="mvr-clips-num-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-clips-num-vsp">—</td>
     <td class="mvr-eoy">~64K</td>
   </tr>
   <tr>
@@ -7116,21 +7116,21 @@ window.BQ_DATA = {
     <td class="mvr-kpi">% NMV con Clips</td>
     <td class="mvr-val" id="mvr-clips-pct-act">—</td>
     <td class="mvr-yoy" id="mvr-clips-pct-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-clips-pct-vsp">—</td>
     <td class="mvr-eoy">19.8%</td>
   </tr>
   <tr>
     <td class="mvr-kpi"># Afiliados</td>
     <td class="mvr-val" id="mvr-afil-num-act">—</td>
     <td class="mvr-yoy" id="mvr-afil-num-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-afil-num-vsp">—</td>
     <td class="mvr-eoy">~43K</td>
   </tr>
   <tr>
     <td class="mvr-kpi">% NMV Affiliates</td>
     <td class="mvr-val" id="mvr-afil-pct-act">—</td>
     <td class="mvr-yoy" id="mvr-afil-pct-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-afil-pct-vsp">—</td>
     <td class="mvr-eoy">3%</td>
   </tr>
   <!-- SELECTION -->
@@ -7139,7 +7139,7 @@ window.BQ_DATA = {
     <td class="mvr-kpi">% NMV Buy Box</td>
     <td class="mvr-val" id="mvr-bb-act">—</td>
     <td class="mvr-yoy" id="mvr-bb-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-bb-vsp">—</td>
     <td class="mvr-eoy">9.5%</td>
   </tr>
   <!-- COMMERCIAL EXCELLENCE -->
@@ -7148,7 +7148,7 @@ window.BQ_DATA = {
     <td class="mvr-kpi">CBT Penetration (%NMV)</td>
     <td class="mvr-val" id="mvr-cbt-act">—</td>
     <td class="mvr-yoy" id="mvr-cbt-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-cbt-vsp">—</td>
     <td class="mvr-eoy">2.0%</td>
   </tr>
   <tr>
@@ -7180,21 +7180,21 @@ window.BQ_DATA = {
     <td class="mvr-kpi">% NSI FBM</td>
     <td class="mvr-val" id="mvr-fbm-act">—</td>
     <td class="mvr-yoy" id="mvr-fbm-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-fbm-vsp">—</td>
     <td class="mvr-eoy">13.2%</td>
   </tr>
   <tr>
     <td class="mvr-kpi">Stockouts (As % of FBM GMV)</td>
     <td class="mvr-val" id="mvr-stk-act">—</td>
     <td class="mvr-yoy" id="mvr-stk-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-stk-vsp">—</td>
     <td class="mvr-eoy">37.9%</td>
   </tr>
   <tr>
     <td class="mvr-kpi">% Promesas en VIP &le;2D</td>
     <td class="mvr-val" id="mvr-prom-act">—</td>
     <td class="mvr-yoy" id="mvr-prom-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-prom-vsp">—</td>
     <td class="mvr-eoy">34.5%</td>
   </tr>
   <!-- BENEFITS -->
@@ -7203,7 +7203,7 @@ window.BQ_DATA = {
     <td class="mvr-kpi">Benefits Meli Investment %</td>
     <td class="mvr-val" id="mvr-ben-act">—</td>
     <td class="mvr-yoy" id="mvr-ben-yoy">—</td>
-    <td class="mvr-vsp">—</td>
+    <td class="mvr-vsp" id="mvr-ben-vsp">—</td>
     <td class="mvr-eoy">0.64%</td>
   </tr>
   <!-- ADS -->
@@ -7888,6 +7888,29 @@ window.BQ_DATA = {
     setVal('mvr-prom-act',   act('pct_promesas_en_vip_lte2d'));    setYoy('mvr-prom-yoy',   yoy('pct_promesas_en_vip_lte2d'), false);
     setVal('mvr-ben-act',    act('benefits_meli_investment_pct')); setYoy('mvr-ben-yoy',    yoy('benefits_meli_investment_pct'),false);
     setVal('mvr-mads-act',   act('mads_pct_nmv'));                 setYoy('mvr-mads-yoy',   yoy('mads_pct_nmv'),              false);
+
+    // ── Estimated vs Plan (FY Target ÷ 12 monthly pacing) ──
+    // Note: NSI/NASP/NMV use official plan from BQ — NOT overridden here
+    // Methodology: rate KPIs → actual pp vs target; count KPIs → actual vs (FY/12)
+    var VSP_EST = {
+      'mvr-freq-vsp':      {val: '-2%',      cls: 'neu'},   // -2.3% within ±5% ON TARGET
+      'mvr-clips-num-vsp': {val: '+7%',      cls: 'pos'},   // 5.7K vs 5.3K (64K/12)
+      'mvr-clips-pct-vsp': {val: '+6.2 pp',  cls: 'pos'},   // 26.0% vs 19.8%
+      'mvr-afil-num-vsp':  {val: '+17%',     cls: 'pos'},   // 4.2K vs 3.6K (43K/12)
+      'mvr-afil-pct-vsp':  {val: '-2.1 pp',  cls: 'neg'},   // 0.9% vs 3%
+      'mvr-bb-vsp':        {val: '+2.0 pp',  cls: 'pos'},   // 11.5% vs 9.5%
+      'mvr-cbt-vsp':       {val: '+0.2 pp',  cls: 'neu'},   // 2.2% vs 2.0% ON TARGET
+      'mvr-fbm-vsp':       {val: '+6.8 pp',  cls: 'pos'},   // 20.0% vs 13.2%
+      'mvr-stk-vsp':       {val: '-17.8 pp', cls: 'pos'},   // 20.1% vs 37.9% (lower=better)
+      'mvr-prom-vsp':      {val: '+5.0 pp',  cls: 'pos'},   // 39.5% vs 34.5%
+      'mvr-ben-vsp':       {val: '+0.16 pp', cls: 'pos'},   // 0.80% vs 0.64%
+    };
+    Object.keys(VSP_EST).forEach(function(id) {
+      var el = document.getElementById(id);
+      if (!el) return;
+      el.textContent = VSP_EST[id].val;
+      el.className   = 'mvr-vsp ' + VSP_EST[id].cls;
+    });
 
     // Update period labels
     var elLabel  = document.getElementById('mvr-period-label');
