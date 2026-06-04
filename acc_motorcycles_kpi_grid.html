@@ -6993,7 +6993,60 @@ window.BQ_DATA = {
     if (loadEl) loadEl.textContent = loadTs;
     renderAccionables();
     updateEvoCellsFromBQ();
+    reverseEvoColumns();
   });
+
+  // ── Reverse column order: YTD | MTD | most-recent → oldest month ──
+  function reverseEvoColumns() {
+    document.querySelectorAll('.evo-table2').forEach(function(table) {
+      var thead = table.querySelector('thead');
+      if (!thead) return;
+      var headRows = thead.querySelectorAll('tr');
+      if (headRows.length < 2) return;
+
+      // Row 1: first 2 cells have rowspan=2 (skip), rest are column group headers
+      var h1 = Array.from(headRows[0].children);
+      var grpHeaders = h1.slice(2); // [YTD, Ene, Feb, Mar, Abr, May, MTD]
+      var n = grpHeaders.length;
+      if (n < 2) return;
+
+      // New order: [0=YTD, last=MTD, n-2, n-3, ..., 1]
+      function newOrder(len) {
+        var o = [0, len - 1];
+        for (var i = len - 2; i >= 1; i--) o.push(i);
+        return o;
+      }
+      var order = newOrder(n);
+
+      // Reorder header row 1 group cells
+      order.forEach(function(idx) { headRows[0].appendChild(grpHeaders[idx]); });
+
+      // Reorder header row 2 sub-cells (groups of 3)
+      var h2 = Array.from(headRows[1].children);
+      var subGroups = [];
+      for (var i = 0; i < h2.length; i += 3)
+        subGroups.push(h2.slice(i, i + 3));
+      order.forEach(function(gIdx) {
+        if (subGroups[gIdx]) subGroups[gIdx].forEach(function(c) { headRows[1].appendChild(c); });
+      });
+
+      // Reorder data rows
+      table.querySelectorAll('tbody tr').forEach(function(row) {
+        if (row.classList.contains('evo-section')) return;
+        var cells = Array.from(row.children);
+        if (cells.length < 5) return;
+        var data = cells.slice(2);
+        var dGrps = [];
+        for (var i = 0; i < data.length; i += 3)
+          dGrps.push(data.slice(i, i + 3));
+        if (dGrps.length < 2) return;
+        var rowOrder = newOrder(dGrps.length);
+        rowOrder.forEach(function(gIdx) {
+          if (dGrps[gIdx]) dGrps[gIdx].forEach(function(c) { row.appendChild(c); });
+        });
+      });
+    });
+  }
 
   // ── Update Evolución cells from BQ_DATA (fills "—" with real data) ──
   function updateEvoCellsFromBQ() {
