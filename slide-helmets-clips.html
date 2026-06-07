@@ -6,7 +6,7 @@
 <title>ACC Motorcycles – Helmets Clips</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
 <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.11.0/dist/pptxgen.bundle.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -444,49 +444,35 @@ async function captureSlide() {
 }
 
 async function exportToPPTX() {
-  const btn = document.getElementById('btn-ppt');
+  var btn = document.getElementById('btn-ppt');
   btn.textContent = '⏳ Generando...';
   btn.disabled = true;
 
   try {
-    const canvas = await captureSlide();
-    const imgData = canvas.toDataURL('image/png');
+    // Step 1: capture slide as high-res image
+    var canvas = await captureSlide();
+    var imgData = canvas.toDataURL('image/png');
 
-    const pptx = new PptxGenJS();
+    // Step 2: create PPTX with slide image as full background
+    var pptx = new PptxGenJS();
     pptx.layout = 'LAYOUT_WIDE';
-    const slide = pptx.addSlide();
-
-    // Full-slide screenshot as background
+    var slide = pptx.addSlide();
     slide.addImage({ data: imgData, x: 0, y: 0, w: '100%', h: '100%' });
 
-    // Video placeholder boxes with instruction text
-    const boxStyle = { fill: { color: '111111', transparency: 20 }, line: { color: 'FFE600', width: 1.5 } };
-    const txtStyle = { color: 'FFE600', fontSize: 7, bold: true, align: 'center', valign: 'middle' };
-
-    slide.addShape(pptx.ShapeType.rect, { x: 4.45, y: 2.6, w: 4.2, h: 1.3, ...boxStyle });
-    slide.addText('▶  VIDEO TRACK A — Clip IA\nInsertar: clic derecho → Cambiar multimedia\nArchivo: clip_ia_helmets.mp4', { x: 4.45, y: 2.6, w: 4.2, h: 1.3, ...txtStyle });
-
-    slide.addShape(pptx.ShapeType.rect, { x: 4.45, y: 4.75, w: 4.2, h: 1.3, ...boxStyle });
-    slide.addText('▶  VIDEO TRACK B — Clip Agencia (Nolan)\nInsertar: clic derecho → Cambiar multimedia\nArchivo: clip_agencia_nolan.mp4', { x: 4.45, y: 4.75, w: 4.2, h: 1.3, ...txtStyle });
-
-    slide.addNotesSlideTxt(
-      'VIDEOS A AGREGAR EN POWERPOINT:\n' +
-      '1. Clic derecho sobre el recuadro amarillo "VIDEO TRACK A" → Cambiar multimedia → clip_ia_helmets.mp4\n' +
-      '2. Clic derecho sobre el recuadro "VIDEO TRACK B" → Cambiar multimedia → clip_agencia_nolan.mp4\n' +
-      'Archivos disponibles en: https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/'
-    );
-
+    // Step 3: save file
     await pptx.writeFile({ fileName: 'Helmets_Clips_ACC_Motorcycles.pptx' });
+
     btn.innerHTML = '✅ Descargado!';
     btn.style.background = '#006600';
-    setTimeout(() => {
+    setTimeout(function() {
       btn.innerHTML = '📊 Exportar a PowerPoint (.pptx)';
       btn.style.background = '#1a1a2e';
       btn.disabled = false;
     }, 3000);
   } catch(e) {
-    console.error(e);
-    btn.textContent = '❌ Error — ver consola';
+    console.error('PPTX export error:', e);
+    alert('Error al generar PPTX: ' + e.message);
+    btn.textContent = '❌ Error';
     btn.disabled = false;
   }
 }
