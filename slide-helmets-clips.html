@@ -77,12 +77,7 @@ body {
 .mla-badge { display: flex; align-items: center; gap: 6px; }
 .flag-circle {
   width: 28px; height: 28px;
-  border-radius: 50%; overflow: hidden;
-  display: flex; align-items: center; justify-content: center;
-  border: 1px solid #ddd;
-  background: #fff;
-  font-size: 20px;
-  line-height: 1;
+  flex-shrink: 0;
 }
 .mla-label {
   background: #FFE600;
@@ -222,7 +217,29 @@ body {
   <div class="header">
     <div class="slide-title">ACC Motorcycles – Helmets: Escalando Clips con marcas T1</div>
     <div class="mla-badge">
-      <div class="flag-circle">🇦🇷</div>
+      <svg class="flag-circle" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 28 28">
+        <clipPath id="fc"><circle cx="14" cy="14" r="13"/></clipPath>
+        <g clip-path="url(#fc)">
+          <rect width="28" height="9.3" fill="#74ACDF"/>
+          <rect y="9.3" width="28" height="9.3" fill="#fff"/>
+          <rect y="18.7" width="28" height="9.3" fill="#74ACDF"/>
+          <!-- Sol de Mayo -->
+          <circle cx="14" cy="14" r="3.2" fill="#F6B40E"/>
+          <g stroke="#F6B40E" stroke-width="1.1" stroke-linecap="round">
+            <line x1="14" y1="7.5" x2="14" y2="9.5"/>
+            <line x1="14" y1="18.5" x2="14" y2="20.5"/>
+            <line x1="7.5" y1="14" x2="9.5" y2="14"/>
+            <line x1="18.5" y1="14" x2="20.5" y2="14"/>
+            <line x1="9.6" y1="9.6" x2="11" y2="11"/>
+            <line x1="17" y1="17" x2="18.4" y2="18.4"/>
+            <line x1="18.4" y1="9.6" x2="17" y2="11"/>
+            <line x1="11" y1="17" x2="9.6" y2="18.4"/>
+          </g>
+          <circle cx="14" cy="14" r="2" fill="#85340A"/>
+          <circle cx="14" cy="14" r="1.2" fill="#F6B40E"/>
+        </g>
+        <circle cx="14" cy="14" r="13" fill="none" stroke="#ccc" stroke-width="0.8"/>
+      </svg>
       <div class="mla-label">MLA</div>
     </div>
   </div>
