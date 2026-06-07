@@ -453,34 +453,31 @@ async function exportToPPTX() {
     const imgData = canvas.toDataURL('image/png');
 
     const pptx = new PptxGenJS();
-    pptx.layout = 'LAYOUT_WIDE'; // 33.87 x 19.05 cm
+    pptx.layout = 'LAYOUT_WIDE';
     const slide = pptx.addSlide();
 
-    // Background: full-slide screenshot
+    // Full-slide screenshot as background
     slide.addImage({ data: imgData, x: 0, y: 0, w: '100%', h: '100%' });
 
-    // Embed videos with placeholders (positioned approximately)
-    // Track A video (AI clip) — approx position Col 2, upper half
-    slide.addMedia({
-      type: 'video',
-      path: 'https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/clip_ia_helmets.mp4',
-      x: 4.55, y: 2.65, w: 4.15, h: 1.35,
-      cover: imgData
-    });
+    // Video placeholder boxes with instruction text
+    const boxStyle = { fill: { color: '111111', transparency: 20 }, line: { color: 'FFE600', width: 1.5 } };
+    const txtStyle = { color: 'FFE600', fontSize: 7, bold: true, align: 'center', valign: 'middle' };
 
-    // Track B video (Agency Nolan) — approx position Col 2, lower half
-    slide.addMedia({
-      type: 'video',
-      path: 'https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/clip_agencia_nolan.mp4',
-      x: 4.55, y: 4.80, w: 4.15, h: 1.35,
-      cover: imgData
-    });
+    slide.addShape(pptx.ShapeType.rect, { x: 4.45, y: 2.6, w: 4.2, h: 1.3, ...boxStyle });
+    slide.addText('▶  VIDEO TRACK A — Clip IA\nInsertar: clic derecho → Cambiar multimedia\nArchivo: clip_ia_helmets.mp4', { x: 4.45, y: 2.6, w: 4.2, h: 1.3, ...txtStyle });
 
-    // Notes
-    slide.addNotesSlideTxt('Slide generada automáticamente. Videos: Track A = clip IA | Track B = clip Agencia Nolan.');
+    slide.addShape(pptx.ShapeType.rect, { x: 4.45, y: 4.75, w: 4.2, h: 1.3, ...boxStyle });
+    slide.addText('▶  VIDEO TRACK B — Clip Agencia (Nolan)\nInsertar: clic derecho → Cambiar multimedia\nArchivo: clip_agencia_nolan.mp4', { x: 4.45, y: 4.75, w: 4.2, h: 1.3, ...txtStyle });
+
+    slide.addNotesSlideTxt(
+      'VIDEOS A AGREGAR EN POWERPOINT:\n' +
+      '1. Clic derecho sobre el recuadro amarillo "VIDEO TRACK A" → Cambiar multimedia → clip_ia_helmets.mp4\n' +
+      '2. Clic derecho sobre el recuadro "VIDEO TRACK B" → Cambiar multimedia → clip_agencia_nolan.mp4\n' +
+      'Archivos disponibles en: https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/'
+    );
 
     await pptx.writeFile({ fileName: 'Helmets_Clips_ACC_Motorcycles.pptx' });
-    btn.textContent = '✅ Descargado!';
+    btn.innerHTML = '✅ Descargado!';
     btn.style.background = '#006600';
     setTimeout(() => {
       btn.innerHTML = '📊 Exportar a PowerPoint (.pptx)';
