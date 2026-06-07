@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC Motorcycles – Helmets Clips</title>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: #d4d4d4;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  padding: 30px;
+  min-height: 100vh;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+
+.slide {
+  width: 960px;
+  background: #ffffff;
+  position: relative;
+  box-shadow: 0 6px 32px rgba(0,0,0,0.28);
+  display: flex;
+  flex-direction: column;
+}
+
+.top-bar   { height: 11px; background: #FFE600; flex-shrink: 0; }
+.bottom-bar{ height: 6px;  background: #FFE600; flex-shrink: 0; }
+
+.dots-col {
+  position: absolute;
+  top: 48px;
+  left: 9px;
+  width: 28px;
+  display: grid;
+  grid-template-columns: repeat(4, 5px);
+  gap: 4px;
+}
+.dot { width: 4px; height: 4px; background: #d0d0d0; border-radius: 50%; }
+
+.header {
+  padding: 9px 14px 6px 46px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-shrink: 0;
+}
+.slide-title { font-size: 15px; font-weight: 700; color: #111; }
+
+.mla-badge { display: flex; align-items: center; gap: 6px; }
+.flag-circle {
+  width: 26px; height: 26px;
+  border-radius: 50%; overflow: hidden;
+  display: flex; flex-direction: column;
+  border: 1px solid #ddd;
+}
+.flag-blue  { flex: 1; background: #74ACDF; }
+.flag-white { flex: 1; background: #fff; }
+.mla-label {
+  background: #FFE600;
+  font-size: 11px; font-weight: 800;
+  padding: 3px 9px; border-radius: 3px;
+  color: #111;
+}
+
+.main {
+  padding: 4px 12px 8px 46px;
+  display: flex;
+  gap: 0;
+  flex: 1;
+}
+.col { flex: 1; display: flex; flex-direction: column; gap: 6px; padding: 0 8px; }
+.col-divider { width: 1px; background: #E0E0E0; flex-shrink: 0; margin: 4px 0; }
+
+.sect-label {
+  font-size: 9.5px; font-weight: 800;
+  text-transform: uppercase; letter-spacing: 0.5px;
+  padding-bottom: 4px;
+  border-bottom: 2px solid #FFE600;
+  color: #111; margin-bottom: 2px;
+}
+
+.box {
+  border: 1px solid #E4E4E4;
+  border-radius: 5px;
+  padding: 8px 10px;
+}
+
+.time-row {
+  display: flex; align-items: center; gap: 7px;
+  padding: 5px 4px;
+  border-bottom: 1px solid #F2F2F2;
+}
+.time-row:last-child { border-bottom: none; background: #F2FFF2; border-radius: 4px; }
+
+.pill {
+  min-width: 44px; text-align: center;
+  font-size: 11px; font-weight: 800;
+  padding: 4px 6px; border-radius: 12px;
+  flex-shrink: 0;
+}
+.pill-yellow { background: #FFF3CC; color: #956F00; }
+.pill-red    { background: #FFEDED; color: #C02000; }
+.pill-green  { background: #E2FFE2; color: #006600; }
+
+.time-info { flex: 1; }
+.time-method { font-size: 10px; font-weight: 700; color: #222; }
+.time-note   { font-size: 8.5px; color: #666; margin-top: 1px; }
+
+.verdict { font-size: 9px; font-weight: 700; flex-shrink: 0; }
+.v-yellow { color: #956F00; }
+.v-red    { color: #C02000; }
+.v-green  { color: #006600; }
+
+.video-btn {
+  display: flex; align-items: center; gap: 9px;
+  background: #CC0000; color: #fff;
+  padding: 8px 11px; border-radius: 5px;
+  text-decoration: none; cursor: pointer;
+  margin-top: 2px;
+}
+.play-circle {
+  width: 22px; height: 22px;
+  background: #fff; border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.play-tri {
+  width: 0; height: 0;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 9px solid #CC0000;
+  margin-left: 2px;
+}
+.video-title { font-size: 9.5px; font-weight: 700; }
+.video-sub   { font-size: 8px; opacity: 0.85; margin-top: 1px; }
+
+.track-box { border-radius: 5px; padding: 9px 11px; }
+.track-ai     { background: #F3F4FF; border: 1px solid #C0C4FF; }
+.track-agency { background: #FFFBF0; border: 1px solid #FFCF44; flex: 1; }
+
+.track-header { display: flex; align-items: baseline; gap: 6px; margin-bottom: 3px; }
+.track-num    { font-size: 26px; font-weight: 900; color: #111; line-height: 1; }
+.track-sub    { font-size: 9px; font-weight: 700; color: #444; }
+
+.tag-row { display: flex; gap: 4px; flex-wrap: wrap; margin-bottom: 5px; }
+.tag { font-size: 7.5px; font-weight: 800; padding: 2px 7px; border-radius: 10px; }
+.tag-ai    { background: #DDDEFF; color: #3333CC; }
+.tag-ml    { background: #FFE600; color: #111; }
+.tag-check { background: #C8FFCA; color: #004D00; }
+
+.track-bullets { font-size: 9px; color: #444; padding-left: 13px; margin-top: 2px; }
+.track-bullets li { margin-bottom: 2px; }
+
+.brands-title { font-size: 8px; font-weight: 800; color: #666; margin-top: 6px; margin-bottom: 3px; text-transform: uppercase; letter-spacing: 0.4px; }
+.brands-grid  { display: flex; flex-wrap: wrap; gap: 3px; }
+.brand-chip { background: #FFE600; font-size: 7.5px; font-weight: 800; padding: 2px 6px; border-radius: 3px; color: #111; }
+
+.kpi-row { display: flex; gap: 6px; }
+.kpi-card {
+  flex: 1; border: 1px solid #E4E4E4; border-radius: 5px;
+  padding: 8px 8px 7px; text-align: center; background: #FAFAFA;
+}
+.kpi-main   { font-size: 22px; font-weight: 900; color: #111; line-height: 1; }
+.kpi-yoy    { font-size: 11px; font-weight: 700; color: #007700; margin-top: 2px; }
+.kpi-label  { font-size: 8.5px; color: #555; margin-top: 3px; font-weight: 600; }
+.kpi-period { font-size: 7.5px; color: #999; margin-top: 1px; }
+
+.month-table { width: 100%; border-collapse: collapse; font-size: 8.5px; }
+.month-table thead th { background: #222; color: #FFE600; padding: 3px 5px; font-weight: 700; text-align: center; }
+.month-table thead th:first-child { text-align: left; }
+.month-table tbody td { padding: 3px 5px; border-bottom: 1px solid #F2F2F2; text-align: center; color: #333; }
+.month-table tbody td:first-child { text-align: left; font-weight: 600; }
+.pos { color: #007700; font-weight: 700; }
+.ytd-row td { font-weight: 800 !important; background: #FFFDF0 !important; }
+
+.takeaway-box { background: #F9F9F9; border: 1px solid #E4E4E4; border-radius: 5px; padding: 7px 10px; }
+.takeaway-title { font-size: 8.5px; font-weight: 800; color: #111; margin-bottom: 4px; text-transform: uppercase; letter-spacing: 0.4px; }
+.takeaway-item  { font-size: 8.5px; color: #333; margin-bottom: 3px; display: flex; gap: 5px; }
+.arrow { color: #007700; font-weight: 700; flex-shrink: 0; }
+</style>
+</head>
+<body>
+
+<div class="slide">
+  <div class="top-bar"></div>
+  <div class="dots-col" id="dots"></div>
+
+  <div class="header">
+    <div class="slide-title">ACC Motorcycles – Helmets: Escalando Clips con marcas T1</div>
+    <div class="mla-badge">
+      <div class="flag-circle">
+        <div class="flag-blue"></div>
+        <div class="flag-white"></div>
+        <div class="flag-blue"></div>
+      </div>
+      <div class="mla-label">MLA</div>
+    </div>
+  </div>
+
+  <div class="main">
+
+    <!-- COL 1 -->
+    <div class="col">
+      <div class="sect-label">El desafío: generar clips de calidad</div>
+      <div class="box">
+        <div style="font-size:8.5px;color:#666;margin-bottom:7px;">¿Cuánto le lleva a un seller generar un clip para su ítem hoy?</div>
+        <div class="time-row">
+          <div class="pill pill-yellow">5 min</div>
+          <div class="time-info">
+            <div class="time-method">IA mobile (ya disponible)</div>
+            <div class="time-note">Generación automática desde la ficha del ítem</div>
+          </div>
+          <div class="verdict v-yellow">⚠ Diálogos robóticos</div>
+        </div>
+        <div class="time-row">
+          <div class="pill pill-red">45 min</div>
+          <div class="time-info">
+            <div class="time-method">Grabación propia del seller</div>
+            <div class="time-note">Guión → grabación → edición → publicación</div>
+          </div>
+          <div class="verdict v-red">✗ Alta fricción</div>
+        </div>
+        <div class="time-row">
+          <div class="pill pill-green">1 min</div>
+          <div class="time-info">
+            <div class="time-method" style="color:#006600;">Clip validado por marca ✓</div>
+            <div class="time-note">Clip ya disponible, el seller solo lo sube</div>
+          </div>
+          <div class="verdict v-green">✓ Sin fricción</div>
+        </div>
+      </div>
+      <a class="video-btn" href="https://www.youtube.com/watch?v=JUg9pXnrrxU&t=62s" target="_blank">
+        <div class="play-circle"><div class="play-tri"></div></div>
+        <div>
+          <div class="video-title">¿Cómo publicar un Clip en MercadoLibre?</div>
+          <div class="video-sub">Mirá lo rápido que es subir un clip ya disponible →</div>
+        </div>
+      </a>
+    </div>
+
+    <div class="col-divider"></div>
+
+    <!-- COL 2 -->
+    <div class="col">
+      <div class="sect-label">La iniciativa: 2 tracks en simultáneo</div>
+      <div class="track-box track-ai">
+        <div class="track-header">
+          <div class="track-num">50</div>
+          <div class="track-sub">clips generados con IA</div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:16px;font-weight:900;color:#3333CC;">$1</div>
+            <div style="font-size:7.5px;color:#666;">por clip</div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag tag-ai">IA Generativa</span>
+          <span class="tag" style="background:#FFE0B2;color:#7A3800;">⚠ BETA</span>
+        </div>
+        <ul class="track-bullets">
+          <li>50 publicaciones de Helmets intervenidas</li>
+          <li>Generados desde la ficha del ítem</li>
+          <li>Disponibles para que el seller los suba en 1 clic</li>
+          <li style="color:#888;">Calidad en mejora continua (diálogos aún robóticos)</li>
+        </ul>
+      </div>
+      <div class="track-box track-agency" style="flex:1;">
+        <div style="background:#006600;color:#fff;font-size:8px;font-weight:800;padding:3px 8px;border-radius:3px 3px 0 0;margin:-9px -11px 6px -11px;letter-spacing:0.3px;">
+          🚀 DISTRIBUCIÓN INICIADA — 01 Jun 2026 · Cartera Asesorada
+        </div>
+        <div class="track-header">
+          <div class="track-num">+150</div>
+          <div class="track-sub">clips grabados con agencia</div>
+          <div style="margin-left:auto;text-align:right;">
+            <div style="font-size:16px;font-weight:900;color:#956F00;">$35</div>
+            <div style="font-size:7.5px;color:#666;">por clip</div>
+          </div>
+        </div>
+        <div class="tag-row">
+          <span class="tag tag-ml">Bonificados por ML</span>
+          <span class="tag tag-check">✓ Validados por marca</span>
+        </div>
+        <ul class="track-bullets">
+          <li>Grabados en instalaciones de cada marca</li>
+          <li>Guión específico por marca</li>
+          <li style="color:#006600;font-weight:700;">Clips compartidos con sellers de cartera asesorada desde 01/06</li>
+        </ul>
+        <div class="brands-title">15 Marcas T1 — activas ✓</div>
+        <div class="brands-grid">
+          <span class="brand-chip">LS2</span>
+          <span class="brand-chip">MAC</span>
+          <span class="brand-chip">Fox</span>
+          <span class="brand-chip">Airoh</span>
+          <span class="brand-chip">MT</span>
+          <span class="brand-chip">Axxis</span>
+          <span class="brand-chip">NZI</span>
+          <span class="brand-chip">Fibra</span>
+          <span class="brand-chip">Punto Extremo</span>
+          <span class="brand-chip">GP23</span>
+          <span class="brand-chip">HJC</span>
+          <span class="brand-chip">NOLAN</span>
+          <span class="brand-chip">SMK</span>
+          <span class="brand-chip">Peel</span>
+          <span class="brand-chip">Fly</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="col-divider"></div>
+
+    <!-- COL 3 -->
+    <div class="col">
+      <div class="sect-label">Impacto KPIs — <span style="color:#CC6600;">Motorcycle Helmets</span> · YTD May '26</div>
+      <div style="font-size:7.5px;color:#888;margin-top:-4px;margin-bottom:2px;">Fuente: Roadmap AGG2 = MOTORCYCLE HELMETS · MLA · 2026</div>
+      <div class="kpi-row">
+        <div class="kpi-card">
+          <div class="kpi-main">39,8%</div>
+          <div class="kpi-yoy">▲ +22,4 pp YoY</div>
+          <div class="kpi-label">% NMV con Clips</div>
+          <div class="kpi-period">Mayo 2026</div>
+        </div>
+        <div class="kpi-card">
+          <div class="kpi-main">3,2K</div>
+          <div class="kpi-yoy">▲ +150% YoY</div>
+          <div class="kpi-label"># Clips publicados</div>
+          <div class="kpi-period">YTD Mayo 2026</div>
+        </div>
+      </div>
+      <div class="box" style="padding:0;overflow:hidden;">
+        <table class="month-table">
+          <thead>
+            <tr><th colspan="7" style="background:#FFE600;color:#111;text-align:left;font-size:7.5px;padding:3px 5px;">🏍 Motorcycle Helmets · Demand &amp; Engagement</th></tr>
+            <tr><th>Mes</th><th>%NMV</th><th>pp</th><th>#Clips</th><th>YoY%</th><th>CVR</th><th>CVR pp</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>Ene '26</td><td>34,6%</td><td class="pos">+26,0</td><td>294</td><td class="pos">+210%</td><td>0,8%</td><td style="color:#C02000;font-weight:700;">-0,1</td></tr>
+            <tr><td>Feb '26</td><td>29,7%</td><td class="pos">+15,7</td><td>283</td><td class="pos">+11%</td><td>0,7%</td><td style="color:#C02000;font-weight:700;">-0,2</td></tr>
+            <tr><td>Mar '26</td><td>34,4%</td><td class="pos">+20,4</td><td>470</td><td class="pos">+42%</td><td>0,7%</td><td style="color:#C02000;font-weight:700;">-0,2</td></tr>
+            <tr><td>Abr '26</td><td>39,4%</td><td class="pos">+24,3</td><td>1.200</td><td class="pos">+465%</td><td>0,6%</td><td style="color:#C02000;font-weight:700;">-0,2</td></tr>
+            <tr><td>May '26</td><td>39,8%</td><td class="pos">+22,4</td><td>976</td><td class="pos">+148%</td><td>0,7%</td><td style="color:#C02000;font-weight:700;">-0,2</td></tr>
+            <tr class="ytd-row"><td>YTD</td><td>35,7%</td><td class="pos">+21,8</td><td>3.223</td><td class="pos">+150%</td><td>0,7%</td><td style="color:#C02000;font-weight:700;">-0,2</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <!-- CVR insight callout -->
+      <div style="background:#FFFBEA;border:1px solid #FFD700;border-radius:5px;padding:7px 10px;margin-top:0;">
+        <div style="font-size:8.5px;font-weight:800;color:#7A5000;margin-bottom:3px;text-transform:uppercase;letter-spacing:0.3px;">⚠ CVR: ¿los clips ayudan?</div>
+        <div style="font-size:8px;color:#444;line-height:1.4;">
+          Visitas Helmets crecen <strong>+58,2% YoY</strong> — mayor tráfico top-of-funnel naturalmente diluye CVR.
+          Pese a eso, CVR solo cede <strong style="color:#C02000;">-0,2 pp YoY</strong> (estable desde Ene).
+          <br><span style="color:#006600;font-weight:700;">Hipótesis:</span> los clips amortiguan la dilución — ítems con clip convierten mejor que sin clip en contexto de alto tráfico.
+        </div>
+      </div>
+      <div class="takeaway-box" style="margin-top:4px;">
+        <div class="takeaway-title">Takeaways &amp; Next Steps</div>
+        <div class="takeaway-item"><span class="arrow">✓</span><span><strong>Modelo validado:</strong> pico Abr +465% clips confirma que el track de agencia escala</span></div>
+        <div class="takeaway-item"><span class="arrow">→</span><span><strong>Medir impacto real:</strong> A/B ítems con vs sin clip para cuantificar delta CVR</span></div>
+        <div class="takeaway-item"><span class="arrow" style="color:#006600;">✓</span><span><strong style="color:#006600;">En curso desde 01/06:</strong> clips distribuidos a sellers de cartera asesorada — próximo paso: activar red off de las 15 marcas T1</span></div>
+        <div class="takeaway-item"><span class="arrow">→</span><span><strong>Escalar:</strong> si A/B confirma, avanzar en Indumentaria / Calzado (CVR bajo, alto tráfico)</span></div>
+      </div>
+    </div>
+
+  </div>
+  <div class="bottom-bar"></div>
+</div>
+
+<script>
+const dotsCol = document.getElementById('dots');
+for (let i = 0; i < 200; i++) {
+  const d = document.createElement('div');
+  d.className = 'dot';
+  dotsCol.appendChild(d);
+}
+</script>
+</body>
+</html>
