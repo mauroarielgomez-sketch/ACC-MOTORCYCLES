@@ -5,16 +5,40 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>ACC Motorcycles – Helmets Clips</title>
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 <style>
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
   background: #d4d4d4;
   display: flex;
-  justify-content: center;
-  align-items: flex-start;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
   padding: 30px;
   min-height: 100vh;
+  font-family: 'Roboto', Arial, sans-serif;
+}
+.export-bar {
+  width: 960px;
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+.btn-export {
+  background: #1a1a2e;
+  color: #FFE600;
+  border: 2px solid #FFE600;
+  border-radius: 8px;
+  padding: 8px 18px;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 6px;
   font-family: 'Roboto', Arial, sans-serif;
 }
 
@@ -185,7 +209,12 @@ body {
 </head>
 <body>
 
-<div class="slide">
+<div class="export-bar">
+  <button class="btn-export" id="btn-ppt" onclick="exportToPPTX()">📊 Exportar a PowerPoint (.pptx)</button>
+  <button class="btn-export" onclick="exportPNG()" style="background:#fff;color:#1a1a2e;">🖼️ Exportar imagen (PNG)</button>
+</div>
+
+<div class="slide" id="slide-content">
   <div class="top-bar"></div>
   <div class="dots-col" id="dots"></div>
 
@@ -397,6 +426,80 @@ for (let i = 0; i < 200; i++) {
   const d = document.createElement('div');
   d.className = 'dot';
   dotsCol.appendChild(d);
+}
+
+async function captureSlide() {
+  const slide = document.getElementById('slide-content');
+  // Hide video elements temporarily for clean capture
+  const videos = slide.querySelectorAll('video');
+  videos.forEach(v => v.style.visibility = 'hidden');
+  const canvas = await html2canvas(slide, {
+    scale: 2,
+    backgroundColor: '#ffffff',
+    useCORS: true,
+    logging: false
+  });
+  videos.forEach(v => v.style.visibility = 'visible');
+  return canvas;
+}
+
+async function exportToPPTX() {
+  const btn = document.getElementById('btn-ppt');
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+
+  try {
+    const canvas = await captureSlide();
+    const imgData = canvas.toDataURL('image/png');
+
+    const pptx = new PptxGenJS();
+    pptx.layout = 'LAYOUT_WIDE'; // 33.87 x 19.05 cm
+    const slide = pptx.addSlide();
+
+    // Background: full-slide screenshot
+    slide.addImage({ data: imgData, x: 0, y: 0, w: '100%', h: '100%' });
+
+    // Embed videos with placeholders (positioned approximately)
+    // Track A video (AI clip) — approx position Col 2, upper half
+    slide.addMedia({
+      type: 'video',
+      path: 'https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/clip_ia_helmets.mp4',
+      x: 4.55, y: 2.65, w: 4.15, h: 1.35,
+      cover: imgData
+    });
+
+    // Track B video (Agency Nolan) — approx position Col 2, lower half
+    slide.addMedia({
+      type: 'video',
+      path: 'https://mauroarielgomez-sketch.github.io/ACC-MOTORCYCLES/clip_agencia_nolan.mp4',
+      x: 4.55, y: 4.80, w: 4.15, h: 1.35,
+      cover: imgData
+    });
+
+    // Notes
+    slide.addNotesSlideTxt('Slide generada automáticamente. Videos: Track A = clip IA | Track B = clip Agencia Nolan.');
+
+    await pptx.writeFile({ fileName: 'Helmets_Clips_ACC_Motorcycles.pptx' });
+    btn.textContent = '✅ Descargado!';
+    btn.style.background = '#006600';
+    setTimeout(() => {
+      btn.innerHTML = '📊 Exportar a PowerPoint (.pptx)';
+      btn.style.background = '#1a1a2e';
+      btn.disabled = false;
+    }, 3000);
+  } catch(e) {
+    console.error(e);
+    btn.textContent = '❌ Error — ver consola';
+    btn.disabled = false;
+  }
+}
+
+async function exportPNG() {
+  const canvas = await captureSlide();
+  const link = document.createElement('a');
+  link.download = 'Helmets_Clips_ACC_Motorcycles.png';
+  link.href = canvas.toDataURL('image/png');
+  link.click();
 }
 </script>
 </body>
