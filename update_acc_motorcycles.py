@@ -49,6 +49,34 @@ MONTH_ABBR = {
     '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
 }
 
+# VC / DC / BM (%TGMV) — ACC Motorcycles, from BACK Monthly tab.
+# Keys = English month names. Update each month as actuals close.
+VC_TGMV_FY26 = {
+    'actual': {'Mar 26': '9.5 %',  'Apr 26': '10.1 %', 'May 26': '11.7 %'},
+    'yoy':    {'Jan 26': '-0.90 pp','Feb 26': '-3.20 pp','Mar 26': '-0.76 pp',
+               'Apr 26': '-0.84 pp','May 26': '+2.00 pp'},
+}
+DC_TGMV_FY26 = {
+    'actual': {'Mar 26': '7.3 %',  'Apr 26': '7.4 %',  'May 26': '9.8 %'},
+    'yoy':    {'Jan 26': '-1.63 pp','Feb 26': '-4.12 pp','Mar 26': '-1.90 pp',
+               'Apr 26': '-1.88 pp','May 26': '+1.31 pp'},
+}
+BM_TGMV_FY26 = {
+    'actual': {'Mar 26': '3.6 %',  'Apr 26': '3.6 %',  'May 26': '6.9 %'},
+    'yoy':    {'Apr 26': '-1.97 pp','May 26': '+1.63 pp'},
+}
+
+# NMV vs Plan (ARS) — ACC Motorcycles official plan, from planning sheet.
+# Update each month as new actuals close.
+NMV_VSPLAN_FY26 = {
+    'Ene': '-7%',
+    'Feb': '-10%',
+    'Mar': '-4%',
+    'Abr': '-9%',
+    'May': '-11.3%',
+    'Jun': '-5.8%',
+}
+
 # KPIs to fetch for each sub-segment (names match DM_VPA_ROADMAP_FINAL KPI column)
 MAIN_KPIS = [
     "NMV", "NSI", "NASP", "DC%", "VC%", "BM",
@@ -80,21 +108,30 @@ def build_kpis_sql(kpis):
 
 
 def query_roadmap(client, agp2, kpis, since=SINCE_FY26):
+    # Include 'ALL' and '3P' — some KPIs (e.g. # Clips) only exist with INICIATIVA='3P'
     sql = f"""
     SELECT
-        FECHA_STRING, FECHA, KPI, SECTION, VARIATION,
+        FECHA_STRING, FECHA, TRIM(KPI) AS KPI, SECTION, VARIATION, INICIATIVA,
         VALUE, VALUE_STRING, COLOR_CODING, ORDEN
     FROM {ROADMAP_TABLE}
     WHERE AGG1       = '{AGG1}'
       AND AGG2       = '{agp2}'
       AND PERIOD     = 'MONTH'
       AND SITE       = '{SITE}'
-      AND INICIATIVA = '{INICIATIVA}'
+      AND INICIATIVA IN ('ALL', '3P')
       AND FECHA      >= '{since}'
-      AND KPI IN ({build_kpis_sql(kpis)})
-    ORDER BY ORDEN, KPI, FECHA, VARIATION
+      AND TRIM(KPI) IN ({build_kpis_sql(kpis)})
+    ORDER BY ORDEN, TRIM(KPI), FECHA, VARIATION, INICIATIVA
     """
-    return client.query(sql).to_dataframe()
+    df = client.query(sql).to_dataframe()
+    # Prefer INICIATIVA='ALL' over '3P' when both exist for same KPI/FECHA/VARIATION
+    if not df.empty and 'INICIATIVA' in df.columns:
+        df['_rank'] = df['INICIATIVA'].map({'ALL': 0, '3P': 1}).fillna(2)
+        df = (df.sort_values('_rank')
+                .drop_duplicates(subset=['KPI', 'FECHA', 'VARIATION'], keep='first')
+                .drop(columns='_rank')
+                .reset_index(drop=True))
+    return df
 
 
 def pivot_kpi(df, kpi, variation="Actual"):
@@ -335,11 +372,28 @@ def main():
         except Exception as e:
             print(f"  ⚠  Error en NMV ARS para {seg}: {e}")
 
-    # 3. Load existing HTML
+    # 3. Inject VC/DC/BM (%TGMV) static data BEFORE building BQ_DATA block
+    def _make_tgmv_entry(src):
+        act = src.get('actual', {})
+        yoy = src.get('yoy',    {})
+        latest_a = list(act.values())[-1] if act else '—'
+        latest_y = list(yoy.values())[-1] if yoy else '—'
+        return {"actual": act, "yoy": yoy, "plan": {}, "vsp": {},
+                "latest_actual": latest_a, "latest_yoy": latest_y,
+                "latest_plan": "—", "latest_vsp": "—",
+                "latest_actual_n": None, "latest_yoy_n": None,
+                "latest_vsp_n": None, "color_coding": None, "status": None,
+                "yoy_direction": "neu", "trend": ""}
+    for seg_key in all_data:
+        all_data[seg_key]['vc_pct_tgmv'] = _make_tgmv_entry(VC_TGMV_FY26)
+        all_data[seg_key]['dc_pct_tgmv'] = _make_tgmv_entry(DC_TGMV_FY26)
+        all_data[seg_key]['bm_pct_tgmv'] = _make_tgmv_entry(BM_TGMV_FY26)
+
+    # 4. Load existing HTML
     print(f"  → Leyendo {HTML_PATH} ...")
     html = HTML_PATH.read_text(encoding="utf-8")
 
-    # 4. Inject JS data block (for debugging + future JS-driven rendering)
+    # 5. Inject JS data block (for debugging + future JS-driven rendering)
     block = build_data_block(all_data, ts)
     html = inject_data_block(html, block)
 
@@ -362,7 +416,7 @@ def main():
     print(f"  ✅ HTML actualizado exitosamente → {HTML_PATH}")
     print(f"  📅 Timestamp: {ts}")
 
-    # 10. Push to GitHub automatically
+    # 11. Push to GitHub automatically
     _push_to_github(ts)
 
 
@@ -392,7 +446,9 @@ def query_nmv_ars(client, agg2_filter=None):
                 AND orders.ORD_GMV_FLG
                 AND (NOT COALESCE(orders.ORD_ORDER_PROXIMITY_FLG, FALSE))
             THEN CASE
-                WHEN orders.ORD_CLOSED_DT >= CURRENT_DATE - 45 THEN transactional_forecast.F_TGMVELC
+                WHEN orders.ORD_CLOSED_DT >= CURRENT_DATE - 45 THEN
+                    COALESCE(transactional_forecast.F_TGMVELC,
+                             CASE WHEN orders.ORD_TGMV_FLG = true THEN orders.ORD_ITEM.QTY * orders.ORD_ITEM.UNIT_PRICE END)
                 WHEN orders.ORD_TGMV_FLG = true THEN orders.ORD_ITEM.QTY * orders.ORD_ITEM.UNIT_PRICE
             END
             ELSE NULL
@@ -463,15 +519,17 @@ def build_nmv_ars_summary(df_nmv):
         v25 = act25.get(m)
         yoy_nums[m] = ((v26 / v25 - 1) * 100) if (v25 and v25 != 0) else None
 
+    latest_vsp_str = NMV_VSPLAN_FY26.get(list(act26.keys())[-1] if act26 else '', '—')
+
     return {
         "actual":          actual_str,
         "yoy":             yoy_str,
         "plan":            {},
-        "vsp":             {},
+        "vsp":             NMV_VSPLAN_FY26,
         "latest_actual":   l_act_str,
         "latest_yoy":      l_yoy_str,
         "latest_plan":     "—",
-        "latest_vsp":      "—",
+        "latest_vsp":      latest_vsp_str,
         "latest_actual_n": l_act,
         "latest_yoy_n":    l_yoy_n,
         "latest_vsp_n":    None,
@@ -518,26 +576,37 @@ def update_nmv_cells_in_html(html, all_data):
                 return "—", "neu"
             return f"{'+' if y >= 0 else ''}{y:.0f}%", ("pos" if y >= 0 else "neg")
 
+        def fmt_vsp(vsp_str):
+            if not vsp_str or vsp_str == '—':
+                return '&mdash;', 'td-vsp td-empty'
+            cls = 'td-vsp td-below' if '▼' in vsp_str or '-' in vsp_str else 'td-vsp td-above'
+            return vsp_str, cls
+
+        vsp_dict = nmv.get('vsp', {})
         ytd = sum(v for v in actual_nums.values() if v)
+        # YTD vs Plan: average of available months
+        vsp_vals = [v for m, v in vsp_dict.items() if m in months and v != '—']
+        ytd_vsp, ytd_vsp_cls = fmt_vsp(vsp_vals[-1] if vsp_vals else '—')
         cells = (
             f'<td class="td-val-ytd">{fmt_b(ytd)}</td>'
             f'<td class="td-yoy-neu td-val-ytd">&mdash;</td>'
-            f'<td class="td-vsp td-empty td-val-ytd">&mdash;</td>\n      '
+            f'<td class="{ytd_vsp_cls} td-val-ytd">{ytd_vsp}</td>\n      '
         )
         for i, m in enumerate(months):
             v   = actual_nums.get(m, 0)
             yoy, d = fmt_yoy(yoy_nums.get(m))
+            vsp_str, vsp_cls = fmt_vsp(vsp_dict.get(m, '—'))
             if i < len(months) - 1:
                 cells += (
                     f'<td class="td-val">{fmt_b(v)}</td>'
                     f'<td class="td-yoy td-yoy-{d}">{yoy}</td>'
-                    f'<td class="td-vsp td-empty">&mdash;</td>\n      '
+                    f'<td class="{vsp_cls}">{vsp_str}</td>\n      '
                 )
             else:
                 cells += (
                     f'<td class="td-val-mtd">{fmt_b(v)}</td>'
                     f'<td class="td-yoy-{d} td-val-mtd">{yoy}</td>'
-                    f'<td class="td-vsp td-empty">&mdash;</td>'
+                    f'<td class="{vsp_cls}">{vsp_str}</td>'
                 )
 
         new_row = (
