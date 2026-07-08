@@ -49,32 +49,70 @@ MONTH_ABBR = {
     '09': 'Sep', '10': 'Oct', '11': 'Nov', '12': 'Dic',
 }
 
-# VC / DC / BM (%TGMV) — ACC Motorcycles, from BACK Monthly tab.
-# Keys = English month names. Update each month as actuals close.
-VC_TGMV_FY26 = {
-    'actual': {'Mar 26': '9.5 %',  'Apr 26': '10.1 %', 'May 26': '11.7 %'},
-    'yoy':    {'Jan 26': '-0.90 pp','Feb 26': '-3.20 pp','Mar 26': '-0.76 pp',
-               'Apr 26': '-0.84 pp','May 26': '+2.00 pp'},
+# VC / DC / BM — YoY (pp vs same month FY25), from BACK Monthly tab.
+# Actuals are now auto-queried from DM_UE_ESTABILIZADA_PROFITABILITY each run.
+VC_YOY_FY26 = {
+    'Jan 26': '-0.90 pp', 'Feb 26': '-3.20 pp', 'Mar 26': '-0.76 pp',
+    'Apr 26': '-0.84 pp', 'May 26': '+2.00 pp',
 }
-DC_TGMV_FY26 = {
-    'actual': {'Mar 26': '7.3 %',  'Apr 26': '7.4 %',  'May 26': '9.8 %'},
-    'yoy':    {'Jan 26': '-1.63 pp','Feb 26': '-4.12 pp','Mar 26': '-1.90 pp',
-               'Apr 26': '-1.88 pp','May 26': '+1.31 pp'},
+DC_YOY_FY26 = {
+    'Jan 26': '-1.63 pp', 'Feb 26': '-4.12 pp', 'Mar 26': '-1.90 pp',
+    'Apr 26': '-1.88 pp', 'May 26': '+1.31 pp',
 }
-BM_TGMV_FY26 = {
-    'actual': {'Mar 26': '3.6 %',  'Apr 26': '3.6 %',  'May 26': '6.9 %'},
-    'yoy':    {'Apr 26': '-1.97 pp','May 26': '+1.63 pp'},
+BM_YOY_FY26 = {
+    'Apr 26': '-1.97 pp', 'May 26': '+1.63 pp',
 }
 
-# NMV vs Plan (ARS) — ACC Motorcycles official plan, from planning sheet.
-# Update each month as new actuals close.
+UE_TABLE = '`meli-bi-data.WHOWNER.DM_UE_ESTABILIZADA_PROFITABILITY`'
+# Map YYYY-MM → 'Mmm 26' key used in BQ_DATA / JS
+_MONTH_TO_KEY = {
+    '01': 'Jan 26', '02': 'Feb 26', '03': 'Mar 26', '04': 'Apr 26',
+    '05': 'May 26', '06': 'Jun 26', '07': 'Jul 26', '08': 'Aug 26',
+    '09': 'Sep 26', '10': 'Oct 26', '11': 'Nov 26', '12': 'Dec 26',
+}
+
+# NMV vs Plan (ARS) — from planning sheet (BACK Monthly tab, row "vs Plan %").
+# Keys = Spanish month abbrev. Update each month as actuals close.
+
+# Total ACC Motorcycles (row 144)
 NMV_VSPLAN_FY26 = {
     'Ene': '-7%',
     'Feb': '-10%',
     'Mar': '-4%',
     'Abr': '-9%',
-    'May': '-11.3%',
-    'Jun': '-5.8%',
+    'May': '-12%',
+    'Jun': '-17.2%',
+}
+
+# Per sub-segment (rows 155, 157, 158). Ene/Feb TBD — add when available.
+NMV_VSPLAN_PARTS_FY26 = {
+    'Mar': '-5%',
+    'Abr': '-12%',
+    'May': '-14%',
+    'Jun': '-13%',
+}
+
+NMV_VSPLAN_ACCESSORIES_FY26 = {
+    'Mar': '-2%',
+    'Abr': '-2%',
+    'May': '-7%',
+    'Jun': '-23%',
+}
+
+NMV_VSPLAN_HELMETS_FY26 = {
+    'Mar': '-6%',
+    'Abr': '-12%',
+    'May': '-13%',
+    'Jun': '-14%',
+}
+
+# Mapping seg_key → vs Plan dict
+SEG_VSPLAN = {
+    'all':                            NMV_VSPLAN_FY26,
+    'motorcycle_helmets':             NMV_VSPLAN_HELMETS_FY26,
+    'motorcycle_accessories':         NMV_VSPLAN_ACCESSORIES_FY26,
+    'motorcycle_replacement_parts':   NMV_VSPLAN_PARTS_FY26,
+    'transactional_motorcycles':      {},
 }
 
 # KPIs to fetch for each sub-segment (names match DM_VPA_ROADMAP_FINAL KPI column)
@@ -321,6 +359,41 @@ def inject_data_block(html, block_content):
 
 # ─── MAIN ────────────────────────────────────────────────────────────────────
 
+def query_vc_dc_bm_ue(client):
+    """
+    Query VC%, DC%, BM% actuals from DM_UE_ESTABILIZADA_PROFITABILITY.
+    Returns three dicts {month_key: 'X.X %'} for VC, DC, BM.
+    Only FY26 data is available in this table (from May 2026 onwards).
+    """
+    sql = f"""
+    SELECT
+      MONTH_FINAL,
+      ROUND(SAFE_DIVIDE(SUM(VARIABLE_CONTRIBUTION_TOTAL), SUM(NMV))*100, 1) AS VC_PCT,
+      ROUND(SAFE_DIVIDE(SUM(DIRECT_CONTRIBUTION_TOTAL),   SUM(NMV))*100, 1) AS DC_PCT,
+      ROUND(SAFE_DIVIDE(SUM(BUSINESS_MARGIN_TOTAL),       SUM(NMV))*100, 1) AS BM_PCT
+    FROM {UE_TABLE}
+    WHERE SIT_SITE_ID = 'MLA'
+      AND DOM_DOMAIN_AGG1 = 'ACC MOTORCYCLES'
+      AND MONTH_FINAL >= '{SINCE_FY26[:7]}'
+    GROUP BY 1
+    ORDER BY 1
+    """
+    df = client.query(sql).to_dataframe()
+    vc, dc, bm = {}, {}, {}
+    for _, row in df.iterrows():
+        month_num = str(row['MONTH_FINAL']).split('-')[1]
+        key = _MONTH_TO_KEY.get(month_num)
+        if not key:
+            continue
+        if row['VC_PCT'] is not None:
+            vc[key] = f"{float(row['VC_PCT']):.1f} %"
+        if row['DC_PCT'] is not None:
+            dc[key] = f"{float(row['DC_PCT']):.1f} %"
+        if row['BM_PCT'] is not None:
+            bm[key] = f"{float(row['BM_PCT']):.1f} %"
+    return vc, dc, bm
+
+
 def main():
     ts = datetime.datetime.now().strftime("%d/%m/%Y %H:%M")
     print(f"[{ts}] Iniciando actualización de {HTML_PATH.name} ...")
@@ -367,15 +440,23 @@ def main():
         try:
             agg2_filter = None if seg == "ALL" else seg
             df_nmv = query_nmv_ars(client, agg2_filter)
-            all_data[seg_key]["nmv"] = build_nmv_ars_summary(df_nmv)
+            vsp = SEG_VSPLAN.get(seg_key, {})
+            all_data[seg_key]["nmv"] = build_nmv_ars_summary(df_nmv, vsp_dict=vsp)
             print(f"    ✓ NMV ARS actualizado para {seg}")
         except Exception as e:
             print(f"  ⚠  Error en NMV ARS para {seg}: {e}")
 
     # 3. Inject VC/DC/BM (%TGMV) static data BEFORE building BQ_DATA block
-    def _make_tgmv_entry(src):
-        act = src.get('actual', {})
-        yoy = src.get('yoy',    {})
+    # 3b. Query VC/DC/BM actuals from DM_UE_ESTABILIZADA_PROFITABILITY
+    print("  → Consultando VC/DC/BM desde DM_UE_ESTABILIZADA_PROFITABILITY ...")
+    try:
+        vc_act, dc_act, bm_act = query_vc_dc_bm_ue(client)
+        print(f"    ✓ Meses disponibles: {list(vc_act.keys())}")
+    except Exception as e:
+        print(f"  ⚠  Error en VC/DC/BM UE: {e}. Usando dicts vacíos.")
+        vc_act, dc_act, bm_act = {}, {}, {}
+
+    def _make_tgmv_entry(act, yoy):
         latest_a = list(act.values())[-1] if act else '—'
         latest_y = list(yoy.values())[-1] if yoy else '—'
         return {"actual": act, "yoy": yoy, "plan": {}, "vsp": {},
@@ -385,9 +466,9 @@ def main():
                 "latest_vsp_n": None, "color_coding": None, "status": None,
                 "yoy_direction": "neu", "trend": ""}
     for seg_key in all_data:
-        all_data[seg_key]['vc_pct_tgmv'] = _make_tgmv_entry(VC_TGMV_FY26)
-        all_data[seg_key]['dc_pct_tgmv'] = _make_tgmv_entry(DC_TGMV_FY26)
-        all_data[seg_key]['bm_pct_tgmv'] = _make_tgmv_entry(BM_TGMV_FY26)
+        all_data[seg_key]['vc_pct_tgmv'] = _make_tgmv_entry(vc_act, VC_YOY_FY26)
+        all_data[seg_key]['dc_pct_tgmv'] = _make_tgmv_entry(dc_act, DC_YOY_FY26)
+        all_data[seg_key]['bm_pct_tgmv'] = _make_tgmv_entry(bm_act, BM_YOY_FY26)
 
     # 4. Load existing HTML
     print(f"  → Leyendo {HTML_PATH} ...")
@@ -473,7 +554,9 @@ def query_nmv_ars(client, agg2_filter=None):
     return client.query(sql).to_dataframe()
 
 
-def build_nmv_ars_summary(df_nmv):
+def build_nmv_ars_summary(df_nmv, vsp_dict=None):
+    if vsp_dict is None:
+        vsp_dict = NMV_VSPLAN_FY26
     """Build NMV summary dict from BT_ORD_ORDERS data in billions of ARS."""
     df26 = df_nmv[df_nmv['year'] == 2026].copy()
     df25 = df_nmv[df_nmv['year'] == 2025].copy()
@@ -519,13 +602,13 @@ def build_nmv_ars_summary(df_nmv):
         v25 = act25.get(m)
         yoy_nums[m] = ((v26 / v25 - 1) * 100) if (v25 and v25 != 0) else None
 
-    latest_vsp_str = NMV_VSPLAN_FY26.get(list(act26.keys())[-1] if act26 else '', '—')
+    latest_vsp_str = vsp_dict.get(list(act26.keys())[-1] if act26 else '', '—')
 
     return {
         "actual":          actual_str,
         "yoy":             yoy_str,
         "plan":            {},
-        "vsp":             NMV_VSPLAN_FY26,
+        "vsp":             vsp_dict,
         "latest_actual":   l_act_str,
         "latest_yoy":      l_yoy_str,
         "latest_plan":     "—",
