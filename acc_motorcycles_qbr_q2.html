@@ -226,6 +226,13 @@
     </div>
   </div>
 
+  <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;">
+    <button id="btn-export-qbr" onclick="exportQBRTable()" style="background:#a855f7;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
+      <span>📷</span> Exportar como imagen
+    </button>
+  </div>
+
+  <div id="qbr-capture-area">
   <div class="mvr-wrap">
     <table class="mvr-table">
       <thead>
@@ -350,6 +357,7 @@
       </tbody>
     </table>
   </div>
+  </div><!-- /qbr-capture-area -->
 
   <div class="qbr-footer">
     <p>Fuentes: DM_VPA_ROADMAP_FINAL (PERIOD=QUARTER, FECHA_STRING=&#39;Q2 26&#39;) &middot;
@@ -481,10 +489,58 @@ window.QBR_TS   = "05/08/2026 14:00";
 // Ensure timestamp is shown; values are already baked into HTML
 document.addEventListener('DOMContentLoaded', function() {
   var tsEl = document.getElementById('qbr-ts');
-  if (tsEl && window.QBR_TS) {
-    tsEl.textContent = window.QBR_TS;
-  }
+  if (tsEl && window.QBR_TS) tsEl.textContent = window.QBR_TS;
 });
+
+function exportQBRTable() {
+  var btn = document.getElementById('btn-export-qbr');
+  var target = document.querySelector('#qbr-capture-area .mvr-table');
+  if (!target) return;
+  btn.textContent = '⏳ Generando...';
+  btn.disabled = true;
+  if (typeof html2canvas === 'undefined') {
+    var s = document.createElement('script');
+    s.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+    s.onload = function() { _doExportQBR(target, btn); };
+    document.head.appendChild(s);
+  } else {
+    _doExportQBR(target, btn);
+  }
+}
+
+function _doExportQBR(target, btn) {
+  html2canvas(target, { scale: 2, backgroundColor: '#0f172a', useCORS: true, logging: false })
+    .then(function(canvas) {
+      var filename = 'QBR_Q2_ACC_Motorcycles_' + (new Date().toISOString().slice(0,10)) + '.png';
+      canvas.toBlob(function(blob) {
+        var tryClipboard = false;
+        try {
+          if (navigator.clipboard && window.ClipboardItem) {
+            navigator.clipboard.write([new ClipboardItem({'image/png': blob})]).then(function() {
+              btn.textContent = '✅ Copiada al portapapeles';
+              btn.style.background = '#22c55e';
+            }).catch(function() { _downloadQBR(canvas, filename, btn); });
+            tryClipboard = true;
+          }
+        } catch(e) {}
+        if (!tryClipboard) _downloadQBR(canvas, filename, btn);
+        setTimeout(function() {
+          btn.innerHTML = '<span>📷</span> Exportar como imagen';
+          btn.style.background = '#a855f7';
+          btn.disabled = false;
+        }, 3000);
+      });
+    });
+}
+
+function _downloadQBR(canvas, filename, btn) {
+  var link = document.createElement('a');
+  link.download = filename;
+  link.href = canvas.toDataURL('image/png');
+  link.click();
+  btn.textContent = '✅ Imagen descargada';
+  btn.style.background = '#22c55e';
+}
 </script>
 
 </body>
