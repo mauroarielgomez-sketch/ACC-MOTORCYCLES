@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC Motorcycles &middot; QBR Q2 FY&#39;26 &middot; MLA</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:      #111318;
+    --bg2:     #1a1d24;
+    --bg3:     #22262f;
+    --border:  #2e3240;
+    --text:    #e8eaf0;
+    --muted:   #7b8099;
+    --yellow:  #FFE600;
+    --green:   #22c55e;
+    --red:     #ef4444;
+    --amber:   #f59e0b;
+    --card-bg: #1e2130;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    font-size: 13px;
+    min-height: 100vh;
+    padding-bottom: 48px;
+  }
+
+  /* ── HEADER ── */
+  .qbr-header {
+    background: linear-gradient(135deg, #0d0f14 0%, #1a1d24 100%);
+    border-bottom: 2px solid var(--yellow);
+    padding: 16px 32px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .qbr-header-left { display: flex; align-items: center; gap: 16px; }
+  .qbr-badge {
+    background: var(--yellow);
+    color: #111;
+    font-weight: 800;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    letter-spacing: 0.5px;
+    white-space: nowrap;
+  }
+  .qbr-title {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--text);
+    letter-spacing: -0.3px;
+  }
+  .qbr-title span { color: var(--yellow); }
+  .qbr-sub {
+    font-size: 11px;
+    color: var(--muted);
+    margin-top: 3px;
+  }
+  .qbr-ts-chip {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    color: var(--muted);
+    white-space: nowrap;
+  }
+  .qbr-ts-chip strong { color: var(--text); font-weight: 600; }
+
+  /* ── MAIN ── */
+  .qbr-main {
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0;
+  }
+
+  /* ── MVR TABLE ── */
+  .mvr-wrap {
+    overflow-x: auto;
+    width: 100%;
+  }
+  .mvr-table {
+    border-collapse: collapse;
+    font-size: 11px;
+    width: 100%;
+    min-width: 800px;
+    max-width: 980px;
+    table-layout: fixed;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 4px 24px rgba(0,0,0,.35);
+    overflow: hidden;
+  }
+  .mvr-table thead tr:first-child th {
+    background: #1a1a2e;
+    color: #fff;
+    padding: 8px 10px;
+    font-weight: 700;
+    font-size: 13px;
+    text-align: left;
+  }
+  .mvr-table thead tr:first-child th.mvr-ph {
+    background: #FFE600;
+    color: #111;
+    text-align: center;
+    font-size: 13px;
+  }
+  .mvr-table thead tr:last-child th {
+    background: #FFE600;
+    color: #111;
+    font-weight: 700;
+    font-size: 10px;
+    text-align: right;
+    padding: 5px 10px;
+  }
+  .mvr-sec {
+    background: #404040;
+    color: #fff;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    text-align: center;
+    vertical-align: middle;
+    padding: 4px;
+    border-bottom: 1px solid rgba(255,255,255,.08);
+    width: 80px;
+  }
+  .mvr-kpi {
+    color: #1a1a1a;
+    font-size: 11px;
+    text-align: left;
+    padding: 5px 10px;
+    border-bottom: 1px solid #f0f2f5;
+    width: 210px;
+  }
+  .mvr-val, .mvr-eoy {
+    color: #333;
+    text-align: right;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f2f5;
+    width: 134px;
+  }
+  .mvr-yoy, .mvr-vsp {
+    text-align: right;
+    padding: 5px 10px;
+    font-weight: 600;
+    border-bottom: 1px solid #f0f2f5;
+    width: 134px;
+    color: #bbb;
+  }
+  .mvr-yoy.pos, .mvr-vsp.pos { color: #1b8a3f; }
+  .mvr-yoy.neg, .mvr-vsp.neg { color: #c0392b; }
+  .mvr-tbd { color: #f59e0b !important; font-style: italic; }
+
+  /* ── LEGEND BAR ── */
+  .qbr-legend {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+    margin-bottom: 14px;
+    font-size: 10px;
+    color: var(--muted);
+    flex-wrap: wrap;
+  }
+  .qbr-legend-item { display: flex; align-items: center; gap: 5px; }
+  .qbr-dot {
+    width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0;
+  }
+  .qbr-dot.green { background: #1b8a3f; }
+  .qbr-dot.red   { background: #c0392b; }
+  .qbr-dot.amber { background: #f59e0b; }
+  .qbr-dot.gray  { background: #bbb; }
+
+  /* ── FOOTER ── */
+  .qbr-footer {
+    margin-top: 20px;
+    font-size: 10px;
+    color: var(--muted);
+    line-height: 1.7;
+  }
+  .qbr-footer a { color: var(--muted); text-decoration: none; }
+
+  /* ── PRINT ── */
+  @media print {
+    body { background: #fff; color: #000; }
+    .qbr-header { background: #fff; border-bottom: 2px solid #FFE600; }
+    .qbr-main { padding: 16px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="qbr-header">
+  <div class="qbr-header-left">
+    <div>
+      <div style="display:flex;align-items:center;gap:10px;">
+        <span class="qbr-badge">QBR</span>
+        <div class="qbr-title">MLA &middot; ACC Motorcycles &middot; <span>QBR Q2 FY&#39;26</span></div>
+      </div>
+      <div class="qbr-sub">Q2 FY&#39;26 (Abr &middot; May &middot; Jun) &mdash; Actual / YoY / vs Plan</div>
+    </div>
+  </div>
+  <div class="qbr-ts-chip">
+    Datos al <strong id="qbr-ts">05/08/2026 14:00</strong>
+  </div>
+</div>
+
+<div class="qbr-main">
+
+  <div class="qbr-legend">
+    <div class="qbr-legend-item"><div class="qbr-dot green"></div> Positivo</div>
+    <div class="qbr-legend-item"><div class="qbr-dot red"></div> Negativo</div>
+    <div class="qbr-legend-item"><div class="qbr-dot amber"></div> TBD / sin datos</div>
+    <div class="qbr-legend-item"><div class="qbr-dot gray"></div> Sin variaci&oacute;n / N/A</div>
+    <div class="qbr-legend-item" style="margin-left:12px;color:#aaa;">
+      * Stockouts: rojo = sube (negativo), verde = baja (positivo)
+    </div>
+  </div>
+
+  <div class="mvr-wrap">
+    <table class="mvr-table">
+      <thead>
+        <tr>
+          <th rowspan="2" style="width:80px;">Secci&oacute;n</th>
+          <th rowspan="2" style="width:210px;">KPI</th>
+          <th class="mvr-ph" colspan="3">Q2 FY&#39;26</th>
+          <th class="mvr-ph" style="width:100px;text-align:center;">EOY</th>
+        </tr>
+        <tr>
+          <th style="width:110px;text-align:right;">Actual</th>
+          <th style="width:110px;text-align:right;">YoY</th>
+          <th style="width:110px;text-align:right;">vs Plan</th>
+          <th style="width:100px;text-align:right;">Target FY&#39;26</th>
+        </tr>
+      </thead>
+      <tbody>
+  <tr>
+    <td class="mvr-sec" rowspan="6">Overall Performance</td>
+    <td class="mvr-kpi">NMV (B ARS)</td>
+    <td class="mvr-val">60.1B</td><td class="mvr-yoy pos">+30%</td><td class="mvr-vsp neg">-19%</td><td class="mvr-eoy">~235B</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NSI (K unidades)</td>
+    <td class="mvr-val">1.1 M</td><td class="mvr-yoy pos">10.9 %</td><td class="mvr-vsp neg">-11.4 %</td><td class="mvr-eoy">4.7M</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NASP (ARS)</td>
+    <td class="mvr-val">53.2 K</td><td class="mvr-yoy neg">-12.1 %</td><td class="mvr-vsp neg">-8.5 %</td><td class="mvr-eoy">47.6K</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">VC %</td>
+    <td class="mvr-val">9.7 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">DC %</td>
+    <td class="mvr-val">6.9 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">BM</td>
+    <td class="mvr-val">4.0 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="8">Demand &amp; Engagement</td>
+    <td class="mvr-kpi">Visitas</td>
+    <td class="mvr-val">73.6 M</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">CVR (Orders/Visits)</td>
+    <td class="mvr-val">1.4 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Frequency</td>
+    <td class="mvr-val">1.47</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">1.3</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi"># Clips</td>
+    <td class="mvr-val">34.3 K</td><td class="mvr-yoy pos">164.2 %</td><td class="mvr-vsp">—</td><td class="mvr-eoy">~64K</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Share de Clips (%LL con Clips)</td>
+    <td class="mvr-val mvr-tbd">TBD</td><td class="mvr-yoy mvr-tbd">TBD</td><td class="mvr-vsp mvr-tbd">TBD</td><td class="mvr-eoy mvr-tbd">TBD</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% NMV con Clips</td>
+    <td class="mvr-val">25.7 %</td><td class="mvr-yoy pos">14.8 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">19.8%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi"># Afiliados</td>
+    <td class="mvr-val">3.1 K</td><td class="mvr-yoy pos">11696.2 %</td><td class="mvr-vsp">—</td><td class="mvr-eoy">~43K</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% NMV Affiliates</td>
+    <td class="mvr-val">0.7 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">3%</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="1">Selection Mgmt</td>
+    <td class="mvr-kpi">% NMV Buy Box</td>
+    <td class="mvr-val">12.1 %</td><td class="mvr-yoy pos">5.3 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">9.5%</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="2">Commercial Excellence</td>
+    <td class="mvr-kpi">CBT Penetration (%NMV)</td>
+    <td class="mvr-val">2.3 %</td><td class="mvr-yoy pos">2.3 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">2.0%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">NMV 1P</td>
+    <td class="mvr-val mvr-tbd">TBD</td><td class="mvr-yoy mvr-tbd">TBD</td><td class="mvr-vsp mvr-tbd">TBD</td><td class="mvr-eoy mvr-tbd">TBD</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="2">Price Competitiveness</td>
+    <td class="mvr-kpi">% BPC KMI</td>
+    <td class="mvr-val">92.2 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">KMI Scrapping Coverage (%Visits)</td>
+    <td class="mvr-val">93.2 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="3">Shipping &amp; Availability Mgmt</td>
+    <td class="mvr-kpi">% NSI FBM</td>
+    <td class="mvr-val">20.2 %</td><td class="mvr-yoy pos">5.9 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">13.2%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">Stockouts (As % of FBM GMV)</td>
+    <td class="mvr-val">21.2 %</td><td class="mvr-yoy pos">-5.2 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">37.9%</td>
+  </tr>
+  <tr>
+    <td class="mvr-kpi">% Promesas en VIP &le;2D</td>
+    <td class="mvr-val">38.2 %</td><td class="mvr-yoy pos">4.2 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">34.5%</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="1">Benefits &amp; Discounts</td>
+    <td class="mvr-kpi">Benefits Meli Investment %</td>
+    <td class="mvr-val">0.79 %</td><td class="mvr-yoy pos">0.05 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">0.64%</td>
+  </tr>
+  <tr>
+    <td class="mvr-sec" rowspan="1">Ads</td>
+    <td class="mvr-kpi">MAds % NMV</td>
+    <td class="mvr-val">2.4 %</td><td class="mvr-yoy pos">0.8 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">—</td>
+  </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="qbr-footer">
+    <p>Fuentes: DM_VPA_ROADMAP_FINAL (PERIOD=QUARTER, FECHA_STRING=&#39;Q2 26&#39;) &middot;
+       BT_ORD_ORDERS (NMV ARS) &middot;
+       DM_UE_ESTABILIZADA_PROFITABILITY (VC/DC/BM)</p>
+    <p>NMV vs Plan = -19% (planning sheet, fijo). Generado: 05/08/2026 14:00</p>
+  </div>
+
+</div>
+
+<script>
+// QBR Q2 FY'26 embedded data — generated by generate_qbr_q2.py
+window.QBR_DATA = {
+  "nmv": {
+    "act": "60.1B",
+    "yoy": "+30%",
+    "vsp": "-19%"
+  },
+  "nsi": {
+    "act": "1.1 M",
+    "yoy": "10.9 %",
+    "vsp": "-11.4 %"
+  },
+  "nasp": {
+    "act": "53.2 K",
+    "yoy": "-12.1 %",
+    "vsp": "-8.5 %"
+  },
+  "visitas": {
+    "act": "73.6 M",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "cvr": {
+    "act": "1.4 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "freq": {
+    "act": "1.47",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "clips_n": {
+    "act": "34.3 K",
+    "yoy": "164.2 %",
+    "vsp": "—"
+  },
+  "clips_p": {
+    "act": "25.7 %",
+    "yoy": "14.8 pp",
+    "vsp": "—"
+  },
+  "afil_n": {
+    "act": "3.1 K",
+    "yoy": "11696.2 %",
+    "vsp": "—"
+  },
+  "afil_p": {
+    "act": "0.7 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "buybox": {
+    "act": "12.1 %",
+    "yoy": "5.3 pp",
+    "vsp": "—"
+  },
+  "cbt": {
+    "act": "2.3 %",
+    "yoy": "2.3 pp",
+    "vsp": "—"
+  },
+  "bpckmi": {
+    "act": "92.2 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "kmi": {
+    "act": "93.2 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "fbm": {
+    "act": "20.2 %",
+    "yoy": "5.9 pp",
+    "vsp": "—"
+  },
+  "stk": {
+    "act": "21.2 %",
+    "yoy": "-5.2 pp",
+    "vsp": "—"
+  },
+  "prom": {
+    "act": "38.2 %",
+    "yoy": "4.2 pp",
+    "vsp": "—"
+  },
+  "ben": {
+    "act": "0.79 %",
+    "yoy": "0.05 pp",
+    "vsp": "—"
+  },
+  "mads": {
+    "act": "2.4 %",
+    "yoy": "0.8 pp",
+    "vsp": "—"
+  },
+  "vc": {
+    "act": "9.7 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "dc": {
+    "act": "6.9 %",
+    "yoy": "—",
+    "vsp": "—"
+  },
+  "bm": {
+    "act": "4.0 %",
+    "yoy": "—",
+    "vsp": "—"
+  }
+};
+window.QBR_TS   = "05/08/2026 14:00";
+</script>
+
+<script>
+// Ensure timestamp is shown; values are already baked into HTML
+document.addEventListener('DOMContentLoaded', function() {
+  var tsEl = document.getElementById('qbr-ts');
+  if (tsEl && window.QBR_TS) {
+    tsEl.textContent = window.QBR_TS;
+  }
+});
+</script>
+
+</body>
+</html>
