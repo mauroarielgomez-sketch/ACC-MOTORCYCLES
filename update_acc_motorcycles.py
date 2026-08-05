@@ -82,6 +82,7 @@ NMV_VSPLAN_FY26 = {
     'Abr': '-9%',
     'May': '-12%',
     'Jun': '-17.2%',
+    'Jul': '-26.1%',
 }
 
 # Per sub-segment (rows 155, 157, 158). Ene/Feb TBD — add when available.
@@ -359,12 +360,18 @@ def inject_data_block(html, block_content):
 
 # ─── MAIN ────────────────────────────────────────────────────────────────────
 
-def query_vc_dc_bm_ue(client):
+def query_vc_dc_bm_ue(client, agg2_filter=None):
     """
-    Query VC%, DC%, BM% actuals from DM_UE_ESTABILIZADA_PROFITABILITY.
-    Returns three dicts {month_key: 'X.X %'} for VC, DC, BM.
-    Only FY26 data is available in this table (from May 2026 onwards).
+    Query VC%, DC%, BM% from DM_UE_ESTABILIZADA_PROFITABILITY for FY25+FY26.
+    Returns six dicts: vc_act, dc_act, bm_act (FY26 actuals as 'X.X %') and
+    vc_yoy, dc_yoy, bm_yoy (pp vs same month FY25, auto-computed).
+    Hardcoded YoY dicts (VC_YOY_FY26 etc.) are only used as fallback for months
+    where FY25 data is absent from this table.
     """
+    agg2_cond = ""
+    if agg2_filter:
+        safe = agg2_filter.replace("'", "\\'")
+        agg2_cond = f"AND DOM_DOMAIN_AGG2 = '{safe}'"
     sql = f"""
     SELECT
       MONTH_FINAL,
@@ -374,24 +381,51 @@ def query_vc_dc_bm_ue(client):
     FROM {UE_TABLE}
     WHERE SIT_SITE_ID = 'MLA'
       AND DOM_DOMAIN_AGG1 = 'ACC MOTORCYCLES'
-      AND MONTH_FINAL >= '{SINCE_FY26[:7]}'
+      {agg2_cond}
+      AND MONTH_FINAL >= '{SINCE_FY25[:7]}'
     GROUP BY 1
     ORDER BY 1
     """
     df = client.query(sql).to_dataframe()
-    vc, dc, bm = {}, {}, {}
+
+    fy25 = {}  # month_num -> {vc, dc, bm}
+    vc26, dc26, bm26 = {}, {}, {}
+    vc_yoy, dc_yoy, bm_yoy = {}, {}, {}
+
     for _, row in df.iterrows():
-        month_num = str(row['MONTH_FINAL']).split('-')[1]
-        key = _MONTH_TO_KEY.get(month_num)
-        if not key:
-            continue
-        if row['VC_PCT'] is not None:
-            vc[key] = f"{float(row['VC_PCT']):.1f} %"
-        if row['DC_PCT'] is not None:
-            dc[key] = f"{float(row['DC_PCT']):.1f} %"
-        if row['BM_PCT'] is not None:
-            bm[key] = f"{float(row['BM_PCT']):.1f} %"
-    return vc, dc, bm
+        parts = str(row['MONTH_FINAL']).split('-')
+        yr, month_num = int(parts[0]), parts[1]
+
+        if yr == 2025:
+            fy25[month_num] = {
+                'vc': float(row['VC_PCT']) if row['VC_PCT'] is not None else None,
+                'dc': float(row['DC_PCT']) if row['DC_PCT'] is not None else None,
+                'bm': float(row['BM_PCT']) if row['BM_PCT'] is not None else None,
+            }
+        elif yr == 2026:
+            key = _MONTH_TO_KEY.get(month_num)
+            if not key:
+                continue
+            vc_val = float(row['VC_PCT']) if row['VC_PCT'] is not None else None
+            dc_val = float(row['DC_PCT']) if row['DC_PCT'] is not None else None
+            bm_val = float(row['BM_PCT']) if row['BM_PCT'] is not None else None
+            if vc_val is not None: vc26[key] = f"{vc_val:.1f} %"
+            if dc_val is not None: dc26[key] = f"{dc_val:.1f} %"
+            if bm_val is not None: bm26[key] = f"{bm_val:.1f} %"
+
+            # Auto-compute YoY pp if same month FY25 is available
+            prev = fy25.get(month_num, {})
+            if vc_val is not None and prev.get('vc') is not None:
+                d = round(vc_val - prev['vc'], 2)
+                vc_yoy[key] = f"{'+' if d >= 0 else ''}{d:.2f} pp"
+            if dc_val is not None and prev.get('dc') is not None:
+                d = round(dc_val - prev['dc'], 2)
+                dc_yoy[key] = f"{'+' if d >= 0 else ''}{d:.2f} pp"
+            if bm_val is not None and prev.get('bm') is not None:
+                d = round(bm_val - prev['bm'], 2)
+                bm_yoy[key] = f"{'+' if d >= 0 else ''}{d:.2f} pp"
+
+    return vc26, dc26, bm26, vc_yoy, dc_yoy, bm_yoy
 
 
 def main():
@@ -446,15 +480,17 @@ def main():
         except Exception as e:
             print(f"  ⚠  Error en NMV ARS para {seg}: {e}")
 
-    # 3. Inject VC/DC/BM (%TGMV) static data BEFORE building BQ_DATA block
-    # 3b. Query VC/DC/BM actuals from DM_UE_ESTABILIZADA_PROFITABILITY
+    # 3. Query VC/DC/BM per segment from DM_UE_ESTABILIZADA_PROFITABILITY
     print("  → Consultando VC/DC/BM desde DM_UE_ESTABILIZADA_PROFITABILITY ...")
-    try:
-        vc_act, dc_act, bm_act = query_vc_dc_bm_ue(client)
-        print(f"    ✓ Meses disponibles: {list(vc_act.keys())}")
-    except Exception as e:
-        print(f"  ⚠  Error en VC/DC/BM UE: {e}. Usando dicts vacíos.")
-        vc_act, dc_act, bm_act = {}, {}, {}
+
+    # Map seg_key → DOM_DOMAIN_AGG2 (None = total, no filter)
+    SEG_AGG2 = {
+        'all':                            None,
+        'motorcycle_helmets':             'MOTORCYCLE HELMETS',
+        'motorcycle_accessories':         'MOTORCYCLE ACCESSORIES',
+        'motorcycle_replacement_parts':   'MOTORCYCLE REPLACEMENT PARTS',
+        'transactional_motorcycles':      'TRANSACTIONAL MOTORCYCLES',
+    }
 
     def _make_tgmv_entry(act, yoy):
         latest_a = list(act.values())[-1] if act else '—'
@@ -465,10 +501,33 @@ def main():
                 "latest_actual_n": None, "latest_yoy_n": None,
                 "latest_vsp_n": None, "color_coding": None, "status": None,
                 "yoy_direction": "neu", "trend": ""}
+
     for seg_key in all_data:
-        all_data[seg_key]['vc_pct_tgmv'] = _make_tgmv_entry(vc_act, VC_YOY_FY26)
-        all_data[seg_key]['dc_pct_tgmv'] = _make_tgmv_entry(dc_act, DC_YOY_FY26)
-        all_data[seg_key]['bm_pct_tgmv'] = _make_tgmv_entry(bm_act, BM_YOY_FY26)
+        agg2 = SEG_AGG2.get(seg_key)
+        try:
+            vc_ue, dc_ue, bm_ue, vc_yoy_ue, dc_yoy_ue, bm_yoy_ue = query_vc_dc_bm_ue(client, agg2_filter=agg2)
+            print(f"    ✓ VC/DC/BM UE [{seg_key}]: actuals={list(vc_ue.keys())} YoY auto={list(vc_yoy_ue.keys())}")
+        except Exception as e:
+            print(f"  ⚠  Error VC/DC/BM UE [{seg_key}]: {e}")
+            vc_ue, dc_ue, bm_ue = {}, {}, {}
+            vc_yoy_ue, dc_yoy_ue, bm_yoy_ue = {}, {}, {}
+
+        # Merge actuals: roadmap (Jan-Apr fallback) + UE (takes priority)
+        rdm_vc = all_data[seg_key].get('vcpct', {}).get('actual', {})
+        rdm_dc = all_data[seg_key].get('dcpct', {}).get('actual', {})
+        rdm_bm = all_data[seg_key].get('bm',    {}).get('actual', {})
+        vc_act = {**rdm_vc, **vc_ue}
+        dc_act = {**rdm_dc, **dc_ue}
+        bm_act = {**rdm_bm, **bm_ue}
+
+        # Merge YoY: hardcoded dicts as fallback, auto-computed takes priority
+        vc_yoy = {**VC_YOY_FY26, **vc_yoy_ue}
+        dc_yoy = {**DC_YOY_FY26, **dc_yoy_ue}
+        bm_yoy = {**BM_YOY_FY26, **bm_yoy_ue}
+
+        all_data[seg_key]['vc_pct_tgmv'] = _make_tgmv_entry(vc_act, vc_yoy)
+        all_data[seg_key]['dc_pct_tgmv'] = _make_tgmv_entry(dc_act, dc_yoy)
+        all_data[seg_key]['bm_pct_tgmv'] = _make_tgmv_entry(bm_act, bm_yoy)
 
     # 4. Load existing HTML
     print(f"  → Leyendo {HTML_PATH} ...")
