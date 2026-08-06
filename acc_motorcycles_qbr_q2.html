@@ -195,6 +195,72 @@
     .qbr-header { background: #fff; border-bottom: 2px solid #FFE600; }
     .qbr-main { padding: 16px; }
   }
+
+  /* ── TWO-COLUMN LAYOUT ── */
+  .qbr-body { display: flex; gap: 20px; align-items: flex-start; }
+  .qbr-left { flex: 0 0 auto; }
+  .qbr-right { flex: 1; min-width: 280px; max-width: 340px; }
+
+  /* ── INSIGHTS PANEL ── */
+  .ins-panel {
+    background: #1a1a2e;
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 14px;
+    font-size: 11px;
+    line-height: 1.55;
+  }
+  .ins-panel-title {
+    background: #FFE600;
+    color: #111;
+    font-weight: 800;
+    font-size: 12px;
+    text-align: center;
+    padding: 7px 12px;
+    letter-spacing: 0.3px;
+  }
+  .ins-panel-body { padding: 12px 14px; }
+  .ins-item { display: flex; gap: 9px; margin-bottom: 10px; }
+  .ins-item:last-child { margin-bottom: 0; }
+  .ins-num {
+    flex-shrink: 0;
+    width: 18px; height: 18px;
+    border-radius: 50%;
+    background: #c0392b;
+    color: #fff;
+    font-weight: 800;
+    font-size: 10px;
+    display: flex; align-items: center; justify-content: center;
+    margin-top: 1px;
+  }
+  .ins-num.n2 { background: #1b8a3f; }
+  .ins-num.n3 { background: #2563eb; }
+  .ins-num.n4 { background: #7c3aed; }
+  .ins-text { color: #e2e8f0; }
+  .ins-text strong { color: #fff; }
+  .ins-text .pos { color: #4ade80; font-weight: 700; }
+  .ins-text .neg { color: #f87171; font-weight: 700; }
+  .ins-text .neu { color: #94a3b8; }
+  .ins-text .hi  { color: #FFE600; font-weight: 700; }
+
+  /* ── NEXT STEPS PANEL ── */
+  .ns-item { margin-bottom: 9px; color: #e2e8f0; }
+  .ns-item:last-child { margin-bottom: 0; }
+  .ns-label { font-weight: 800; color: #FFE600; font-size: 11px; }
+  .ns-text { color: #cbd5e1; font-size: 10.5px; line-height: 1.5; }
+  .ns-pot { color: #4ade80; font-weight: 700; }
+
+  /* ── CROSS-REF in table ── */
+  .xref {
+    display: inline-flex; align-items: center; justify-content: center;
+    width: 13px; height: 13px; border-radius: 50%;
+    font-size: 8px; font-weight: 800; color: #fff;
+    margin-left: 4px; vertical-align: middle; flex-shrink: 0;
+  }
+  .xref.x1 { background: #c0392b; }
+  .xref.x2 { background: #1b8a3f; }
+  .xref.x3 { background: #2563eb; }
+  .xref.x4 { background: #7c3aed; }
 </style>
 </head>
 <body>
@@ -226,6 +292,9 @@
     </div>
   </div>
 
+  <div class="qbr-body">
+  <div class="qbr-left">
+
   <div style="display:flex;align-items:center;justify-content:flex-end;margin-bottom:12px;">
     <button id="btn-export-qbr" onclick="exportQBRTable()" style="background:#a855f7;color:#fff;border:none;border-radius:8px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;">
       <span>📷</span> Exportar como imagen
@@ -253,15 +322,15 @@
   <tr>
     <td class="mvr-sec" rowspan="6">Overall Performance</td>
     <td class="mvr-kpi">NMV (B ARS)</td>
-    <td class="mvr-val">60.1B</td><td class="mvr-yoy pos">+30%</td><td class="mvr-vsp neg">-19%</td><td class="mvr-eoy">~235B</td>
+    <td class="mvr-val">60.1B</td><td class="mvr-yoy pos">+30%</td><td class="mvr-vsp neg">-19%<span class="xref x1">1</span></td><td class="mvr-eoy">~235B</td>
   </tr>
   <tr>
     <td class="mvr-kpi">NSI (K unidades)</td>
-    <td class="mvr-val">1.1 M</td><td class="mvr-yoy pos">10.9 %</td><td class="mvr-vsp neg">-11.4 %</td><td class="mvr-eoy">4.7M</td>
+    <td class="mvr-val">1.1 M</td><td class="mvr-yoy pos">10.9 %</td><td class="mvr-vsp neg">-11.4 %<span class="xref x1">1</span></td><td class="mvr-eoy">4.7M</td>
   </tr>
   <tr>
     <td class="mvr-kpi">NASP (ARS)</td>
-    <td class="mvr-val">53.2 K</td><td class="mvr-yoy neg">-12.1 %</td><td class="mvr-vsp neg">-8.5 %</td><td class="mvr-eoy">47.6K</td>
+    <td class="mvr-val">53.2 K</td><td class="mvr-yoy neg">-12.1 %<span class="xref x1">1</span></td><td class="mvr-vsp neg">-8.5 %</td><td class="mvr-eoy">47.6K</td>
   </tr>
   <tr>
     <td class="mvr-kpi">VC %</td>
@@ -290,7 +359,7 @@
   </tr>
   <tr>
     <td class="mvr-kpi"># Clips</td>
-    <td class="mvr-val">34.3 K</td><td class="mvr-yoy pos">164.2 %</td><td class="mvr-vsp">—</td><td class="mvr-eoy">~64K</td>
+    <td class="mvr-val">34.3 K</td><td class="mvr-yoy pos">164.2 %<span class="xref x2">2</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">~64K</td>
   </tr>
   <tr>
     <td class="mvr-kpi">Share de Clips (%LL con Clips)</td>
@@ -298,15 +367,15 @@
   </tr>
   <tr>
     <td class="mvr-kpi">% NMV con Clips</td>
-    <td class="mvr-val">25.7 %</td><td class="mvr-yoy pos">14.8 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">19.8%</td>
+    <td class="mvr-val">25.7 %</td><td class="mvr-yoy pos">14.8 pp<span class="xref x2">2</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">19.8%</td>
   </tr>
   <tr>
     <td class="mvr-kpi"># Afiliados</td>
-    <td class="mvr-val">3.1 K</td><td class="mvr-yoy pos">11696.2 %</td><td class="mvr-vsp">—</td><td class="mvr-eoy">~43K</td>
+    <td class="mvr-val">3.1 K</td><td class="mvr-yoy pos">11696.2 %<span class="xref x4">4</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">~43K</td>
   </tr>
   <tr>
     <td class="mvr-kpi">% NMV Affiliates</td>
-    <td class="mvr-val">0.7 %</td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">3%</td>
+    <td class="mvr-val">0.7 %<span class="xref x4">4</span></td><td class="mvr-yoy">—</td><td class="mvr-vsp">—</td><td class="mvr-eoy">3%</td>
   </tr>
   <tr>
     <td class="mvr-sec" rowspan="1">Selection Mgmt</td>
@@ -316,7 +385,7 @@
   <tr>
     <td class="mvr-sec" rowspan="2">Commercial Excellence</td>
     <td class="mvr-kpi">CBT Penetration (%NMV)</td>
-    <td class="mvr-val">2.3 %</td><td class="mvr-yoy pos">2.3 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">2.0%</td>
+    <td class="mvr-val">2.3 %</td><td class="mvr-yoy pos">2.3 pp<span class="xref x4">4</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">2.0%</td>
   </tr>
   <tr>
     <td class="mvr-kpi">NMV 1P</td>
@@ -334,15 +403,15 @@
   <tr>
     <td class="mvr-sec" rowspan="3">Shipping &amp; Availability Mgmt</td>
     <td class="mvr-kpi">% NSI FBM</td>
-    <td class="mvr-val">20.2 %</td><td class="mvr-yoy pos">5.9 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">13.2%</td>
+    <td class="mvr-val">20.2 %</td><td class="mvr-yoy pos">5.9 pp<span class="xref x3">3</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">13.2%</td>
   </tr>
   <tr>
     <td class="mvr-kpi">Stockouts (As % of FBM GMV)</td>
-    <td class="mvr-val">21.2 %</td><td class="mvr-yoy pos">-5.2 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">37.9%</td>
+    <td class="mvr-val">21.2 %</td><td class="mvr-yoy pos">-5.2 pp<span class="xref x3">3</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">37.9%</td>
   </tr>
   <tr>
     <td class="mvr-kpi">% Promesas en VIP &le;2D</td>
-    <td class="mvr-val">38.2 %</td><td class="mvr-yoy pos">4.2 pp</td><td class="mvr-vsp">—</td><td class="mvr-eoy">34.5%</td>
+    <td class="mvr-val">38.2 %</td><td class="mvr-yoy pos">4.2 pp<span class="xref x3">3</span></td><td class="mvr-vsp">—</td><td class="mvr-eoy">34.5%</td>
   </tr>
   <tr>
     <td class="mvr-sec" rowspan="1">Benefits &amp; Discounts</td>
@@ -363,6 +432,69 @@
     </table>
   </div>
   </div><!-- /qbr-capture-area -->
+
+  </div><!-- /qbr-left -->
+
+  <div class="qbr-right">
+
+    <!-- KEY INSIGHTS -->
+    <div class="ins-panel">
+      <div class="ins-panel-title">Key Insights</div>
+      <div class="ins-panel-body">
+
+        <div class="ins-item">
+          <span class="ins-num">1</span>
+          <span class="ins-text"><strong>NMV +30% nominal pero <span class="neg">-3% real</span> (deflactado) &mdash; sin crecimiento genuino.</strong> <span class="neg">60.1B ARS, -19% vs plan</span> &mdash; inflaci&oacute;n interanual (30-37%) absorbi&oacute; toda la ganancia en pesos. NSI <span class="pos">1.1M (+10.9% YoY real)</span>, <span class="neg">-11.4% vs plan</span>: &uacute;nico crecimiento verdadero del trimestre. NASP <span class="neg">-12.1% YoY</span> comprime el revenue. H2 debe recuperar volumen y precio real hacia <span class="hi">~235B EOY</span>.</span>
+        </div>
+
+        <div class="ins-item">
+          <span class="ins-num n2">2</span>
+          <span class="ins-text"><strong>Content commerce ya super&oacute; el target anual en H1.</strong> <span class="pos">34.3K clips (+164.2% YoY)</span>, % NMV con Clips <span class="pos">25.7% (+14.8pp)</span> &mdash; target EOY de 19.8% ya alcanzado. <span class="neu">73.6M visitas; CVR 1.4% estable</span> &mdash; la conversi&oacute;n es el lever pendiente para H2.</span>
+        </div>
+
+        <div class="ins-item">
+          <span class="ins-num n3">3</span>
+          <span class="ins-text"><strong>Log&iacute;stica: el punto m&aacute;s s&oacute;lido del Q2.</strong> FBM <span class="pos">20.2% (+5.9pp)</span>, Promesas VIP &le;2D <span class="pos">38.2% (+4.2pp, sobre target 34.5%)</span>, Stockouts <span class="pos">21.2% (-5.2pp)</span> &mdash; muy por debajo del techo 37.9%. BPC KMI <span class="pos">92.2%</span> &mdash; la operaci&oacute;n no es un riesgo para H2.</span>
+        </div>
+
+        <div class="ins-item">
+          <span class="ins-num n4">4</span>
+          <span class="ins-text"><strong>Afiliados crece en registros pero no convierte; CBT supera target.</strong> <span class="neu">3.1K afiliados (+11696% YoY)</span>, pero <span class="neg">% NMV Affiliates 0.7% vs target 3%</span> &mdash; brecha de activaci&oacute;n es la prioridad. Contrapunto: CBT <span class="pos">2.3% (+2.3pp, sobre target 2.0%)</span> y Buy Box <span class="pos">12.1% (+5.3pp)</span>.</span>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- NEXT STEPS -->
+    <div class="ins-panel">
+      <div class="ins-panel-title" style="background:#1e293b;color:#FFE600;">Next Steps</div>
+      <div class="ins-panel-body">
+
+        <div class="ns-item">
+          <div class="ns-label">NSI/NMV Recovery</div>
+          <div class="ns-text">Gap de -11.4% vs plan en volumen es prioridad #1. Con BPC KMI en 92.2% el problema es unidades. Revisar elasticidades por subcategor&iacute;a (cascos, accesorios, repuestos) e identificar gaps de cat&aacute;logo. Potencial: <span class="ns-pot">+1pp CVR = ~+23K unidades.</span></div>
+        </div>
+
+        <div class="ns-item">
+          <div class="ns-label">NASP &amp; 1P Mix Premium</div>
+          <div class="ns-text">Contener la presi&oacute;n de -12.1% YoY impulsando sell-through en segmentos de mayor ticket. Pipeline 1P (cascos Punto Extremo + ProTork Oct-Nov) es el lever clave. Potencial: <span class="ns-pot">2% penetraci&oacute;n 1P = +2B ARS NMV en H2.</span></div>
+        </div>
+
+        <div class="ns-item">
+          <div class="ns-label">Afiliados &mdash; Activaci&oacute;n a Compra</div>
+          <div class="ns-text">De 3.1K registros a conversi&oacute;n activa. Dise&ntilde;ar incentivo de primera compra para universo de 6.5K riders + 38K base drivers. Potencial: <span class="ns-pot">0.7% &rarr; 2% = ~+240M ARS en H2.</span></div>
+        </div>
+
+        <div class="ns-item">
+          <div class="ns-label">Clips &mdash; Escalar a ~64K EOY</div>
+          <div class="ns-text">Ritmo de 34.3K en H1 requiere +29.7K en H2. Acelerar filmaci&oacute;n con agencia en brands T1 y escalar generaci&oacute;n IA (top sellers). Potencial: <span class="ns-pot">+$500M ARS NMV por cada 1K clips adicionales.</span></div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /qbr-right -->
+  </div><!-- /qbr-body -->
 
   <div class="qbr-footer">
     <p>Fuentes: DM_VPA_ROADMAP_FINAL (PERIOD=QUARTER, FECHA_STRING=&#39;Q2 26&#39;) &middot;
