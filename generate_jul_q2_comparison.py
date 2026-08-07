@@ -202,27 +202,31 @@ def _get(df, kpi, variation):
     return DASH if sub.empty else _safe(sub.iloc[0]['VALUE_STRING'])
 
 
-def build_rdm(df):
-    """Build flat {key: {act, yoy, vsp}} from a roadmap DataFrame."""
+def build_rdm(df, is_jul=False):
+    """Build flat {key: {act, yoy, vsp}} from a roadmap DataFrame.
+    is_jul=True injects estimated vs Plan for Jul (same as main HTML VSP_EST).
+    For Q2 those KPIs have no plan → DASH.
+    """
     v = lambda kpi, var: _get(df, kpi, var)
+    J = is_jul  # shorthand
     return {
         'nsi':     {'act': v("NSI",                              "Actual"), 'yoy': v("NSI",                              "YoY"), 'vsp': v("NSI",                              "vs Plan")},
         'nasp':    {'act': v("NASP",                             "Actual"), 'yoy': v("NASP",                             "YoY"), 'vsp': v("NASP",                             "vs Plan")},
         'visitas': {'act': v("Visitas",                          "Actual"), 'yoy': v("Visitas",                          "YoY"), 'vsp': DASH},
         'cvr':     {'act': v("CVR (Orders / Visits)",            "Actual"), 'yoy': v("CVR (Orders / Visits)",            "YoY"), 'vsp': DASH},
-        'freq':    {'act': v("Frequency",                        "Actual"), 'yoy': v("Frequency",                        "YoY"), 'vsp': '-2%'},
-        'clips_n': {'act': v("# Clips",                          "Actual"), 'yoy': v("# Clips",                          "YoY"), 'vsp': '+7%'},
-        'clips_p': {'act': v("% NMV Clips",                      "Actual"), 'yoy': v("% NMV Clips",                      "YoY"), 'vsp': '+6.2 pp'},
-        'afil_n':  {'act': v("# Afiliados",                      "Actual"), 'yoy': v("# Afiliados",                      "YoY"), 'vsp': '+17%'},
-        'afil_p':  {'act': v("% NMV Affiliates",                 "Actual"), 'yoy': v("% NMV Affiliates",                 "YoY"), 'vsp': '-2.1 pp'},
-        'buybox':  {'act': v("% NMV Buy Box",                    "Actual"), 'yoy': v("% NMV Buy Box",                    "YoY"), 'vsp': '+2.0 pp'},
-        'cbt':     {'act': v("CBT Penetration (%NMV)",           "Actual"), 'yoy': v("CBT Penetration (%NMV)",           "YoY"), 'vsp': '+0.2 pp'},
+        'freq':    {'act': v("Frequency",                        "Actual"), 'yoy': v("Frequency",                        "YoY"), 'vsp': '-2%'    if J else DASH},
+        'clips_n': {'act': v("# Clips",                          "Actual"), 'yoy': v("# Clips",                          "YoY"), 'vsp': '+7%'    if J else DASH},
+        'clips_p': {'act': v("% NMV Clips",                      "Actual"), 'yoy': v("% NMV Clips",                      "YoY"), 'vsp': '+6.2 pp' if J else DASH},
+        'afil_n':  {'act': v("# Afiliados",                      "Actual"), 'yoy': v("# Afiliados",                      "YoY"), 'vsp': '+17%'   if J else DASH},
+        'afil_p':  {'act': v("% NMV Affiliates",                 "Actual"), 'yoy': v("% NMV Affiliates",                 "YoY"), 'vsp': '-2.1 pp' if J else DASH},
+        'buybox':  {'act': v("% NMV Buy Box",                    "Actual"), 'yoy': v("% NMV Buy Box",                    "YoY"), 'vsp': '+2.0 pp' if J else DASH},
+        'cbt':     {'act': v("CBT Penetration (%NMV)",           "Actual"), 'yoy': v("CBT Penetration (%NMV)",           "YoY"), 'vsp': '+0.2 pp' if J else DASH},
         'bpckmi':  {'act': v("% BPC KMI",                        "Actual"), 'yoy': DASH,                                         'vsp': DASH},
         'kmi':     {'act': v("KMI Scrapping Coverage (%Visits)", "Actual"), 'yoy': DASH,                                         'vsp': DASH},
-        'fbm':     {'act': v("% NSI FBM",                        "Actual"), 'yoy': v("% NSI FBM",                        "YoY"), 'vsp': '+6.8 pp'},
-        'stk':     {'act': v("Stockouts (As % of FBM GMV)",      "Actual"), 'yoy': v("Stockouts (As % of FBM GMV)",      "YoY"), 'vsp': '-17.8 pp'},
-        'prom':    {'act': v("% Promesas en VIP ≤2D",        "Actual"), 'yoy': v("% Promesas en VIP ≤2D",        "YoY"), 'vsp': '+5.0 pp'},
-        'ben':     {'act': v("Benefits Meli Investment %",       "Actual"), 'yoy': v("Benefits Meli Investment %",       "YoY"), 'vsp': '+0.16 pp'},
+        'fbm':     {'act': v("% NSI FBM",                        "Actual"), 'yoy': v("% NSI FBM",                        "YoY"), 'vsp': '+6.8 pp'  if J else DASH},
+        'stk':     {'act': v("Stockouts (As % of FBM GMV)",      "Actual"), 'yoy': v("Stockouts (As % of FBM GMV)",      "YoY"), 'vsp': '-17.8 pp' if J else DASH},
+        'prom':    {'act': v("% Promesas en VIP ≤2D",        "Actual"), 'yoy': v("% Promesas en VIP ≤2D",        "YoY"), 'vsp': '+5.0 pp'  if J else DASH},
+        'ben':     {'act': v("Benefits Meli Investment %",       "Actual"), 'yoy': v("Benefits Meli Investment %",       "YoY"), 'vsp': '+0.16 pp' if J else DASH},
         'mads':    {'act': v("MAds % NMV",                       "Actual"), 'yoy': v("MAds % NMV",                       "YoY"), 'vsp': DASH},
         'kb1':     {'act': DASH,                                             'yoy': DASH,                                         'vsp': DASH},
     }
@@ -834,8 +838,8 @@ def main():
     # ── Build data dicts ──────────────────────────────────────────────────────
     print("  Construyendo datos ...")
 
-    rdm_jul = build_rdm(df_rdm_jul)
-    rdm_q2  = build_rdm(df_rdm_q2)
+    rdm_jul = build_rdm(df_rdm_jul, is_jul=True)
+    rdm_q2  = build_rdm(df_rdm_q2, is_jul=False)
 
     nmv_jul = build_nmv(df_nmv_jul, NMV_JUL_VSP)
     nmv_q2  = build_nmv(df_nmv_q2,  NMV_Q2_VSP)
