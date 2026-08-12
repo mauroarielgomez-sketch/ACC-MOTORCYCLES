@@ -1,0 +1,1196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC Motorcycles — Live Listings Dashboard</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-size: 13px;
+  min-height: 100vh;
+  padding-bottom: 48px;
+}
+
+/* HEADER */
+.header {
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+  padding: 14px 28px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-badge {
+  background: #ffe600;
+  color: #0d1117;
+  font-weight: 800;
+  font-size: 11px;
+  padding: 3px 9px;
+  border-radius: 4px;
+  letter-spacing: 1px;
+}
+.header-title { font-size: 17px; font-weight: 600; color: #e6edf3; }
+.header-meta { font-size: 11px; color: #8b949e; text-align: right; line-height: 1.8; }
+.header-meta strong { color: #c9d1d9; }
+
+/* TABS */
+.nav-tabs {
+  display: flex; gap: 4px;
+  padding: 10px 28px;
+  background: #161b22;
+  border-bottom: 1px solid #30363d;
+}
+.nav-tab {
+  padding: 6px 18px; border-radius: 6px;
+  font-size: 13px; font-weight: 600; cursor: pointer;
+  border: 1px solid transparent; color: #8b949e;
+  background: none; transition: all 0.15s;
+}
+.nav-tab.active { background: #21262d; border-color: #30363d; color: #e6edf3; }
+.nav-tab:hover:not(.active) { color: #c9d1d9; background: rgba(255,255,255,0.04); }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* CONTENT */
+.page { padding: 24px 28px; max-width: 1700px; margin: 0 auto; }
+
+/* SECTION HEADER */
+.section { margin-bottom: 36px; }
+.section-head {
+  display: flex; align-items: center; gap: 10px; margin-bottom: 14px;
+}
+.s-bar { width: 4px; height: 22px; border-radius: 2px; flex-shrink: 0; }
+.s-title { font-size: 15px; font-weight: 700; color: #e6edf3; }
+.s-pill {
+  font-size: 11px; color: #8b949e;
+  background: #21262d; padding: 2px 10px;
+  border-radius: 20px; border: 1px solid #30363d;
+}
+
+/* STAT TILES */
+.stat-row {
+  display: grid; grid-template-columns: repeat(4, 1fr);
+  gap: 12px; margin-bottom: 18px;
+}
+.tile {
+  background: #161b22; border: 1px solid #30363d;
+  border-radius: 8px; padding: 14px 18px;
+}
+.tile-label {
+  font-size: 10px; color: #8b949e;
+  text-transform: uppercase; letter-spacing: 0.6px; margin-bottom: 6px;
+}
+.tile-value { font-size: 24px; font-weight: 700; color: #e6edf3; }
+.tile-sub { font-size: 11px; color: #8b949e; margin-top: 3px; }
+
+/* LEGEND */
+.legend {
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 10px; font-size: 11px; color: #8b949e;
+}
+.legend-item { display: flex; align-items: center; gap: 6px; }
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #30363d; }
+table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+
+thead tr:first-child th {
+  background: #1c2128;
+  padding: 9px 10px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  border-bottom: 1px solid #30363d;
+}
+thead tr:last-child th {
+  background: #161b22;
+  padding: 6px 10px;
+  font-size: 10px; font-weight: 600; color: #8b949e;
+  border-bottom: 2px solid #30363d;
+  text-align: right;
+}
+th.col-range { text-align: left !important; }
+th.grp-con { color: #3fb950; border-left: 2px solid rgba(63,185,80,0.4); }
+th.grp-sin { color: #768390; border-left: 2px solid #30363d; }
+
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+tbody tr:hover { background: rgba(255,255,255,0.04); }
+
+td {
+  padding: 6px 10px; border-bottom: 1px solid #21262d;
+  text-align: right; color: #c9d1d9; font-variant-numeric: tabular-nums;
+}
+td.col-range {
+  text-align: left; font-weight: 500;
+  color: #e6edf3; font-size: 12px;
+  width: 150px;
+}
+td.con-first { border-left: 2px solid rgba(63,185,80,0.4); }
+td.sin-first { border-left: 2px solid #30363d; }
+td.conv { font-weight: 700; font-size: 12px; }
+td.empty { color: #30363d; }
+
+tfoot td {
+  padding: 8px 10px;
+  border-top: 2px solid #30363d; border-bottom: none;
+  font-weight: 700; color: #e6edf3;
+  background: #1c2128;
+}
+
+/* AGG2 / DOMAIN CARDS */
+.agg2-grid { display: flex; flex-direction: column; gap: 12px; }
+.agg2-card { border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+.agg2-card-head {
+  padding: 11px 14px; background: #161b22;
+  display: flex; align-items: center; gap: 8px;
+  cursor: pointer; user-select: none;
+  transition: background 0.15s;
+}
+.agg2-card-head:hover { background: #1c2128; }
+.agg2-card-title { font-size: 15px; font-weight: 700; color: #e6edf3; }
+.agg2-card-sub { font-size: 10px; color: #8b949e; }
+.agg2-card-count { font-size: 11px; color: #8b949e; margin-left: auto; }
+.agg2-chevron {
+  color: #484f58; font-size: 12px; margin-left: 10px;
+  transition: transform 0.2s; flex-shrink: 0;
+}
+.agg2-card.open .agg2-chevron { transform: rotate(180deg); }
+.agg2-card-body { display: none; border-top: 1px solid #30363d; }
+.agg2-card.open .agg2-card-body { display: block; }
+.agg2-card .table-wrap { border: none; border-radius: 0; }
+
+/* FOOTER */
+.footer {
+  text-align: center; padding: 20px;
+  font-size: 11px; color: #484f58;
+  border-top: 1px solid #21262d; margin-top: 8px;
+}
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="logo-badge">MELI</span>
+    <span class="header-title">ACC Motorcycles — Live Listings Dashboard</span>
+  </div>
+  <div class="header-meta">
+    Datos al: <strong>2026-08-11</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA<br>
+    SL/LL = Successful Listings / Live Listings Live (últimos 30 días) &nbsp;·&nbsp; Actualización: Semanal
+  </div>
+</div>
+
+<div class="nav-tabs">
+  <button class="nav-tab active" onclick="switchTab('agrupadores',this)">Agrupadores</button>
+  <button class="nav-tab" onclick="switchTab('dominios',this)">Dominios</button>
+</div>
+
+<!-- ══════════════ PANE 1: AGRUPADORES ══════════════ -->
+<div id="pane-agrupadores" class="tab-pane active">
+<div class="page">
+
+  <!-- AGG1 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#ffe600"></div>
+      <span class="s-title">ACC MOTORCYCLES</span>
+      <span class="s-pill">AGG1 — Vista consolidada</span>
+    </div>
+    <div class="stat-row" id="stats-agg1"></div>
+    <div class="legend">
+      <span>SL/LL — intensidad de color:</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.15)"></span>Baja</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.4)"></span>Media</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.75)"></span>Alta</span>
+    </div>
+    <div class="table-wrap"><table id="table-agg1"></table></div>
+  </div>
+
+  <!-- AGG2 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#58a6ff"></div>
+      <span class="s-title">Apertura por AGG2</span>
+      <span class="s-pill">Dentro de ACC MOTORCYCLES</span>
+    </div>
+    <div class="agg2-grid">
+      <div class="agg2-card">
+        <div class="agg2-card-head" onclick="toggleCard(this)">
+          <div class="s-bar" style="background:#58a6ff;height:14px;width:3px"></div>
+          <span class="agg2-card-title">Replacement Parts</span>
+          <span class="agg2-card-count" id="cnt-rp"></span>
+          <span class="agg2-chevron">▼</span>
+        </div>
+        <div class="agg2-card-body"><div class="table-wrap"><table id="table-rp"></table></div></div>
+      </div>
+      <div class="agg2-card">
+        <div class="agg2-card-head" onclick="toggleCard(this)">
+          <div class="s-bar" style="background:#a371f7;height:14px;width:3px"></div>
+          <span class="agg2-card-title">Accessories</span>
+          <span class="agg2-card-count" id="cnt-ac"></span>
+          <span class="agg2-chevron">▼</span>
+        </div>
+        <div class="agg2-card-body"><div class="table-wrap"><table id="table-ac"></table></div></div>
+      </div>
+      <div class="agg2-card">
+        <div class="agg2-card-head" onclick="toggleCard(this)">
+          <div class="s-bar" style="background:#f0883e;height:14px;width:3px"></div>
+          <span class="agg2-card-title">Helmets</span>
+          <span class="agg2-card-count" id="cnt-he"></span>
+          <span class="agg2-chevron">▼</span>
+        </div>
+        <div class="agg2-card-body"><div class="table-wrap"><table id="table-he"></table></div></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ PANE 2: DOMINIOS ══════════════ -->
+<div id="pane-dominios" class="tab-pane">
+<div class="page">
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#ffe600"></div>
+      <span class="s-title">Apertura por Dominio</span>
+      <span class="s-pill">16 dominios relevantes — ordenados por facturación</span>
+    </div>
+    <div class="legend" style="margin-bottom:20px">
+      <span>SL/LL — intensidad de color:</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.15)"></span>Baja</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.4)"></span>Media</span>
+      <span class="legend-item"><span class="legend-dot" style="background:rgba(63,185,80,0.75)"></span>Alta</span>
+    </div>
+    <div id="domains-container" class="agg2-grid"></div>
+  </div>
+</div>
+</div>
+
+<div class="footer">
+  MercadoLibre Planning &nbsp;·&nbsp; BT_LIVE_LISTINGS_MLA &nbsp;·&nbsp; D-1 &nbsp;·&nbsp; Actualización semanal
+</div>
+
+<script>
+// ─── RANGES ──────────────────────────────────────────────────────────────────
+const RANGES = [
+  '01. Hasta 5K','02. 5K a 15K','03. 15K a 33K','04. 33K a 50K',
+  '05. 50K a 75K','06. 75K a 90K','07. 90K a 120K','08. 120K a 150K',
+  '09. 150K a 175K','10. 175K a 220K','11. 220K a 250K','12. 250K a 300K',
+  '13. 300K a 450K','14. 450K a 600K','15. 600K a 1M','16. Mas de 1M'
+];
+
+// ─── AGG1 / AGG2 DATA ────────────────────────────────────────────────────────
+const DATA = {
+  agg1: {
+    '01. Hasta 5K':    {con:null,                                    sin:{l:18546,  s:2774,  c:15.0,st:45726797}},
+    '02. 5K a 15K':   {con:{l:88,    s:3,    c:3.4, st:32756},      sin:{l:177328, s:17089, c:9.6, st:79501025}},
+    '03. 15K a 33K':  {con:{l:19678, s:153,  c:0.8, st:9217852},    sin:{l:648145, s:22481, c:3.5, st:340264169}},
+    '04. 33K a 50K':  {con:{l:129143,s:10768,c:8.3, st:43999755},   sin:{l:15702,  s:162,   c:1.0, st:7752711}},
+    '05. 50K a 75K':  {con:{l:470234,s:11616,c:2.5, st:185608154},  sin:{l:10949,  s:84,    c:0.8, st:10346187}},
+    '06. 75K a 90K':  {con:{l:233367,s:4732, c:2.0, st:58092663},   sin:{l:1196,   s:13,    c:1.1, st:1869383}},
+    '07. 90K a 120K': {con:{l:286900,s:5585, c:1.9, st:58778167},   sin:{l:1525,   s:11,    c:0.7, st:2632963}},
+    '08. 120K a 150K':{con:{l:197080,s:3832, c:1.9, st:32081688},   sin:{l:1133,   s:10,    c:0.9, st:1313736}},
+    '09. 150K a 175K':{con:{l:132782,s:2254, c:1.7, st:20385772},   sin:{l:909,    s:7,     c:0.8, st:1208556}},
+    '10. 175K a 220K':{con:{l:167491,s:2985, c:1.8, st:21465825},   sin:{l:1417,   s:9,     c:0.6, st:1413670}},
+    '11. 220K a 250K':{con:{l:75329, s:1235, c:1.6, st:9265191},    sin:{l:480,    s:2,     c:0.4, st:506935}},
+    '12. 250K a 300K':{con:{l:68015, s:1382, c:2.0, st:9942766},    sin:{l:1617,   s:3,     c:0.2, st:743563}},
+    '13. 300K a 450K':{con:{l:118703,s:1537, c:1.3, st:14034798},   sin:{l:2017,   s:3,     c:0.1, st:1928738}},
+    '14. 450K a 600K':{con:{l:63219, s:552,  c:0.9, st:4117358},    sin:{l:885,    s:1,     c:0.1, st:864493}},
+    '15. 600K a 1M':  {con:{l:74544, s:437,  c:0.6, st:3308903},    sin:{l:870,    s:2,     c:0.2, st:1016916}},
+    '16. Mas de 1M':  {con:{l:51196, s:183,  c:0.4, st:1691678},    sin:{l:1982,   s:3,     c:0.2, st:2373613}},
+  },
+  rp: {
+    '01. Hasta 5K':    {con:null,                                    sin:{l:16634,  s:2389,  c:14.4,st:14149120}},
+    '02. 5K a 15K':   {con:{l:12,    s:0,    c:0.0, st:3059},       sin:{l:129015, s:13818, c:10.7,st:29841369}},
+    '03. 15K a 33K':  {con:{l:10031, s:89,   c:0.9, st:3759613},    sin:{l:332357, s:15943, c:4.8, st:88894709}},
+    '04. 33K a 50K':  {con:{l:93799, s:7852, c:8.4, st:13941767},   sin:{l:9802,   s:95,    c:1.0, st:2916831}},
+    '05. 50K a 75K':  {con:{l:290250,s:7746, c:2.7, st:82301113},   sin:{l:4735,   s:48,    c:1.0, st:3288550}},
+    '06. 75K a 90K':  {con:{l:159417,s:3322, c:2.1, st:29444947},   sin:{l:469,    s:7,     c:1.5, st:624456}},
+    '07. 90K a 120K': {con:{l:190537,s:3720, c:2.0, st:34187897},   sin:{l:547,    s:3,     c:0.5, st:1009597}},
+    '08. 120K a 150K':{con:{l:123144,s:2057, c:1.7, st:16926823},   sin:{l:515,    s:2,     c:0.4, st:305736}},
+    '09. 150K a 175K':{con:{l:75017, s:1191, c:1.6, st:7840581},    sin:{l:436,    s:2,     c:0.5, st:404046}},
+    '10. 175K a 220K':{con:{l:85884, s:1493, c:1.7, st:8587499},    sin:{l:779,    s:3,     c:0.4, st:308195}},
+    '11. 220K a 250K':{con:{l:39570, s:635,  c:1.6, st:4161152},    sin:{l:209,    s:2,     c:1.0, st:203850}},
+    '12. 250K a 300K':{con:{l:44577, s:780,  c:1.7, st:7448935},    sin:{l:1134,   s:2,     c:0.2, st:439796}},
+    '13. 300K a 450K':{con:{l:75354, s:752,  c:1.0, st:10846610},   sin:{l:1214,   s:0,     c:0.0, st:620503}},
+    '14. 450K a 600K':{con:{l:35842, s:234,  c:0.7, st:3224517},    sin:{l:418,    s:0,     c:0.0, st:108538}},
+    '15. 600K a 1M':  {con:{l:35743, s:144,  c:0.4, st:2296523},    sin:{l:397,    s:0,     c:0.0, st:410890}},
+    '16. Mas de 1M':  {con:{l:19933, s:57,   c:0.3, st:1049598},    sin:{l:626,    s:1,     c:0.2, st:221039}},
+  },
+  ac: {
+    '01. Hasta 5K':    {con:null,                                    sin:{l:1791,   s:381,   c:21.3,st:25470973}},
+    '02. 5K a 15K':   {con:{l:76,    s:3,    c:3.9, st:29697},      sin:{l:47152,  s:3040,  c:6.4, st:45452213}},
+    '03. 15K a 33K':  {con:{l:9584,  s:63,   c:0.7, st:5420468},    sin:{l:311711, s:6070,  c:1.9, st:248227511}},
+    '04. 33K a 50K':  {con:{l:33474, s:2526, c:7.5, st:29866619},   sin:{l:5752,   s:66,    c:1.1, st:3745191}},
+    '05. 50K a 75K':  {con:{l:175990,s:3230, c:1.8, st:102919617},  sin:{l:5960,   s:36,    c:0.6, st:6452723}},
+    '06. 75K a 90K':  {con:{l:71075, s:943,  c:1.3, st:28399272},   sin:{l:606,    s:6,     c:1.0, st:743510}},
+    '07. 90K a 120K': {con:{l:91267, s:1178, c:1.3, st:24466056},   sin:{l:735,    s:8,     c:1.1, st:1018780}},
+    '08. 120K a 150K':{con:{l:67635, s:1042, c:1.5, st:14937132},   sin:{l:409,    s:7,     c:1.7, st:706142}},
+    '09. 150K a 175K':{con:{l:52796, s:619,  c:1.2, st:11363089},   sin:{l:315,    s:5,     c:1.6, st:603011}},
+    '10. 175K a 220K':{con:{l:71293, s:711,  c:1.0, st:10520085},   sin:{l:446,    s:6,     c:1.3, st:603312}},
+    '11. 220K a 250K':{con:{l:30002, s:279,  c:0.9, st:4134359},    sin:{l:185,    s:0,     c:0.0, st:101691}},
+    '12. 250K a 300K':{con:{l:17852, s:342,  c:1.9, st:2246630},    sin:{l:355,    s:1,     c:0.3, st:302556}},
+    '13. 300K a 450K':{con:{l:34108, s:527,  c:1.5, st:2750950},    sin:{l:574,    s:3,     c:0.5, st:705180}},
+    '14. 450K a 600K':{con:{l:16657, s:172,  c:1.0, st:768625},     sin:{l:309,    s:1,     c:0.3, st:553146}},
+    '15. 600K a 1M':  {con:{l:20412, s:167,  c:0.8, st:852739},     sin:{l:338,    s:2,     c:0.6, st:303671}},
+    '16. Mas de 1M':  {con:{l:19268, s:66,   c:0.3, st:551245},     sin:{l:1131,   s:1,     c:0.1, st:1768209}},
+  },
+  he: {
+    '01. Hasta 5K':    {con:null,                                    sin:{l:75,     s:4,     c:5.3, st:2005733}},
+    '02. 5K a 15K':   {con:null,                                     sin:{l:1122,   s:231,   c:20.6,st:2006220}},
+    '03. 15K a 33K':  {con:{l:62,    s:1,    c:1.6, st:37770},      sin:{l:4044,   s:468,   c:11.6,st:2538207}},
+    '04. 33K a 50K':  {con:{l:1870,  s:390,  c:20.9,st:191369},     sin:{l:128,    s:1,     c:0.8, st:890302}},
+    '05. 50K a 75K':  {con:{l:3988,  s:640,  c:16.0,st:386176},     sin:{l:227,    s:0,     c:0.0, st:303582}},
+    '06. 75K a 90K':  {con:{l:2872,  s:467,  c:16.3,st:248282},     sin:{l:106,    s:0,     c:0.0, st:400107}},
+    '07. 90K a 120K': {con:{l:5095,  s:687,  c:13.5,st:124184},     sin:{l:198,    s:0,     c:0.0, st:403202}},
+    '08. 120K a 150K':{con:{l:6301,  s:733,  c:11.6,st:217733},     sin:{l:155,    s:1,     c:0.6, st:300204}},
+    '09. 150K a 175K':{con:{l:4969,  s:444,  c:8.9, st:1182102},    sin:{l:127,    s:0,     c:0.0, st:100133}},
+    '10. 175K a 220K':{con:{l:10314, s:781,  c:7.6, st:2358241},    sin:{l:154,    s:0,     c:0.0, st:400268}},
+    '11. 220K a 250K':{con:{l:5757,  s:321,  c:5.6, st:969680},     sin:{l:55,     s:0,     c:0.0, st:100122}},
+    '12. 250K a 300K':{con:{l:5586,  s:260,  c:4.7, st:247201},     sin:{l:95,     s:0,     c:0.0, st:97}},
+    '13. 300K a 450K':{con:{l:9241,  s:258,  c:2.8, st:437238},     sin:{l:154,    s:0,     c:0.0, st:100220}},
+    '14. 450K a 600K':{con:{l:10720, s:146,  c:1.4, st:124216},     sin:{l:97,     s:0,     c:0.0, st:100122}},
+    '15. 600K a 1M':  {con:{l:18389, s:126,  c:0.7, st:159641},     sin:{l:92,     s:0,     c:0.0, st:93}},
+    '16. Mas de 1M':  {con:{l:11995, s:60,   c:0.5, st:90835},      sin:{l:58,     s:0,     c:0.0, st:96}},
+  }
+};
+
+// ─── DOMAIN DATA ─────────────────────────────────────────────────────────────
+const DOMAIN_ORDER = [
+  'MOTORCYCLE_HELMETS','MOTORCYCLE_FAIRINGS','MOTORCYCLE_INTERCOMMUNICATORS',
+  'MOTORCYCLE_BLOCK_CYLINDERS','MOTORCYCLE_TRANSMISSION_KITS','MOTORCYCLE_JACKETS',
+  'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS','MOTORCYCLIST_GLOVES','VEHICLE_MUFFLERS',
+  'MOTORCYCLE_RAIN_SUITS','MOTORCYCLE_CASES','MOTORCYCLE_BOOTS',
+  'VEHICLE_CARBURETORS','BICYCLE_AND_MOTORCYCLE_LOCKS','VEHICLE_COVERS',
+  'MOTORCYCLE_REPLACEMENTS',
+  'MOTORCYCLE_WHEELS',
+  'VEHICLE_WINDSHIELDS',
+  'MOTORCYCLE_SPEEDOMETERS',
+  'NECK_GAITERS_AND_BALACLAVAS',
+  'MOTORCYCLE_PANTS',
+  'MOTORCYCLE_LUGGAGE_RACKS',
+  'MOTORCYCLE_SUITS',
+  'VEHICLE_FUEL_TANKS',
+  'MOTORCYCLE_REARVIEW_MIRRORS',
+  'MOTORCYCLE_CRASH_BARS',
+  'VEHICLE_ENGINE_GASKETS',
+  'MOTORCYCLE_FORK_TUBES',
+  'MOTORCYCLE_HANDLEBARS',
+  'VEHICLE_EXHAUSTS'
+];
+const DOMAIN_LABELS = {
+  'MOTORCYCLE_HELMETS':            'Cascos',
+  'MOTORCYCLE_FAIRINGS':           'Carenados',
+  'MOTORCYCLE_INTERCOMMUNICATORS': 'Intercomunicadores',
+  'MOTORCYCLE_BLOCK_CYLINDERS':    'Bloques de Cilindro',
+  'MOTORCYCLE_TRANSMISSION_KITS':  'Kits de Transmisión',
+  'MOTORCYCLE_JACKETS':            'Camperas',
+  'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS': 'Alforjas y Mochilas',
+  'MOTORCYCLIST_GLOVES':           'Guantes',
+  'VEHICLE_MUFFLERS':              'Silenciadores',
+  'MOTORCYCLE_RAIN_SUITS':         'Pilotos',
+  'MOTORCYCLE_CASES':              'Baúles',
+  'MOTORCYCLE_BOOTS':              'Botas',
+  'VEHICLE_CARBURETORS':           'Carburadores',
+  'BICYCLE_AND_MOTORCYCLE_LOCKS':  'Candados',
+  'VEHICLE_COVERS':                'Fundas',
+  'MOTORCYCLE_REPLACEMENTS':       'Repuestos',
+  'MOTORCYCLE_WHEELS':             'Ruedas',
+  'VEHICLE_WINDSHIELDS':           'Parabrisas',
+  'MOTORCYCLE_SPEEDOMETERS':       'Velocímetros',
+  'NECK_GAITERS_AND_BALACLAVAS':   'Cuello y Pasamontañas',
+  'MOTORCYCLE_PANTS':              'Pantalones',
+  'MOTORCYCLE_LUGGAGE_RACKS':      'Portaequipajes',
+  'MOTORCYCLE_SUITS':              'Trajes',
+  'VEHICLE_FUEL_TANKS':            'Tanques',
+  'MOTORCYCLE_REARVIEW_MIRRORS':   'Espejos Retrovisores',
+  'MOTORCYCLE_CRASH_BARS':         'Barras Anticaída',
+  'VEHICLE_ENGINE_GASKETS':        'Juntas de Motor',
+  'MOTORCYCLE_FORK_TUBES':         'Tubos de Horquilla',
+  'MOTORCYCLE_HANDLEBARS':         'Manubrios',
+  'VEHICLE_EXHAUSTS':              'Escapes',
+};
+const DOMAIN_COLORS = {
+  'MOTORCYCLE_HELMETS':            '#f0883e',
+  'MOTORCYCLE_FAIRINGS':           '#58a6ff',
+  'MOTORCYCLE_INTERCOMMUNICATORS': '#a371f7',
+  'MOTORCYCLE_BLOCK_CYLINDERS':    '#79c0ff',
+  'MOTORCYCLE_TRANSMISSION_KITS':  '#56d364',
+  'MOTORCYCLE_JACKETS':            '#d2a8ff',
+  'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS': '#ffa657',
+  'MOTORCYCLIST_GLOVES':           '#ff7b72',
+  'VEHICLE_MUFFLERS':              '#7ee787',
+  'MOTORCYCLE_RAIN_SUITS':         '#39d353',
+  'MOTORCYCLE_CASES':              '#bc8cff',
+  'MOTORCYCLE_BOOTS':              '#ffa8a8',
+  'VEHICLE_CARBURETORS':           '#6ca4f0',
+  'BICYCLE_AND_MOTORCYCLE_LOCKS':  '#e6b00a',
+  'VEHICLE_COVERS':                '#8b949e',
+  'MOTORCYCLE_REPLACEMENTS':       '#88a4c9',
+  'MOTORCYCLE_WHEELS':             '#d29922',
+  'VEHICLE_WINDSHIELDS':           '#76e3ea',
+  'MOTORCYCLE_SPEEDOMETERS':       '#c9e4fa',
+  'NECK_GAITERS_AND_BALACLAVAS':   '#f2a86f',
+  'MOTORCYCLE_PANTS':              '#b392f0',
+  'MOTORCYCLE_LUGGAGE_RACKS':      '#85e89d',
+  'MOTORCYCLE_SUITS':              '#f97583',
+  'VEHICLE_FUEL_TANKS':            '#ffab70',
+  'MOTORCYCLE_REARVIEW_MIRRORS':   '#9ecbff',
+  'MOTORCYCLE_CRASH_BARS':         '#e1b96e',
+  'VEHICLE_ENGINE_GASKETS':        '#56d364',
+  'MOTORCYCLE_FORK_TUBES':         '#a5d6ff',
+  'MOTORCYCLE_HANDLEBARS':         '#d2a8ff',
+  'VEHICLE_EXHAUSTS':              '#ff7b72',
+};
+const DD = {
+  'MOTORCYCLE_HELMETS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:45,    s:1,   c:2.2, st:1901114}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:115,   s:18,  c:15.7,st:1306701}},
+    '03. 15K a 33K':  {con:null,                                  sin:{l:241,   s:31,  c:12.9,st:904122}},
+    '04. 33K a 50K':  {con:{l:562,  s:190, c:33.8,st:13068},     sin:{l:83,    s:0,   c:0.0, st:800112}},
+    '05. 50K a 75K':  {con:{l:2024, s:415, c:20.5,st:38604},     sin:{l:179,   s:0,   c:0.0, st:300296}},
+    '06. 75K a 90K':  {con:{l:2186, s:424, c:19.4,st:55669},     sin:{l:100,   s:0,   c:0.0, st:400095}},
+    '07. 90K a 120K': {con:{l:4315, s:639, c:14.8,st:80008},     sin:{l:197,   s:0,   c:0.0, st:403201}},
+    '08. 120K a 150K':{con:{l:5672, s:724, c:12.8,st:182620},    sin:{l:155,   s:1,   c:0.6, st:300204}},
+    '09. 150K a 175K':{con:{l:4439, s:441, c:9.9, st:1134955},   sin:{l:126,   s:0,   c:0.0, st:100132}},
+    '10. 175K a 220K':{con:{l:9735, s:780, c:8.0, st:2285658},   sin:{l:153,   s:0,   c:0.0, st:300269}},
+    '11. 220K a 250K':{con:{l:5518, s:320, c:5.8, st:927157},    sin:{l:55,    s:0,   c:0.0, st:100122}},
+    '12. 250K a 300K':{con:{l:5339, s:259, c:4.9, st:231815},    sin:{l:95,    s:0,   c:0.0, st:97}},
+    '13. 300K a 450K':{con:{l:8909, s:257, c:2.9, st:412240},    sin:{l:153,   s:0,   c:0.0, st:100219}},
+    '14. 450K a 600K':{con:{l:10622,s:146, c:1.4, st:120611},    sin:{l:97,    s:0,   c:0.0, st:100122}},
+    '15. 600K a 1M':  {con:{l:18350,s:126, c:0.7, st:158497},    sin:{l:92,    s:0,   c:0.0, st:93}},
+    '16. Mas de 1M':  {con:{l:11973,s:60,  c:0.5, st:90233},     sin:{l:58,    s:0,   c:0.0, st:96}},
+  },
+  'MOTORCYCLE_FAIRINGS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:296,   s:61,  c:20.6,st:314985}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:2864,  s:502, c:17.5,st:183273}},
+    '03. 15K a 33K':  {con:{l:9,    s:0,   c:0.0, st:491},       sin:{l:6757,  s:979, c:14.5,st:207163}},
+    '04. 33K a 50K':  {con:{l:4742, s:626, c:13.2,st:103263},    sin:{l:11,    s:1,   c:9.1, st:502}},
+    '05. 50K a 75K':  {con:{l:5363, s:589, c:11.0,st:139341},    sin:{l:14,    s:0,   c:0.0, st:212}},
+    '06. 75K a 90K':  {con:{l:2493, s:265, c:10.6,st:60667},     sin:{l:8,     s:0,   c:0.0, st:14}},
+    '07. 90K a 120K': {con:{l:3990, s:303, c:7.6, st:104725},    sin:{l:16,    s:0,   c:0.0, st:37}},
+    '08. 120K a 150K':{con:{l:2749, s:150, c:5.5, st:65909},     sin:{l:10,    s:0,   c:0.0, st:18}},
+    '09. 150K a 175K':{con:{l:1513, s:117, c:7.7, st:15158},     sin:{l:9,     s:0,   c:0.0, st:14}},
+    '10. 175K a 220K':{con:{l:2632, s:172, c:6.5, st:46220},     sin:{l:6,     s:0,   c:0.0, st:7}},
+    '11. 220K a 250K':{con:{l:1459, s:70,  c:4.8, st:76335},     sin:{l:3,     s:0,   c:0.0, st:5}},
+    '12. 250K a 300K':{con:{l:1293, s:121, c:9.4, st:44910},     sin:{l:11,    s:0,   c:0.0, st:31}},
+    '13. 300K a 450K':{con:{l:2010, s:104, c:5.2, st:18941},     sin:{l:11,    s:0,   c:0.0, st:13}},
+    '14. 450K a 600K':{con:{l:1574, s:30,  c:1.9, st:8996},      sin:{l:3,     s:0,   c:0.0, st:3}},
+    '15. 600K a 1M':  {con:{l:1358, s:7,   c:0.5, st:16875},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '16. Mas de 1M':  {con:{l:386,  s:0,   c:0.0, st:18469},     sin:{l:3,     s:0,   c:0.0, st:3}},
+  },
+  'MOTORCYCLE_INTERCOMMUNICATORS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:5,     s:1,   c:20.0,st:169}},
+    '02. 5K a 15K':   {con:{l:11,   s:2,   c:18.2,st:2386},      sin:{l:254,   s:25,  c:9.8, st:160968}},
+    '03. 15K a 33K':  {con:{l:425,  s:10,  c:2.4, st:186427},    sin:{l:9542,  s:174, c:1.8, st:3307527}},
+    '04. 33K a 50K':  {con:{l:1131, s:68,  c:6.0, st:363927},    sin:{l:306,   s:3,   c:1.0, st:75225}},
+    '05. 50K a 75K':  {con:{l:5594, s:100, c:1.8, st:2232254},   sin:{l:154,   s:3,   c:1.9, st:193814}},
+    '06. 75K a 90K':  {con:{l:1931, s:49,  c:2.5, st:733452},    sin:{l:13,    s:0,   c:0.0, st:5393}},
+    '07. 90K a 120K': {con:{l:2261, s:37,  c:1.6, st:726238},    sin:{l:4,     s:0,   c:0.0, st:103}},
+    '08. 120K a 150K':{con:{l:1441, s:61,  c:4.2, st:823537},    sin:{l:4,     s:0,   c:0.0, st:1172}},
+    '09. 150K a 175K':{con:{l:859,  s:28,  c:3.3, st:160879},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:1109, s:40,  c:3.6, st:206216},    sin:null},
+    '11. 220K a 250K':{con:{l:559,  s:11,  c:2.0, st:88181},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '12. 250K a 300K':{con:{l:731,  s:32,  c:4.4, st:85423},     sin:null},
+    '13. 300K a 450K':{con:{l:1105, s:35,  c:3.2, st:90586},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:802,  s:13,  c:1.6, st:32574},     sin:null},
+    '15. 600K a 1M':  {con:{l:1072, s:20,  c:1.9, st:36973},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '16. Mas de 1M':  {con:{l:761,  s:15,  c:2.0, st:22642},     sin:{l:1,     s:0,   c:0.0, st:1}},
+  },
+  'MOTORCYCLE_BLOCK_CYLINDERS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:45,    s:7,   c:15.6,st:840}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:381,   s:44,  c:11.5,st:133227}},
+    '03. 15K a 33K':  {con:{l:53,   s:0,   c:0.0, st:24375},     sin:{l:1264,  s:90,  c:7.1, st:1951599}},
+    '04. 33K a 50K':  {con:{l:1061, s:210, c:19.8,st:5462513},   sin:{l:32,    s:1,   c:3.1, st:203113}},
+    '05. 50K a 75K':  {con:{l:2753, s:345, c:12.5,st:1159669},   sin:{l:55,    s:1,   c:1.8, st:166599}},
+    '06. 75K a 90K':  {con:{l:2177, s:205, c:9.4, st:1094130},   sin:{l:9,     s:0,   c:0.0, st:403}},
+    '07. 90K a 120K': {con:{l:6148, s:202, c:3.3, st:1256512},   sin:{l:12,    s:0,   c:0.0, st:14}},
+    '08. 120K a 150K':{con:{l:5416, s:158, c:2.9, st:816667},    sin:{l:11,    s:0,   c:0.0, st:11}},
+    '09. 150K a 175K':{con:{l:3654, s:116, c:3.2, st:526292},    sin:{l:7,     s:0,   c:0.0, st:100024}},
+    '10. 175K a 220K':{con:{l:6177, s:147, c:2.4, st:893865},    sin:{l:9,     s:0,   c:0.0, st:100028}},
+    '11. 220K a 250K':{con:{l:3230, s:58,  c:1.8, st:402619},    sin:{l:6,     s:0,   c:0.0, st:100105}},
+    '12. 250K a 300K':{con:{l:3699, s:77,  c:2.1, st:422851},    sin:{l:3,     s:0,   c:0.0, st:51}},
+    '13. 300K a 450K':{con:{l:5456, s:50,  c:0.9, st:663111},    sin:{l:9,     s:0,   c:0.0, st:9}},
+    '14. 450K a 600K':{con:{l:1726, s:15,  c:0.9, st:212916},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '15. 600K a 1M':  {con:{l:1208, s:12,  c:1.0, st:123219},    sin:{l:5,     s:0,   c:0.0, st:5}},
+    '16. Mas de 1M':  {con:{l:1175, s:7,   c:0.6, st:51293},     sin:{l:2,     s:0,   c:0.0, st:2}},
+  },
+  'MOTORCYCLE_TRANSMISSION_KITS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:33,    s:3,   c:9.1, st:200969}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:1642,  s:179, c:10.9,st:1754030}},
+    '03. 15K a 33K':  {con:{l:95,   s:2,   c:2.1, st:21153},     sin:{l:7266,  s:952, c:13.1,st:1624559}},
+    '04. 33K a 50K':  {con:{l:3702, s:608, c:16.4,st:101041},    sin:{l:103,   s:2,   c:1.9, st:14783}},
+    '05. 50K a 75K':  {con:{l:4483, s:451, c:10.1,st:367888},    sin:{l:63,    s:1,   c:1.6, st:7158}},
+    '06. 75K a 90K':  {con:{l:1886, s:222, c:11.8,st:108804},    sin:{l:10,    s:0,   c:0.0, st:69}},
+    '07. 90K a 120K': {con:{l:2455, s:241, c:9.8, st:213258},    sin:{l:4,     s:0,   c:0.0, st:7}},
+    '08. 120K a 150K':{con:{l:2280, s:142, c:6.2, st:80165},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '09. 150K a 175K':{con:{l:2281, s:83,  c:3.6, st:47500},     sin:{l:3,     s:0,   c:0.0, st:3}},
+    '10. 175K a 220K':{con:{l:2213, s:99,  c:4.5, st:50370},     sin:null},
+    '11. 220K a 250K':{con:{l:1260, s:45,  c:3.6, st:22363},     sin:null},
+    '12. 250K a 300K':{con:{l:2061, s:50,  c:2.4, st:33305},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '13. 300K a 450K':{con:{l:5333, s:73,  c:1.4, st:93573},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '14. 450K a 600K':{con:{l:2860, s:19,  c:0.7, st:68524},     sin:null},
+    '15. 600K a 1M':  {con:{l:1509, s:2,   c:0.1, st:98683},     sin:null},
+    '16. Mas de 1M':  {con:{l:363,  s:2,   c:0.6, st:19908},     sin:{l:1,     s:0,   c:0.0, st:1}},
+  },
+  'MOTORCYCLE_JACKETS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:3,     s:0,   c:0.0, st:100010}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:24,    s:0,   c:0.0, st:611742}},
+    '03. 15K a 33K':  {con:{l:698,  s:10,  c:1.4, st:361100},    sin:{l:2774,  s:18,  c:0.6, st:3946506}},
+    '04. 33K a 50K':  {con:{l:267,  s:19,  c:7.1, st:109060},    sin:{l:70,    s:2,   c:2.9, st:568968}},
+    '05. 50K a 75K':  {con:{l:21213,s:126, c:0.6, st:5181132},   sin:{l:53,    s:0,   c:0.0, st:464963}},
+    '06. 75K a 90K':  {con:{l:14307,s:32,  c:0.2, st:3355028},   sin:{l:34,    s:0,   c:0.0, st:34}},
+    '07. 90K a 120K': {con:{l:13630,s:124, c:0.9, st:2764479},   sin:{l:70,    s:0,   c:0.0, st:72}},
+    '08. 120K a 150K':{con:{l:17656,s:182, c:1.0, st:2531147},   sin:{l:60,    s:0,   c:0.0, st:200057}},
+    '09. 150K a 175K':{con:{l:6879, s:132, c:1.9, st:1731513},   sin:{l:57,    s:0,   c:0.0, st:58}},
+    '10. 175K a 220K':{con:{l:8522, s:149, c:1.7, st:1786731},   sin:{l:108,   s:0,   c:0.0, st:109}},
+    '11. 220K a 250K':{con:{l:5508, s:42,  c:0.8, st:918708},    sin:{l:28,    s:0,   c:0.0, st:28}},
+    '12. 250K a 300K':{con:{l:4312, s:58,  c:1.3, st:620529},    sin:{l:90,    s:0,   c:0.0, st:92}},
+    '13. 300K a 450K':{con:{l:8373, s:80,  c:1.0, st:1028540},   sin:{l:137,   s:0,   c:0.0, st:140}},
+    '14. 450K a 600K':{con:{l:2423, s:26,  c:1.1, st:198165},    sin:{l:77,    s:0,   c:0.0, st:79}},
+    '15. 600K a 1M':  {con:{l:2609, s:31,  c:1.2, st:159814},    sin:{l:86,    s:0,   c:0.0, st:86}},
+    '16. Mas de 1M':  {con:{l:1281, s:9,   c:0.7, st:30185},     sin:{l:29,    s:0,   c:0.0, st:100030}},
+  },
+  'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:20,    s:0,   c:0.0, st:1500005}},
+    '02. 5K a 15K':   {con:{l:11,   s:0,   c:0.0, st:4610},      sin:{l:848,   s:11,  c:1.3, st:826386}},
+    '03. 15K a 33K':  {con:{l:1563, s:8,   c:0.5, st:833769},    sin:{l:32692, s:201, c:0.6, st:14984884}},
+    '04. 33K a 50K':  {con:{l:2511, s:89,  c:3.5, st:991926},    sin:{l:796,   s:5,   c:0.6, st:254673}},
+    '05. 50K a 75K':  {con:{l:17913,s:211, c:1.2, st:6798445},   sin:{l:1441,  s:1,   c:0.1, st:715371}},
+    '06. 75K a 90K':  {con:{l:7177, s:103, c:1.4, st:2511060},   sin:{l:49,    s:0,   c:0.0, st:203096}},
+    '07. 90K a 120K': {con:{l:8921, s:136, c:1.5, st:1876181},   sin:{l:47,    s:0,   c:0.0, st:4575}},
+    '08. 120K a 150K':{con:{l:5371, s:79,  c:1.5, st:923718},    sin:{l:10,    s:0,   c:0.0, st:201054}},
+    '09. 150K a 175K':{con:{l:3111, s:47,  c:1.5, st:523490},    sin:{l:4,     s:0,   c:0.0, st:13}},
+    '10. 175K a 220K':{con:{l:3451, s:50,  c:1.4, st:871921},    sin:{l:6,     s:0,   c:0.0, st:154}},
+    '11. 220K a 250K':{con:{l:1604, s:32,  c:2.0, st:262184},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:1590, s:41,  c:2.6, st:239298},    sin:{l:4,     s:0,   c:0.0, st:4}},
+    '13. 300K a 450K':{con:{l:4117, s:55,  c:1.3, st:256733},    sin:{l:9,     s:0,   c:0.0, st:13}},
+    '14. 450K a 600K':{con:{l:2944, s:9,   c:0.3, st:106383},    sin:{l:5,     s:0,   c:0.0, st:6}},
+    '15. 600K a 1M':  {con:{l:3323, s:15,  c:0.5, st:137263},    sin:{l:8,     s:0,   c:0.0, st:12}},
+    '16. Mas de 1M':  {con:{l:3063, s:5,   c:0.2, st:106528},    sin:{l:580,   s:0,   c:0.0, st:117644}},
+  },
+  'MOTORCYCLIST_GLOVES': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:69,    s:30,  c:43.5,st:426168}},
+    '02. 5K a 15K':   {con:{l:6,    s:0,   c:0.0, st:1794},      sin:{l:2876,  s:286, c:9.9, st:1616427}},
+    '03. 15K a 33K':  {con:{l:1417, s:4,   c:0.3, st:431494},    sin:{l:37767, s:624, c:1.7, st:16834861}},
+    '04. 33K a 50K':  {con:{l:3997, s:241, c:6.0, st:816054},    sin:{l:575,   s:12,  c:2.1, st:252402}},
+    '05. 50K a 75K':  {con:{l:23070,s:345, c:1.5, st:6357760},   sin:{l:288,   s:1,   c:0.3, st:419454}},
+    '06. 75K a 90K':  {con:{l:11341,s:87,  c:0.8, st:2969989},   sin:{l:15,    s:0,   c:0.0, st:1853}},
+    '07. 90K a 120K': {con:{l:14348,s:138, c:1.0, st:2511427},   sin:{l:11,    s:0,   c:0.0, st:510}},
+    '08. 120K a 150K':{con:{l:10765,s:91,  c:0.8, st:1588809},   sin:{l:2,     s:0,   c:0.0, st:7}},
+    '09. 150K a 175K':{con:{l:3534, s:36,  c:1.0, st:376233},    sin:{l:2,     s:0,   c:0.0, st:2}},
+    '10. 175K a 220K':{con:{l:4687, s:40,  c:0.9, st:489876},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '11. 220K a 250K':{con:{l:1448, s:33,  c:2.3, st:119490},    sin:{l:7,     s:0,   c:0.0, st:7}},
+    '12. 250K a 300K':{con:{l:1086, s:16,  c:1.5, st:63346},     sin:{l:9,     s:0,   c:0.0, st:10}},
+    '13. 300K a 450K':{con:{l:2127, s:13,  c:0.6, st:47727},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '14. 450K a 600K':{con:{l:1197, s:4,   c:0.3, st:36224},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '15. 600K a 1M':  {con:{l:852,  s:1,   c:0.1, st:28358},     sin:null},
+    '16. Mas de 1M':  {con:{l:205,  s:0,   c:0.0, st:21411},     sin:null},
+  },
+  'VEHICLE_MUFFLERS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:33,    s:4,   c:12.1,st:452182}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:567,   s:29,  c:5.1, st:673031}},
+    '03. 15K a 33K':  {con:{l:86,   s:1,   c:1.2, st:22925},     sin:{l:3144,  s:94,  c:3.0, st:1009243}},
+    '04. 33K a 50K':  {con:{l:367,  s:49,  c:13.4,st:46459},     sin:{l:69,    s:1,   c:1.4, st:112428}},
+    '05. 50K a 75K':  {con:{l:1339, s:96,  c:7.2, st:331309},    sin:{l:52,    s:0,   c:0.0, st:503089}},
+    '06. 75K a 90K':  {con:{l:763,  s:63,  c:8.3, st:188812},    sin:{l:5,     s:0,   c:0.0, st:5}},
+    '07. 90K a 120K': {con:{l:1759, s:204, c:11.6,st:348107},    sin:{l:14,    s:0,   c:0.0, st:14}},
+    '08. 120K a 150K':{con:{l:1599, s:135, c:8.4, st:285601},    sin:{l:4,     s:0,   c:0.0, st:9}},
+    '09. 150K a 175K':{con:{l:982,  s:75,  c:7.6, st:130208},    sin:{l:6,     s:0,   c:0.0, st:11}},
+    '10. 175K a 220K':{con:{l:1275, s:104, c:8.2, st:109310},    sin:{l:3,     s:0,   c:0.0, st:3}},
+    '11. 220K a 250K':{con:{l:1073, s:83,  c:7.7, st:167153},    sin:{l:2,     s:0,   c:0.0, st:2}},
+    '12. 250K a 300K':{con:{l:828,  s:67,  c:8.1, st:123426},    sin:{l:4,     s:0,   c:0.0, st:4}},
+    '13. 300K a 450K':{con:{l:1640, s:54,  c:3.3, st:130695},    sin:{l:12,    s:0,   c:0.0, st:100033}},
+    '14. 450K a 600K':{con:{l:1434, s:34,  c:2.4, st:107479},    sin:{l:8,     s:0,   c:0.0, st:100006}},
+    '15. 600K a 1M':  {con:{l:2309, s:16,  c:0.7, st:180360},    sin:{l:7,     s:0,   c:0.0, st:7}},
+    '16. Mas de 1M':  {con:{l:2604, s:12,  c:0.5, st:156917},    sin:{l:11,    s:0,   c:0.0, st:44}},
+  },
+  'MOTORCYCLE_RAIN_SUITS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:67,    s:24,  c:35.8,st:58276}},
+    '02. 5K a 15K':   {con:{l:1,    s:0,   c:0.0, st:496},       sin:{l:1471,  s:136, c:9.2, st:3231961}},
+    '03. 15K a 33K':  {con:{l:312,  s:3,   c:1.0, st:914113},    sin:{l:11727, s:341, c:2.9, st:23586088}},
+    '04. 33K a 50K':  {con:{l:1216, s:171, c:14.1,st:918935},    sin:{l:70,    s:0,   c:0.0, st:92683}},
+    '05. 50K a 75K':  {con:{l:5620, s:238, c:4.2, st:10303042},  sin:{l:381,   s:7,   c:1.8, st:915131}},
+    '06. 75K a 90K':  {con:{l:2404, s:65,  c:2.7, st:9691971},   sin:{l:9,     s:0,   c:0.0, st:10011}},
+    '07. 90K a 120K': {con:{l:4127, s:39,  c:0.9, st:6359938},   sin:{l:3,     s:0,   c:0.0, st:102}},
+    '08. 120K a 150K':{con:{l:1643, s:28,  c:1.7, st:2036997},   sin:null},
+    '09. 150K a 175K':{con:{l:1001, s:28,  c:2.8, st:1811468},   sin:{l:1,     s:1,   c:100.0,st:497}},
+    '10. 175K a 220K':{con:{l:604,  s:15,  c:2.5, st:613777},    sin:{l:2,     s:0,   c:0.0, st:498}},
+    '11. 220K a 250K':{con:{l:167,  s:5,   c:3.0, st:53556},     sin:{l:2,     s:0,   c:0.0, st:498}},
+    '12. 250K a 300K':{con:{l:139,  s:5,   c:3.6, st:11249},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '13. 300K a 450K':{con:{l:382,  s:4,   c:1.0, st:53579},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:256,  s:1,   c:0.4, st:32510},     sin:null},
+    '15. 600K a 1M':  {con:{l:144,  s:0,   c:0.0, st:106826},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '16. Mas de 1M':  {con:{l:36,   s:1,   c:2.8, st:22946},     sin:null},
+  },
+  'MOTORCYCLE_CASES': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:35,    s:0,   c:0.0, st:500380}},
+    '02. 5K a 15K':   {con:{l:2,    s:0,   c:0.0, st:400},       sin:{l:978,   s:18,  c:1.8, st:395613}},
+    '03. 15K a 33K':  {con:{l:338,  s:1,   c:0.3, st:88625},     sin:{l:10167, s:46,  c:0.5, st:2672019}},
+    '04. 33K a 50K':  {con:{l:350,  s:17,  c:4.9, st:98874},     sin:{l:245,   s:1,   c:0.4, st:43881}},
+    '05. 50K a 75K':  {con:{l:2326, s:58,  c:2.5, st:544790},    sin:{l:179,   s:0,   c:0.0, st:144823}},
+    '06. 75K a 90K':  {con:{l:1076, s:47,  c:4.4, st:288226},    sin:{l:14,    s:1,   c:7.1, st:129}},
+    '07. 90K a 120K': {con:{l:1697, s:58,  c:3.4, st:240699},    sin:{l:20,    s:0,   c:0.0, st:813}},
+    '08. 120K a 150K':{con:{l:1191, s:48,  c:4.0, st:124956},    sin:{l:10,    s:0,   c:0.0, st:22}},
+    '09. 150K a 175K':{con:{l:1433, s:27,  c:1.9, st:44523},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '10. 175K a 220K':{con:{l:1054, s:38,  c:3.6, st:97448},     sin:{l:6,     s:1,   c:16.7,st:22}},
+    '11. 220K a 250K':{con:{l:495,  s:29,  c:5.9, st:24636},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:753,  s:46,  c:6.1, st:44798},     sin:{l:8,     s:0,   c:0.0, st:8}},
+    '13. 300K a 450K':{con:{l:1346, s:49,  c:3.6, st:38652},     sin:{l:12,    s:0,   c:0.0, st:100014}},
+    '14. 450K a 600K':{con:{l:961,  s:18,  c:1.9, st:12873},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '15. 600K a 1M':  {con:{l:2605, s:27,  c:1.0, st:25572},     sin:{l:17,    s:0,   c:0.0, st:17}},
+    '16. Mas de 1M':  {con:{l:7903, s:13,  c:0.2, st:70608},     sin:{l:178,   s:0,   c:0.0, st:1035}},
+  },
+  'MOTORCYCLE_BOOTS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:2,     s:0,   c:0.0, st:100000}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:26,    s:9,   c:34.6,st:4038}},
+    '03. 15K a 33K':  {con:{l:1,    s:0,   c:0.0, st:1946},      sin:{l:303,   s:86,  c:28.4,st:86573}},
+    '04. 33K a 50K':  {con:{l:132,  s:22,  c:16.7,st:9364},      sin:{l:4,     s:0,   c:0.0, st:4}},
+    '05. 50K a 75K':  {con:{l:204,  s:36,  c:17.6,st:298847},    sin:{l:8,     s:0,   c:0.0, st:2905}},
+    '06. 75K a 90K':  {con:{l:139,  s:13,  c:9.4, st:24350},     sin:{l:9,     s:0,   c:0.0, st:200005}},
+    '07. 90K a 120K': {con:{l:1188, s:49,  c:4.1, st:1299094},   sin:{l:22,    s:0,   c:0.0, st:22}},
+    '08. 120K a 150K':{con:{l:2887, s:55,  c:1.9, st:3048155},   sin:{l:7,     s:0,   c:0.0, st:7}},
+    '09. 150K a 175K':{con:{l:2379, s:27,  c:1.1, st:2755490},   sin:{l:8,     s:0,   c:0.0, st:8}},
+    '10. 175K a 220K':{con:{l:1690, s:71,  c:4.2, st:1059044},   sin:{l:11,    s:0,   c:0.0, st:11}},
+    '11. 220K a 250K':{con:{l:678,  s:23,  c:3.4, st:377660},    sin:{l:8,     s:0,   c:0.0, st:8}},
+    '12. 250K a 300K':{con:{l:609,  s:26,  c:4.3, st:545006},    sin:{l:12,    s:0,   c:0.0, st:22}},
+    '13. 300K a 450K':{con:{l:1751, s:111, c:6.3, st:415750},    sin:{l:45,    s:0,   c:0.0, st:85}},
+    '14. 450K a 600K':{con:{l:706,  s:47,  c:6.7, st:47315},     sin:{l:26,    s:0,   c:0.0, st:27}},
+    '15. 600K a 1M':  {con:{l:1617, s:39,  c:2.4, st:9367},      sin:{l:17,    s:0,   c:0.0, st:17}},
+    '16. Mas de 1M':  {con:{l:905,  s:17,  c:1.9, st:4137},      sin:{l:8,     s:0,   c:0.0, st:8}},
+  },
+  'VEHICLE_CARBURETORS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:498,   s:76,  c:15.3,st:1023450}},
+    '02. 5K a 15K':   {con:{l:3,    s:0,   c:0.0, st:299},       sin:{l:5766,  s:432, c:7.5, st:1688564}},
+    '03. 15K a 33K':  {con:{l:1630, s:20,  c:1.2, st:961891},    sin:{l:33884, s:689, c:2.0, st:17624415}},
+    '04. 33K a 50K':  {con:{l:7069, s:328, c:4.6, st:1471484},   sin:{l:1173,  s:8,   c:0.7, st:253208}},
+    '05. 50K a 75K':  {con:{l:33978,s:420, c:1.2, st:17105681},  sin:{l:432,   s:3,   c:0.7, st:209675}},
+    '06. 75K a 90K':  {con:{l:15212,s:163, c:1.1, st:4730636},   sin:{l:33,    s:0,   c:0.0, st:285}},
+    '07. 90K a 120K': {con:{l:19842,s:188, c:0.9, st:6297204},   sin:{l:41,    s:0,   c:0.0, st:400350}},
+    '08. 120K a 150K':{con:{l:10426,s:88,  c:0.8, st:3278126},   sin:{l:19,    s:0,   c:0.0, st:309}},
+    '09. 150K a 175K':{con:{l:5648, s:49,  c:0.9, st:1784034},   sin:{l:13,    s:0,   c:0.0, st:100011}},
+    '10. 175K a 220K':{con:{l:5844, s:52,  c:0.9, st:1628798},   sin:{l:8,     s:0,   c:0.0, st:8}},
+    '11. 220K a 250K':{con:{l:2464, s:15,  c:0.6, st:303503},    sin:{l:6,     s:0,   c:0.0, st:100004}},
+    '12. 250K a 300K':{con:{l:2918, s:14,  c:0.5, st:843251},    sin:{l:8,     s:0,   c:0.0, st:100006}},
+    '13. 300K a 450K':{con:{l:4968, s:18,  c:0.4, st:731960},    sin:{l:9,     s:0,   c:0.0, st:9}},
+    '14. 450K a 600K':{con:{l:2021, s:2,   c:0.1, st:559312},    sin:{l:7,     s:0,   c:0.0, st:7}},
+    '15. 600K a 1M':  {con:{l:1610, s:2,   c:0.1, st:189225},    sin:{l:9,     s:0,   c:0.0, st:300651}},
+    '16. Mas de 1M':  {con:{l:929,  s:1,   c:0.1, st:90846},     sin:{l:4,     s:0,   c:0.0, st:4}},
+  },
+  'BICYCLE_AND_MOTORCYCLE_LOCKS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:119,   s:42,  c:35.3,st:31000}},
+    '02. 5K a 15K':   {con:{l:10,   s:1,   c:10.0,st:4253},      sin:{l:7228,  s:431, c:6.0, st:4013059}},
+    '03. 15K a 33K':  {con:{l:429,  s:2,   c:0.5, st:211334},    sin:{l:27348, s:741, c:2.7, st:10247282}},
+    '04. 33K a 50K':  {con:{l:1744, s:142, c:8.1, st:356743},    sin:{l:522,   s:1,   c:0.2, st:183433}},
+    '05. 50K a 75K':  {con:{l:5124, s:150, c:2.9, st:1259752},   sin:{l:484,   s:1,   c:0.2, st:195332}},
+    '06. 75K a 90K':  {con:{l:1802, s:50,  c:2.8, st:400192},    sin:{l:39,    s:0,   c:0.0, st:803}},
+    '07. 90K a 120K': {con:{l:2173, s:51,  c:2.3, st:414262},    sin:{l:24,    s:0,   c:0.0, st:1631}},
+    '08. 120K a 150K':{con:{l:1382, s:46,  c:3.3, st:145048},    sin:{l:5,     s:0,   c:0.0, st:5}},
+    '09. 150K a 175K':{con:{l:1045, s:12,  c:1.1, st:51807},     sin:null},
+    '10. 175K a 220K':{con:{l:695,  s:7,   c:1.0, st:53804},     sin:{l:1,     s:0,   c:0.0, st:99999}},
+    '11. 220K a 250K':{con:{l:261,  s:3,   c:1.1, st:14689},     sin:null},
+    '12. 250K a 300K':{con:{l:397,  s:6,   c:1.5, st:25401},     sin:null},
+    '13. 300K a 450K':{con:{l:640,  s:1,   c:0.2, st:33639},     sin:null},
+    '14. 450K a 600K':{con:{l:226,  s:0,   c:0.0, st:14350},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '15. 600K a 1M':  {con:{l:271,  s:0,   c:0.0, st:11829},     sin:{l:2,     s:0,   c:0.0, st:13}},
+    '16. Mas de 1M':  {con:{l:173,  s:0,   c:0.0, st:8540},      sin:null},
+  },
+  'VEHICLE_COVERS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:50,    s:21,  c:42.0,st:206913}},
+    '02. 5K a 15K':   {con:{l:5,    s:0,   c:0.0, st:2052},      sin:{l:819,   s:75,  c:9.2, st:811074}},
+    '03. 15K a 33K':  {con:{l:516,  s:2,   c:0.4, st:141866},    sin:{l:10730, s:445, c:4.1, st:4774148}},
+    '04. 33K a 50K':  {con:{l:7624, s:671, c:8.8, st:20631086},  sin:{l:308,   s:7,   c:2.3, st:149682}},
+    '05. 50K a 75K':  {con:{l:30535,s:935, c:3.1, st:47393920},  sin:{l:506,   s:1,   c:0.2, st:426394}},
+    '06. 75K a 90K':  {con:{l:2453, s:38,  c:1.5, st:708916},    sin:{l:8,     s:0,   c:0.0, st:1453}},
+    '07. 90K a 120K': {con:{l:2399, s:73,  c:3.0, st:362564},    sin:{l:9,     s:0,   c:0.0, st:1407}},
+    '08. 120K a 150K':{con:{l:1193, s:44,  c:3.7, st:120610},    sin:{l:4,     s:0,   c:0.0, st:103}},
+    '09. 150K a 175K':{con:{l:662,  s:6,   c:0.9, st:58767},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:649,  s:2,   c:0.3, st:59121},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '11. 220K a 250K':{con:{l:393,  s:0,   c:0.0, st:22104},     sin:null},
+    '12. 250K a 300K':{con:{l:571,  s:1,   c:0.2, st:36918},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:840,  s:3,   c:0.4, st:54409},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:461,  s:0,   c:0.0, st:23487},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '15. 600K a 1M':  {con:{l:422,  s:0,   c:0.0, st:25348},     sin:null},
+    '16. Mas de 1M':  {con:{l:369,  s:0,   c:0.0, st:20534},     sin:null},
+  },
+  'MOTORCYCLE_WHEELS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:35,    s:0,   c:0.0, st:300383}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:61,    s:4,   c:6.6, st:102984}},
+    '03. 15K a 33K':  {con:null,                                  sin:{l:135,   s:17,  c:12.6,st:227346}},
+    '04. 33K a 50K':  {con:{l:244,  s:32,  c:13.1,st:41865},     sin:{l:6,     s:0,   c:0.0, st:200002}},
+    '05. 50K a 75K':  {con:{l:566,  s:85,  c:15.0,st:8837},      sin:{l:16,    s:0,   c:0.0, st:16}},
+    '06. 75K a 90K':  {con:{l:456,  s:43,  c:9.4, st:13230},     sin:{l:7,     s:0,   c:0.0, st:100005}},
+    '07. 90K a 120K': {con:{l:831,  s:81,  c:9.7, st:446339},    sin:{l:5,     s:0,   c:0.0, st:19}},
+    '08. 120K a 150K':{con:{l:630,  s:92,  c:14.6,st:308475},    sin:{l:5,     s:0,   c:0.0, st:5}},
+    '09. 150K a 175K':{con:{l:468,  s:52,  c:11.1,st:6730},      sin:{l:3,     s:0,   c:0.0, st:3}},
+    '10. 175K a 220K':{con:{l:880,  s:115, c:13.1,st:24630},     sin:{l:4,     s:0,   c:0.0, st:4}},
+    '11. 220K a 250K':{con:{l:394,  s:28,  c:7.1, st:9226},      sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:508,  s:49,  c:9.6, st:13974},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:754,  s:43,  c:5.7, st:11892},     sin:{l:6,     s:0,   c:0.0, st:6}},
+    '14. 450K a 600K':{con:{l:295,  s:5,   c:1.7, st:2611},      sin:{l:9,     s:0,   c:0.0, st:21}},
+    '15. 600K a 1M':  {con:{l:211,  s:3,   c:1.4, st:1489},      sin:{l:3,     s:0,   c:0.0, st:3}},
+    '16. Mas de 1M':  {con:{l:116,  s:1,   c:0.9, st:250},       sin:{l:2,     s:0,   c:0.0, st:2}},
+  },
+  'VEHICLE_WINDSHIELDS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:37,    s:6,   c:16.2,st:213306}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:753,   s:39,  c:5.2, st:478992}},
+    '03. 15K a 33K':  {con:{l:531,  s:4,   c:0.8, st:146758},    sin:{l:6075,  s:67,  c:1.1, st:2485219}},
+    '04. 33K a 50K':  {con:{l:937,  s:61,  c:6.5, st:142928},    sin:{l:365,   s:0,   c:0.0, st:151678}},
+    '05. 50K a 75K':  {con:{l:8423, s:209, c:2.5, st:2071448},   sin:{l:183,   s:1,   c:0.5, st:256159}},
+    '06. 75K a 90K':  {con:{l:4468, s:135, c:3.0, st:822580},    sin:{l:8,     s:0,   c:0.0, st:100193}},
+    '07. 90K a 120K': {con:{l:6179, s:237, c:3.8, st:868344},    sin:{l:25,    s:0,   c:0.0, st:229}},
+    '08. 120K a 150K':{con:{l:3187, s:88,  c:2.8, st:319690},    sin:{l:15,    s:0,   c:0.0, st:432}},
+    '09. 150K a 175K':{con:{l:2104, s:82,  c:3.9, st:151698},    sin:{l:8,     s:0,   c:0.0, st:9}},
+    '10. 175K a 220K':{con:{l:2631, s:40,  c:1.5, st:171071},    sin:{l:35,    s:5,   c:14.3,st:388}},
+    '11. 220K a 250K':{con:{l:1222, s:6,   c:0.5, st:84076},     sin:{l:82,    s:6,   c:7.3, st:1007}},
+    '12. 250K a 300K':{con:{l:1755, s:38,  c:2.2, st:93083},     sin:{l:216,   s:13,  c:6.0, st:2672}},
+    '13. 300K a 450K':{con:{l:4608, s:37,  c:0.8, st:238766},    sin:{l:396,   s:4,   c:1.0, st:9786}},
+    '14. 450K a 600K':{con:{l:2605, s:7,   c:0.3, st:141832},    sin:{l:1957,  s:0,   c:0.0, st:5226}},
+    '15. 600K a 1M':  {con:{l:3256, s:3,   c:0.1, st:180650},    sin:{l:973,   s:2,   c:0.2, st:1481}},
+    '16. Mas de 1M':  {con:{l:1713, s:0,   c:0.0, st:61087},     sin:{l:651,   s:0,   c:0.0, st:2637}},
+  },
+  'MOTORCYCLE_SPEEDOMETERS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:74,    s:24,  c:32.4,st:6633}},
+    '02. 5K a 15K':   {con:{l:2,    s:0,   c:0.0, st:299},       sin:{l:1129,  s:163, c:14.4,st:226277}},
+    '03. 15K a 33K':  {con:{l:517,  s:5,   c:1.0, st:137145},    sin:{l:8557,  s:337, c:3.9, st:2410819}},
+    '04. 33K a 50K':  {con:{l:1900, s:215, c:11.3,st:208863},    sin:{l:633,   s:9,   c:1.4, st:196726}},
+    '05. 50K a 75K':  {con:{l:11972,s:222, c:1.9, st:2812052},   sin:{l:289,   s:3,   c:1.0, st:345416}},
+    '06. 75K a 90K':  {con:{l:5828, s:86,  c:1.5, st:1886426},   sin:{l:28,    s:0,   c:0.0, st:6920}},
+    '07. 90K a 120K': {con:{l:6966, s:123, c:1.8, st:2157554},   sin:{l:22,    s:0,   c:0.0, st:124}},
+    '08. 120K a 150K':{con:{l:3183, s:57,  c:1.8, st:844473},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '09. 150K a 175K':{con:{l:1230, s:35,  c:2.8, st:160806},    sin:{l:2,     s:0,   c:0.0, st:2}},
+    '10. 175K a 220K':{con:{l:1301, s:32,  c:2.5, st:166048},    sin:{l:6,     s:0,   c:0.0, st:7}},
+    '11. 220K a 250K':{con:{l:453,  s:4,   c:0.9, st:54070},     sin:null},
+    '12. 250K a 300K':{con:{l:462,  s:7,   c:1.5, st:60298},     sin:{l:12,    s:0,   c:0.0, st:12}},
+    '13. 300K a 450K':{con:{l:785,  s:5,   c:0.6, st:74185},     sin:{l:6,     s:0,   c:0.0, st:6}},
+    '14. 450K a 600K':{con:{l:422,  s:4,   c:0.9, st:22981},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '15. 600K a 1M':  {con:{l:285,  s:1,   c:0.4, st:18536},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '16. Mas de 1M':  {con:{l:109,  s:1,   c:0.9, st:8176},      sin:{l:4,     s:0,   c:0.0, st:4}},
+  },
+  'NECK_GAITERS_AND_BALACLAVAS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:437,   s:148, c:33.9,st:3133305}},
+    '02. 5K a 15K':   {con:{l:13,   s:0,   c:0.0, st:4102},      sin:{l:19697, s:1141,c:5.8, st:12695748}},
+    '03. 15K a 33K':  {con:{l:513,  s:0,   c:0.0, st:178331},    sin:{l:70471, s:623, c:0.9, st:44423748}},
+    '04. 33K a 50K':  {con:{l:1604, s:97,  c:6.0, st:547117},    sin:{l:571,   s:3,   c:0.5, st:362575}},
+    '05. 50K a 75K':  {con:{l:4297, s:57,  c:1.3, st:5826382},   sin:{l:348,   s:0,   c:0.0, st:737711}},
+    '06. 75K a 90K':  {con:{l:1100, s:19,  c:1.7, st:1100919},   sin:{l:13,    s:0,   c:0.0, st:8597}},
+    '07. 90K a 120K': {con:{l:2189, s:9,   c:0.4, st:952906},    sin:{l:15,    s:0,   c:0.0, st:662}},
+    '08. 120K a 150K':{con:{l:1487, s:7,   c:0.5, st:266953},    sin:{l:7,     s:0,   c:0.0, st:105}},
+    '09. 150K a 175K':{con:{l:848,  s:2,   c:0.2, st:157969},    sin:{l:6,     s:0,   c:0.0, st:131}},
+    '10. 175K a 220K':{con:{l:717,  s:2,   c:0.3, st:65160},     sin:{l:2,     s:0,   c:0.0, st:51}},
+    '11. 220K a 250K':{con:{l:243,  s:2,   c:0.8, st:36506},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:181,  s:2,   c:1.1, st:27995},     sin:null},
+    '13. 300K a 450K':{con:{l:257,  s:1,   c:0.4, st:49064},     sin:null},
+    '14. 450K a 600K':{con:{l:82,   s:0,   c:0.0, st:5043},      sin:null},
+    '15. 600K a 1M':  {con:{l:44,   s:0,   c:0.0, st:3443},      sin:null},
+    '16. Mas de 1M':  {con:{l:4,    s:0,   c:0.0, st:397},       sin:{l:1,     s:0,   c:0.0, st:1}},
+  },
+  'MOTORCYCLE_PANTS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:6,     s:0,   c:0.0, st:200002}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:28,    s:1,   c:3.6, st:508399}},
+    '03. 15K a 33K':  {con:{l:13,   s:0,   c:0.0, st:23442},     sin:{l:287,   s:7,   c:2.4, st:597739}},
+    '04. 33K a 50K':  {con:{l:85,   s:0,   c:0.0, st:21854},     sin:{l:19,    s:0,   c:0.0, st:105452}},
+    '05. 50K a 75K':  {con:{l:1168, s:112, c:9.6, st:998001},    sin:{l:21,    s:0,   c:0.0, st:175840}},
+    '06. 75K a 90K':  {con:{l:1065, s:32,  c:3.0, st:405377},    sin:{l:8,     s:0,   c:0.0, st:107}},
+    '07. 90K a 120K': {con:{l:2879, s:42,  c:1.5, st:770378},    sin:{l:14,    s:1,   c:7.1, st:100013}},
+    '08. 120K a 150K':{con:{l:3142, s:105, c:3.3, st:629025},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '09. 150K a 175K':{con:{l:2490, s:46,  c:1.8, st:219502},    sin:{l:5,     s:0,   c:0.0, st:5}},
+    '10. 175K a 220K':{con:{l:3537, s:57,  c:1.6, st:405972},    sin:{l:8,     s:0,   c:0.0, st:8}},
+    '11. 220K a 250K':{con:{l:1247, s:19,  c:1.5, st:94912},     sin:{l:4,     s:0,   c:0.0, st:100002}},
+    '12. 250K a 300K':{con:{l:690,  s:17,  c:2.5, st:25002},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '13. 300K a 450K':{con:{l:1179, s:13,  c:1.1, st:45992},     sin:{l:17,    s:0,   c:0.0, st:17}},
+    '14. 450K a 600K':{con:{l:444,  s:10,  c:2.3, st:6364},      sin:{l:8,     s:0,   c:0.0, st:10}},
+    '15. 600K a 1M':  {con:{l:617,  s:8,   c:1.3, st:5390},      sin:{l:8,     s:0,   c:0.0, st:8}},
+    '16. Mas de 1M':  {con:{l:304,  s:3,   c:1.0, st:2610},      sin:{l:1,     s:0,   c:0.0, st:1}},
+  },
+  'MOTORCYCLE_LUGGAGE_RACKS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:9,     s:0,   c:0.0, st:300029}},
+    '02. 5K a 15K':   {con:{l:3,    s:0,   c:0.0, st:1106},      sin:{l:276,   s:10,  c:3.6, st:278523}},
+    '03. 15K a 33K':  {con:{l:73,   s:1,   c:1.4, st:35844},     sin:{l:2387,  s:32,  c:1.3, st:1459099}},
+    '04. 33K a 50K':  {con:{l:371,  s:64,  c:17.3,st:94686},     sin:{l:49,    s:0,   c:0.0, st:5190}},
+    '05. 50K a 75K':  {con:{l:1878, s:116, c:6.2, st:451359},    sin:{l:77,    s:0,   c:0.0, st:11272}},
+    '06. 75K a 90K':  {con:{l:1377, s:98,  c:7.1, st:235645},    sin:{l:14,    s:1,   c:7.1, st:21}},
+    '07. 90K a 120K': {con:{l:2136, s:101, c:4.7, st:294038},    sin:{l:14,    s:0,   c:0.0, st:19}},
+    '08. 120K a 150K':{con:{l:1739, s:88,  c:5.1, st:135720},    sin:{l:9,     s:0,   c:0.0, st:13}},
+    '09. 150K a 175K':{con:{l:1178, s:68,  c:5.8, st:190160},    sin:{l:11,    s:0,   c:0.0, st:109}},
+    '10. 175K a 220K':{con:{l:1420, s:54,  c:3.8, st:131532},    sin:{l:9,     s:1,   c:11.1,st:32}},
+    '11. 220K a 250K':{con:{l:709,  s:22,  c:3.1, st:36336},     sin:null},
+    '12. 250K a 300K':{con:{l:794,  s:19,  c:2.4, st:48284},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '13. 300K a 450K':{con:{l:1519, s:25,  c:1.6, st:57102},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '14. 450K a 600K':{con:{l:838,  s:8,   c:1.0, st:13087},     sin:null},
+    '15. 600K a 1M':  {con:{l:1214, s:4,   c:0.3, st:32502},     sin:{l:5,     s:0,   c:0.0, st:45}},
+    '16. Mas de 1M':  {con:{l:964,  s:0,   c:0.0, st:50055},     sin:{l:2,     s:0,   c:0.0, st:10}},
+  },
+  'MOTORCYCLE_SUITS': {
+    '01. Hasta 5K':    {con:null,                                  sin:null},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:47,    s:11,  c:23.4,st:220206}},
+    '03. 15K a 33K':  {con:{l:200,  s:0,   c:0.0, st:147220},    sin:{l:968,   s:97,  c:10.0,st:1326450}},
+    '04. 33K a 50K':  {con:{l:312,  s:66,  c:21.2,st:192528},    sin:{l:5,     s:1,   c:20.0,st:35527}},
+    '05. 50K a 75K':  {con:{l:1651, s:37,  c:2.2, st:842214},    sin:{l:16,    s:0,   c:0.0, st:99723}},
+    '06. 75K a 90K':  {con:{l:1660, s:21,  c:1.3, st:693042},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '07. 90K a 120K': {con:{l:7708, s:19,  c:0.2, st:1733525},   sin:{l:3,     s:0,   c:0.0, st:3}},
+    '08. 120K a 150K':{con:{l:4207, s:12,  c:0.3, st:409957},    sin:{l:4,     s:0,   c:0.0, st:4}},
+    '09. 150K a 175K':{con:{l:17923,s:24,  c:0.1, st:2231343},   sin:{l:1,     s:0,   c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:33606,s:31,  c:0.1, st:3680804},   sin:{l:5,     s:0,   c:0.0, st:5}},
+    '11. 220K a 250K':{con:{l:12773,s:13,  c:0.1, st:1818872},   sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:973,  s:13,  c:1.3, st:135841},    sin:{l:4,     s:0,   c:0.0, st:4}},
+    '13. 300K a 450K':{con:{l:738,  s:20,  c:2.7, st:49746},     sin:{l:7,     s:0,   c:0.0, st:7}},
+    '14. 450K a 600K':{con:{l:249,  s:5,   c:2.0, st:16498},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '15. 600K a 1M':  {con:{l:252,  s:1,   c:0.4, st:17099},     sin:{l:5,     s:0,   c:0.0, st:5}},
+    '16. Mas de 1M':  {con:{l:69,   s:1,   c:1.4, st:374},       sin:{l:6,     s:0,   c:0.0, st:7}},
+  },
+  'VEHICLE_FUEL_TANKS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:161,   s:25,  c:15.5,st:121902}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:1835,  s:192, c:10.5,st:479386}},
+    '03. 15K a 33K':  {con:{l:140,  s:1,   c:0.7, st:34563},     sin:{l:3766,  s:190, c:5.0, st:975051}},
+    '04. 33K a 50K':  {con:{l:734,  s:112, c:15.3,st:32621},     sin:{l:86,    s:0,   c:0.0, st:1554}},
+    '05. 50K a 75K':  {con:{l:1759, s:77,  c:4.4, st:287703},    sin:{l:56,    s:0,   c:0.0, st:410743}},
+    '06. 75K a 90K':  {con:{l:1109, s:31,  c:2.8, st:80351},     sin:{l:19,    s:0,   c:0.0, st:1131}},
+    '07. 90K a 120K': {con:{l:1337, s:92,  c:6.9, st:181347},    sin:{l:46,    s:2,   c:4.3, st:111}},
+    '08. 120K a 150K':{con:{l:1181, s:155, c:13.1,st:91365},     sin:{l:62,    s:4,   c:6.5, st:1114}},
+    '09. 150K a 175K':{con:{l:805,  s:101, c:12.5,st:78137},     sin:{l:58,    s:3,   c:5.2, st:156}},
+    '10. 175K a 220K':{con:{l:1054, s:79,  c:7.5, st:89172},     sin:{l:100,   s:0,   c:0.0, st:12227}},
+    '11. 220K a 250K':{con:{l:373,  s:20,  c:5.4, st:9677},      sin:{l:12,    s:0,   c:0.0, st:20}},
+    '12. 250K a 300K':{con:{l:607,  s:22,  c:3.6, st:13578},     sin:{l:10,    s:0,   c:0.0, st:26}},
+    '13. 300K a 450K':{con:{l:1175, s:34,  c:2.9, st:27742},     sin:{l:27,    s:1,   c:3.7, st:100064}},
+    '14. 450K a 600K':{con:{l:413,  s:10,  c:2.4, st:4675},      sin:{l:19,    s:1,   c:5.3, st:147}},
+    '15. 600K a 1M':  {con:{l:815,  s:15,  c:1.8, st:10879},     sin:{l:54,    s:0,   c:0.0, st:684}},
+    '16. Mas de 1M':  {con:{l:1020, s:9,   c:0.9, st:25202},     sin:{l:162,   s:9,   c:5.6, st:104551}},
+  },
+  'MOTORCYCLE_REARVIEW_MIRRORS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:110,   s:26,  c:23.6,st:201656}},
+    '02. 5K a 15K':   {con:{l:1,    s:0,   c:0.0, st:100},       sin:{l:2529,  s:439, c:17.4,st:663013}},
+    '03. 15K a 33K':  {con:{l:789,  s:13,  c:1.6, st:288319},    sin:{l:17116, s:808, c:4.7, st:6230105}},
+    '04. 33K a 50K':  {con:{l:2198, s:205, c:9.3, st:306712},    sin:{l:476,   s:9,   c:1.9, st:92702}},
+    '05. 50K a 75K':  {con:{l:18114,s:205, c:1.1, st:5058342},   sin:{l:591,   s:17,  c:2.9, st:152999}},
+    '06. 75K a 90K':  {con:{l:11358,s:56,  c:0.5, st:3089802},   sin:{l:14,    s:0,   c:0.0, st:380}},
+    '07. 90K a 120K': {con:{l:13077,s:62,  c:0.5, st:2833330},   sin:{l:12,    s:0,   c:0.0, st:213}},
+    '08. 120K a 150K':{con:{l:4184, s:26,  c:0.6, st:811335},    sin:{l:3,     s:0,   c:0.0, st:3}},
+    '09. 150K a 175K':{con:{l:2549, s:2,   c:0.1, st:242095},    sin:{l:3,     s:0,   c:0.0, st:3}},
+    '10. 175K a 220K':{con:{l:3702, s:8,   c:0.2, st:327020},    sin:{l:3,     s:0,   c:0.0, st:3}},
+    '11. 220K a 250K':{con:{l:1242, s:3,   c:0.2, st:118293},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:1326, s:2,   c:0.2, st:120891},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:1564, s:1,   c:0.1, st:134430},    sin:{l:7,     s:0,   c:0.0, st:25}},
+    '14. 450K a 600K':{con:{l:578,  s:1,   c:0.2, st:37959},     sin:null},
+    '15. 600K a 1M':  {con:{l:381,  s:0,   c:0.0, st:25919},     sin:null},
+    '16. Mas de 1M':  {con:{l:121,  s:0,   c:0.0, st:5853},      sin:null},
+  },
+  'MOTORCYCLE_CRASH_BARS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:19,    s:3,   c:15.8,st:305023}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:440,   s:38,  c:8.6, st:316898}},
+    '03. 15K a 33K':  {con:{l:195,  s:0,   c:0.0, st:43006},     sin:{l:6015,  s:106, c:1.8, st:1651964}},
+    '04. 33K a 50K':  {con:{l:844,  s:94,  c:11.1,st:96635},     sin:{l:179,   s:6,   c:3.4, st:26048}},
+    '05. 50K a 75K':  {con:{l:6543, s:142, c:2.2, st:1327501},   sin:{l:121,   s:2,   c:1.7, st:24272}},
+    '06. 75K a 90K':  {con:{l:2935, s:59,  c:2.0, st:698399},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '07. 90K a 120K': {con:{l:4665, s:84,  c:1.8, st:901198},    sin:{l:4,     s:0,   c:0.0, st:1003}},
+    '08. 120K a 150K':{con:{l:3208, s:47,  c:1.5, st:460800},    sin:{l:6,     s:0,   c:0.0, st:100053}},
+    '09. 150K a 175K':{con:{l:1846, s:24,  c:1.3, st:228696},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:2581, s:32,  c:1.2, st:282669},    sin:{l:6,     s:0,   c:0.0, st:6}},
+    '11. 220K a 250K':{con:{l:1638, s:26,  c:1.6, st:143022},    sin:null},
+    '12. 250K a 300K':{con:{l:2689, s:21,  c:0.8, st:237560},    sin:{l:3,     s:0,   c:0.0, st:3}},
+    '13. 300K a 450K':{con:{l:4736, s:45,  c:1.0, st:315985},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:2615, s:18,  c:0.7, st:171439},    sin:{l:3,     s:0,   c:0.0, st:4}},
+    '15. 600K a 1M':  {con:{l:3048, s:34,  c:1.1, st:185605},    sin:{l:17,    s:0,   c:0.0, st:1097}},
+    '16. Mas de 1M':  {con:{l:2924, s:10,  c:0.3, st:180281},    sin:{l:79,    s:0,   c:0.0, st:5456}},
+  },
+  'VEHICLE_ENGINE_GASKETS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:4836,  s:491, c:10.2,st:708119}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:31089, s:2260,c:7.3, st:4525302}},
+    '03. 15K a 33K':  {con:{l:242,  s:2,   c:0.8, st:40367},     sin:{l:34872, s:2323,c:6.7, st:4924036}},
+    '04. 33K a 50K':  {con:{l:17197,s:1341,c:7.8, st:4037928},   sin:{l:119,   s:1,   c:0.8, st:212471}},
+    '05. 50K a 75K':  {con:{l:23033,s:1241,c:5.4, st:5502752},   sin:{l:164,   s:0,   c:0.0, st:6557}},
+    '06. 75K a 90K':  {con:{l:11205,s:554, c:4.9, st:3153320},   sin:{l:8,     s:0,   c:0.0, st:100168}},
+    '07. 90K a 120K': {con:{l:15674,s:684, c:4.4, st:4582836},   sin:{l:13,    s:0,   c:0.0, st:423}},
+    '08. 120K a 150K':{con:{l:10926,s:410, c:3.8, st:3692987},   sin:{l:3,     s:0,   c:0.0, st:3}},
+    '09. 150K a 175K':{con:{l:6837, s:245, c:3.6, st:1639082},   sin:{l:4,     s:0,   c:0.0, st:4}},
+    '10. 175K a 220K':{con:{l:8814, s:265, c:3.0, st:1312294},   sin:{l:3,     s:0,   c:0.0, st:3}},
+    '11. 220K a 250K':{con:{l:3346, s:71,  c:2.1, st:300799},    sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:3843, s:74,  c:1.9, st:263675},    sin:{l:4,     s:0,   c:0.0, st:100005}},
+    '13. 300K a 450K':{con:{l:5101, s:60,  c:1.2, st:281574},    sin:{l:4,     s:0,   c:0.0, st:4}},
+    '14. 450K a 600K':{con:{l:2311, s:15,  c:0.6, st:113913},    sin:{l:2,     s:0,   c:0.0, st:2}},
+    '15. 600K a 1M':  {con:{l:1723, s:7,   c:0.4, st:176935},    sin:{l:4,     s:0,   c:0.0, st:8}},
+    '16. Mas de 1M':  {con:{l:1267, s:4,   c:0.3, st:98779},     sin:{l:1,     s:0,   c:0.0, st:1}},
+  },
+  'MOTORCYCLE_FORK_TUBES': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:63,    s:5,   c:7.9, st:1037}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:592,   s:85,  c:14.4,st:121166}},
+    '03. 15K a 33K':  {con:{l:1,    s:0,   c:0.0, st:5},         sin:{l:1109,  s:126, c:11.4,st:19411}},
+    '04. 33K a 50K':  {con:{l:768,  s:108, c:14.1,st:7117},      sin:{l:6,     s:0,   c:0.0, st:6}},
+    '05. 50K a 75K':  {con:{l:946,  s:107, c:11.3,st:76776},     sin:{l:4,     s:0,   c:0.0, st:28}},
+    '06. 75K a 90K':  {con:{l:483,  s:65,  c:13.5,st:8171},      sin:{l:2,     s:0,   c:0.0, st:2}},
+    '07. 90K a 120K': {con:{l:916,  s:81,  c:8.8, st:21187},     sin:{l:3,     s:0,   c:0.0, st:3}},
+    '08. 120K a 150K':{con:{l:650,  s:39,  c:6.0, st:12133},     sin:null},
+    '09. 150K a 175K':{con:{l:981,  s:26,  c:2.7, st:12723},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '10. 175K a 220K':{con:{l:1297, s:40,  c:3.1, st:15282},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '11. 220K a 250K':{con:{l:245,  s:26,  c:10.6,st:3070},      sin:{l:1,     s:0,   c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:433,  s:18,  c:4.2, st:4033},      sin:{l:1,     s:0,   c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:2013, s:30,  c:1.5, st:25950},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:1956, s:3,   c:0.2, st:27573},     sin:{l:2,     s:0,   c:0.0, st:2}},
+    '15. 600K a 1M':  {con:{l:508,  s:1,   c:0.2, st:8521},      sin:null},
+    '16. Mas de 1M':  {con:{l:105,  s:1,   c:1.0, st:3049},      sin:null},
+  },
+  'MOTORCYCLE_HANDLEBARS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:42,    s:8,   c:19.0,st:259}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:367,   s:91,  c:24.8,st:5957}},
+    '03. 15K a 33K':  {con:{l:2,    s:0,   c:0.0, st:89},        sin:{l:1754,  s:335, c:19.1,st:157489}},
+    '04. 33K a 50K':  {con:{l:818,  s:127, c:15.5,st:32169},     sin:{l:4,     s:0,   c:0.0, st:100002}},
+    '05. 50K a 75K':  {con:{l:1146, s:128, c:11.2,st:55559},     sin:{l:15,    s:0,   c:0.0, st:17}},
+    '06. 75K a 90K':  {con:{l:575,  s:83,  c:14.4,st:10973},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '07. 90K a 120K': {con:{l:834,  s:66,  c:7.9, st:19717},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '08. 120K a 150K':{con:{l:1040, s:44,  c:4.2, st:23214},     sin:null},
+    '09. 150K a 175K':{con:{l:1198, s:27,  c:2.3, st:22064},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:2332, s:49,  c:2.1, st:33352},     sin:{l:1,     s:0,   c:0.0, st:1}},
+    '11. 220K a 250K':{con:{l:1199, s:31,  c:2.6, st:20721},     sin:null},
+    '12. 250K a 300K':{con:{l:905,  s:49,  c:5.4, st:25816},     sin:null},
+    '13. 300K a 450K':{con:{l:1166, s:26,  c:2.2, st:39911},     sin:null},
+    '14. 450K a 600K':{con:{l:260,  s:1,   c:0.4, st:9027},      sin:null},
+    '15. 600K a 1M':  {con:{l:196,  s:0,   c:0.0, st:6504},      sin:null},
+    '16. Mas de 1M':  {con:{l:55,   s:0,   c:0.0, st:1403},      sin:null},
+  },
+  'VEHICLE_EXHAUSTS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:51,    s:3,   c:5.9, st:101197}},
+    '02. 5K a 15K':   {con:null,                                  sin:{l:586,   s:15,  c:2.6, st:333736}},
+    '03. 15K a 33K':  {con:{l:127,  s:3,   c:2.4, st:25843},     sin:{l:3384,  s:36,  c:1.1, st:855461}},
+    '04. 33K a 50K':  {con:{l:318,  s:29,  c:9.1, st:153148},    sin:{l:100,   s:0,   c:0.0, st:9663}},
+    '05. 50K a 75K':  {con:{l:1954, s:53,  c:2.7, st:420834},    sin:{l:164,   s:1,   c:0.6, st:416627}},
+    '06. 75K a 90K':  {con:{l:1031, s:34,  c:3.3, st:150478},    sin:{l:55,    s:0,   c:0.0, st:301961}},
+    '07. 90K a 120K': {con:{l:1613, s:69,  c:4.3, st:383151},    sin:{l:91,    s:1,   c:1.1, st:104252}},
+    '08. 120K a 150K':{con:{l:1091, s:60,  c:5.5, st:409170},    sin:{l:70,    s:0,   c:0.0, st:1398}},
+    '09. 150K a 175K':{con:{l:652,  s:33,  c:5.1, st:218321},    sin:{l:43,    s:0,   c:0.0, st:473}},
+    '10. 175K a 220K':{con:{l:825,  s:65,  c:7.9, st:753938},    sin:{l:111,   s:2,   c:1.8, st:205864}},
+    '11. 220K a 250K':{con:{l:508,  s:31,  c:6.1, st:1143109},   sin:{l:85,    s:2,   c:2.4, st:4594}},
+    '12. 250K a 300K':{con:{l:772,  s:34,  c:4.4, st:3875274},   sin:{l:157,   s:4,   c:2.5, st:108192}},
+    '13. 300K a 450K':{con:{l:994,  s:28,  c:2.8, st:6571619},   sin:{l:402,   s:7,   c:1.7, st:320062}},
+    '14. 450K a 600K':{con:{l:564,  s:9,   c:1.6, st:992536},    sin:{l:374,   s:3,   c:0.8, st:224505}},
+    '15. 600K a 1M':  {con:{l:591,  s:7,   c:1.2, st:38288},     sin:{l:991,   s:8,   c:0.8, st:442294}},
+    '16. Mas de 1M':  {con:{l:839,  s:8,   c:1.0, st:30657},     sin:{l:368,   s:5,   c:1.4, st:12835}},
+  },
+  'MOTORCYCLE_REPLACEMENTS': {
+    '01. Hasta 5K':    {con:null,                                  sin:{l:1756,  s:206, c:11.7,st:5028224}},
+    '02. 5K a 15K':   {con:{l:1,    s:0,   c:0.0, st:599},       sin:{l:7606,  s:827, c:10.9,st:843260}},
+    '03. 15K a 33K':  {con:{l:277,  s:2,   c:0.7, st:64509},     sin:{l:12971, s:796, c:6.1, st:2012887}},
+    '04. 33K a 50K':  {con:{l:4104, s:370, c:9.0, st:177243},    sin:{l:331,   s:7,   c:2.1, st:33750}},
+    '05. 50K a 75K':  {con:{l:7331, s:391, c:5.3, st:791151},    sin:{l:238,   s:5,   c:2.1, st:11075}},
+    '06. 75K a 90K':  {con:{l:3517, s:132, c:3.8, st:212725},    sin:{l:60,    s:2,   c:3.3, st:110164}},
+    '07. 90K a 120K': {con:{l:5668, s:136, c:2.4, st:405816},    sin:{l:105,   s:1,   c:1.0, st:569}},
+    '08. 120K a 150K':{con:{l:5544, s:74,  c:1.3, st:307788},    sin:{l:258,   s:2,   c:0.8, st:102625}},
+    '09. 150K a 175K':{con:{l:3676, s:40,  c:1.1, st:106126},    sin:{l:259,   s:1,   c:0.4, st:102674}},
+    '10. 175K a 220K':{con:{l:4402, s:70,  c:1.6, st:117162},    sin:{l:540,   s:1,   c:0.2, st:5173}},
+    '11. 220K a 250K':{con:{l:2294, s:25,  c:1.1, st:56011},     sin:{l:94,    s:1,   c:1.1, st:1114}},
+    '12. 250K a 300K':{con:{l:1203, s:16,  c:1.3, st:37394},     sin:{l:905,   s:2,   c:0.2, st:13384}},
+    '13. 300K a 450K':{con:{l:3052, s:20,  c:0.7, st:104398},    sin:{l:872,   s:0,   c:0.0, st:112339}},
+    '14. 450K a 600K':{con:{l:1113, s:4,   c:0.4, st:48607},     sin:{l:211,   s:0,   c:0.0, st:2844}},
+    '15. 600K a 1M':  {con:{l:2406, s:3,   c:0.1, st:47524},     sin:{l:195,   s:0,   c:0.0, st:3781}},
+    '16. Mas de 1M':  {con:{l:404,  s:1,   c:0.2, st:15608},     sin:{l:188,   s:1,   c:0.5, st:3445}},
+  },
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n == null) return '—';
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return Math.round(n/1e3) + 'K';
+  return n.toLocaleString('es-AR');
+}
+
+function convBg(c, maxC) {
+  if (!c || c === 0) return '';
+  const t = Math.min(c / maxC, 1);
+  const alpha = 0.1 + t * 0.65;
+  return `background:rgba(63,185,80,${alpha.toFixed(2)});color:${t > 0.5 ? '#d2f4d3' : '#c9d1d9'}`;
+}
+
+function maxConv(d) {
+  let m = 0;
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con && row.con.c > m) m = row.con.c;
+    if (row.sin && row.sin.c > m) m = row.sin.c;
+  });
+  return m || 1;
+}
+
+function totalsOf(d) {
+  let tl=0, ts=0, tst=0, cl=0;
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con) { tl+=row.con.l; ts+=row.con.s; tst+=row.con.st; cl+=row.con.l; }
+    if (row.sin) { tl+=row.sin.l; ts+=row.sin.s; tst+=row.sin.st; }
+  });
+  return { l:tl, s:ts, st:tst, conv:tl?(ts/tl*100):0, pctFS:tl?(cl/tl*100):0 };
+}
+
+// ─── STAT TILES ──────────────────────────────────────────────────────────────
+function renderStats(id, d) {
+  const t = totalsOf(d);
+  document.getElementById(id).innerHTML = `
+    <div class="tile">
+      <div class="tile-label">Total Listings Live</div>
+      <div class="tile-value">${fmt(t.l)}</div>
+      <div class="tile-sub">Al 2026-08-11</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Successful (30d)</div>
+      <div class="tile-value">${fmt(t.s)}</div>
+      <div class="tile-sub">Con ≥ 1 orden en 30 días</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">SL/LL General</div>
+      <div class="tile-value">${t.conv.toFixed(1)}%</div>
+      <div class="tile-sub">Successful / Listings</div>
+    </div>
+    <div class="tile">
+      <div class="tile-label">Con Free Shipping</div>
+      <div class="tile-value">${t.pctFS.toFixed(1)}%</div>
+      <div class="tile-sub">Del total de listings</div>
+    </div>`;
+}
+
+// ─── TABLE ───────────────────────────────────────────────────────────────────
+function renderTable(id, d) {
+  const mc = maxConv(d);
+
+  let conL = 0, sinL = 0;
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con) conL += row.con.l;
+    if (row.sin) sinL += row.sin.l;
+  });
+  const tot = conL + sinL;
+  const pctCon = tot ? (conL/tot*100).toFixed(1) : '0.0';
+  const pctSin = tot ? (sinL/tot*100).toFixed(1) : '0.0';
+
+  let h = `<thead>
+    <tr>
+      <th class="col-range" rowspan="2">Rango ASP (ARS)</th>
+      <th class="grp-con" colspan="6">🟢 Con Free Shipping <span style="background:rgba(63,185,80,0.15);color:#3fb950;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctCon}%</span></th>
+      <th class="grp-sin" colspan="6">⬜ Sin Free Shipping <span style="background:rgba(118,131,144,0.15);color:#8b949e;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctSin}%</span></th>
+    </tr>
+    <tr>
+      <th class="grp-con">Listings</th><th class="grp-con" title="% del total Con FS">% grupo</th><th class="grp-con" title="% de listings Con FS en este tramo">% tramo</th><th class="grp-con">Succ.</th>
+      <th class="grp-con">SL/LL</th><th class="grp-con">Stock</th>
+      <th class="grp-sin">Listings</th><th class="grp-sin" title="% del total Sin FS">% grupo</th><th class="grp-sin" title="% de listings Sin FS en este tramo">% tramo</th><th class="grp-sin">Succ.</th>
+      <th class="grp-sin">SL/LL</th><th class="grp-sin">Stock</th>
+    </tr>
+  </thead><tbody>`;
+
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    const lbl = r.replace(/^\d+\.\s/, '');
+    const con = row.con, sin = row.sin;
+    const rowTotal = (con ? con.l : 0) + (sin ? sin.l : 0);
+    const pCgrp = con && conL    ? (con.l/conL*100).toFixed(1)    : null;
+    const pSgrp = sin && sinL    ? (sin.l/sinL*100).toFixed(1)    : null;
+    const pCtrm = con && rowTotal ? (con.l/rowTotal*100).toFixed(1) : null;
+    const pStrm = sin && rowTotal ? (sin.l/rowTotal*100).toFixed(1) : null;
+    const pctStyle = 'color:#8b949e;font-size:11px';
+    h += `<tr>
+      <td class="col-range">${lbl}</td>
+      ${con
+        ? `<td class="con-first">${fmt(con.l)}</td>
+           <td style="${pctStyle}">${pCgrp}%</td>
+           <td style="${pctStyle}">${pCtrm}%</td>
+           <td>${fmt(con.s)}</td>
+           <td class="conv con-first" style="${convBg(con.c,mc)}">${con.c.toFixed(1)}%</td>
+           <td>${fmt(con.st)}</td>`
+        : `<td class="con-first empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+           <td class="conv con-first empty">—</td><td class="empty">—</td>`}
+      ${sin
+        ? `<td class="sin-first">${fmt(sin.l)}</td>
+           <td style="${pctStyle}">${pSgrp}%</td>
+           <td style="${pctStyle}">${pStrm}%</td>
+           <td>${fmt(sin.s)}</td>
+           <td class="conv sin-first" style="${convBg(sin.c,mc)}">${sin.c.toFixed(1)}%</td>
+           <td>${fmt(sin.st)}</td>`
+        : `<td class="sin-first empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td>
+           <td class="conv sin-first empty">—</td><td class="empty">—</td>`}
+    </tr>`;
+  });
+
+  let tc={l:0,s:0,st:0}, ts={l:0,s:0,st:0};
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con){tc.l+=row.con.l;tc.s+=row.con.s;tc.st+=row.con.st;}
+    if (row.sin){ts.l+=row.sin.l;ts.s+=row.sin.s;ts.st+=row.sin.st;}
+  });
+  h += `</tbody><tfoot><tr>
+    <td class="col-range">TOTAL</td>
+    ${(()=>{ const gt=tc.l+ts.l; const ps='color:#8b949e;font-size:11px'; return `
+    <td class="con-first">${fmt(tc.l)}</td>
+    <td style="${ps}">100%</td>
+    <td style="${ps}">${gt?(tc.l/gt*100).toFixed(1):0}%</td>
+    <td>${fmt(tc.s)}</td>
+    <td class="conv con-first">${tc.l?(tc.s/tc.l*100).toFixed(1):0}%</td><td>${fmt(tc.st)}</td>
+    <td class="sin-first">${fmt(ts.l)}</td>
+    <td style="${ps}">100%</td>
+    <td style="${ps}">${gt?(ts.l/gt*100).toFixed(1):0}%</td>
+    <td>${fmt(ts.s)}</td>
+    <td class="conv sin-first">${ts.l?(ts.s/ts.l*100).toFixed(1):0}%</td><td>${fmt(ts.st)}</td>`;})()}
+  </tr></tfoot>`;
+
+  document.getElementById(id).innerHTML = h;
+}
+
+function setCount(id, d) {
+  const t = totalsOf(d);
+  document.getElementById(id).innerHTML = `${fmt(t.l)} listings &nbsp;·&nbsp; SL/LL ${t.conv.toFixed(1)}% &nbsp;·&nbsp; FS ${t.pctFS.toFixed(1)}%`;
+}
+
+// ─── CARD TOGGLE ─────────────────────────────────────────────────────────────
+function toggleCard(head) {
+  head.closest('.agg2-card').classList.toggle('open');
+}
+
+// ─── TAB SWITCHING ───────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('pane-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── DOMAIN RENDERING ────────────────────────────────────────────────────────
+function renderDomains() {
+  const container = document.getElementById('domains-container');
+  DOMAIN_ORDER.forEach(domain => {
+    const label  = DOMAIN_LABELS[domain];
+    const color  = DOMAIN_COLORS[domain];
+    const data   = DD[domain];
+    const t      = totalsOf(data);
+
+    const div = document.createElement('div');
+    div.className = 'agg2-card';
+    div.innerHTML = `
+      <div class="agg2-card-head" onclick="toggleCard(this)">
+        <div class="s-bar" style="background:${color};height:18px;width:4px"></div>
+        <span class="agg2-card-title">${label}</span>
+        <span class="agg2-card-sub" style="margin-left:8px">${domain}</span>
+        <span class="agg2-card-count">${fmt(t.l)} listings &nbsp;·&nbsp; SL/LL ${t.conv.toFixed(1)}% &nbsp;·&nbsp; FS ${t.pctFS.toFixed(1)}%</span>
+        <span class="agg2-chevron">▼</span>
+      </div>
+      <div class="agg2-card-body"><div class="table-wrap"><table id="table-dom-${domain}"></table></div></div>
+    `;
+    container.appendChild(div);
+    renderTable('table-dom-' + domain, data);
+  });
+}
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+renderStats('stats-agg1', DATA.agg1);
+renderTable('table-agg1', DATA.agg1);
+renderTable('table-rp', DATA.rp);
+renderTable('table-ac', DATA.ac);
+renderTable('table-he', DATA.he);
+setCount('cnt-rp', DATA.rp);
+setCount('cnt-ac', DATA.ac);
+setCount('cnt-he', DATA.he);
+renderDomains();
+</script>
+</body>
+</html>
