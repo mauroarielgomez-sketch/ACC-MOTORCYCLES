@@ -1,0 +1,595 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Piloto Motos 110cc — Grupo Simpa × MercadoLibre</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: #0d1117; color: #c9d1d9;
+  font-size: 13px; min-height: 100vh; padding-bottom: 60px;
+}
+
+/* ── HEADER ── */
+.header {
+  background: linear-gradient(135deg, #0d1117 0%, #161b22 100%);
+  border-bottom: 3px solid #ffe600;
+  padding: 18px 36px;
+  display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-badge { background: #ffe600; color: #0d1117; font-weight: 800; font-size: 11px; padding: 3px 10px; border-radius: 4px; letter-spacing: 1px; }
+.badge-simpa { background: #1c2128; border: 1px solid #30363d; color: #8b949e; font-weight: 700; font-size: 11px; padding: 3px 10px; border-radius: 4px; }
+.header-title { font-size: 18px; font-weight: 700; color: #e6edf3; }
+.header-title span { color: #ffe600; }
+.header-meta { font-size: 11px; color: #8b949e; text-align: right; line-height: 1.9; }
+.header-meta strong { color: #c9d1d9; }
+
+/* ── HERO BAND ── */
+.hero {
+  background: linear-gradient(90deg, #161b22 0%, #1c2128 100%);
+  border-bottom: 1px solid #30363d;
+  padding: 28px 36px;
+  display: flex; align-items: center; justify-content: space-between; gap: 24px;
+  flex-wrap: wrap;
+}
+.hero-text h2 {
+  font-size: 26px; font-weight: 800; color: #e6edf3; line-height: 1.2; margin-bottom: 8px;
+}
+.hero-text h2 em { color: #ffe600; font-style: normal; }
+.hero-text p { font-size: 14px; color: #8b949e; max-width: 580px; line-height: 1.6; }
+.hero-kpis { display: flex; gap: 16px; flex-wrap: wrap; }
+.hero-kpi {
+  background: #0d1117; border: 1px solid #30363d; border-radius: 10px;
+  padding: 14px 20px; text-align: center; min-width: 120px;
+}
+.hero-kpi .val { font-size: 24px; font-weight: 800; color: #ffe600; line-height: 1; }
+.hero-kpi .lbl { font-size: 10px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px; }
+
+/* ── PAGE ── */
+.page { padding: 28px 36px; max-width: 1400px; margin: 0 auto; }
+
+/* ── SECTION HEADER ── */
+.s-head { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; margin-top: 32px; }
+.s-bar { width: 4px; border-radius: 2px; height: 22px; flex-shrink: 0; }
+.s-title { font-size: 15px; font-weight: 700; color: #e6edf3; }
+.s-sub { font-size: 11px; color: #8b949e; background: #21262d; border: 1px solid #30363d; padding: 2px 10px; border-radius: 20px; }
+
+/* ── STAT GRID ── */
+.stat-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+.stat-card {
+  background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 16px; text-align: center;
+}
+.stat-card .val { font-size: 26px; font-weight: 800; color: #e6edf3; line-height: 1; }
+.stat-card .val.yellow { color: #ffe600; }
+.stat-card .val.green { color: #3fb950; }
+.stat-card .val.blue { color: #58a6ff; }
+.stat-card .val.orange { color: #f0883e; }
+.stat-card .lbl { font-size: 11px; color: #8b949e; margin-top: 5px; line-height: 1.4; }
+.stat-card .sub { font-size: 10px; color: #484f58; margin-top: 3px; }
+
+/* ── TWO COLS ── */
+.two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.three-col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 900px) { .two-col, .three-col { grid-template-columns: 1fr; } }
+
+/* ── CARDS ── */
+.card {
+  background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+  padding: 18px; margin-bottom: 14px;
+}
+.card h3 { font-size: 13px; font-weight: 700; color: #e6edf3; margin-bottom: 12px; display: flex; align-items: center; gap: 7px; }
+.card-accent-yellow { border-left: 3px solid #ffe600; }
+.card-accent-green  { border-left: 3px solid #3fb950; }
+.card-accent-blue   { border-left: 3px solid #58a6ff; }
+.card-accent-orange { border-left: 3px solid #f0883e; }
+
+/* ── RANKING TABLE ── */
+.rank-table { width: 100%; border-collapse: collapse; }
+.rank-table th {
+  background: #1c2128; padding: 7px 10px; font-size: 10px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px; color: #8b949e;
+  border-bottom: 2px solid #30363d; text-align: right;
+}
+.rank-table th:first-child { text-align: left; }
+.rank-table td {
+  padding: 8px 10px; border-bottom: 1px solid #21262d;
+  text-align: right; font-variant-numeric: tabular-nums; font-size: 12px;
+}
+.rank-table td:first-child { text-align: left; }
+.rank-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.rank-table tbody tr:hover td { background: rgba(255,255,255,0.04); }
+.rank-table tfoot td {
+  border-top: 2px solid #30363d; border-bottom: none;
+  font-weight: 700; color: #e6edf3; background: #1c2128;
+  padding: 8px 10px;
+}
+.gold { color: #ffd700; font-weight: 800; }
+.pill {
+  display: inline-block; font-size: 10px; font-weight: 700;
+  padding: 2px 7px; border-radius: 10px;
+}
+.pill-green { background: rgba(63,185,80,0.15); color: #3fb950; }
+.pill-yellow { background: rgba(255,230,0,0.15); color: #ffe600; }
+.pill-blue   { background: rgba(88,166,255,0.15); color: #58a6ff; }
+.pill-orange { background: rgba(240,136,62,0.15); color: #f0883e; }
+
+/* ── HORIZONTAL BAR ── */
+.hbar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 8px; }
+.hbar-label { width: 140px; font-size: 12px; color: #c9d1d9; white-space: nowrap; flex-shrink: 0; }
+.hbar-track { flex: 1; background: #21262d; border-radius: 4px; height: 10px; overflow: hidden; }
+.hbar-fill { height: 100%; border-radius: 4px; }
+.hbar-val { width: 54px; font-size: 12px; color: #8b949e; text-align: right; font-variant-numeric: tabular-nums; }
+
+/* ── INSIGHT BOX ── */
+.insight {
+  background: rgba(255,230,0,0.06); border: 1px solid rgba(255,230,0,0.25);
+  border-radius: 8px; padding: 14px 16px;
+  font-size: 13px; color: #e6edf3; line-height: 1.6;
+  margin-top: 14px;
+}
+.insight strong { color: #ffe600; }
+.insight-green {
+  background: rgba(63,185,80,0.06); border-color: rgba(63,185,80,0.3);
+}
+.insight-green strong { color: #3fb950; }
+.insight-blue {
+  background: rgba(88,166,255,0.06); border-color: rgba(88,166,255,0.3);
+}
+.insight-blue strong { color: #58a6ff; }
+
+/* ── PILLAR GRID ── */
+.pillar-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; }
+.pillar-card {
+  background: #1c2128; border: 1px solid #30363d; border-radius: 10px;
+  padding: 16px; text-align: center;
+}
+.pillar-icon { font-size: 26px; margin-bottom: 8px; }
+.pillar-title { font-size: 12px; font-weight: 700; color: #e6edf3; margin-bottom: 4px; }
+.pillar-desc { font-size: 11px; color: #8b949e; line-height: 1.5; }
+
+/* ── STEP FLOW ── */
+.step-flow { display: flex; align-items: flex-start; gap: 0; flex-wrap: wrap; margin: 16px 0; }
+.step-item { flex: 1; min-width: 140px; text-align: center; padding: 0 8px; position: relative; }
+.step-item:not(:last-child)::after {
+  content: '→'; position: absolute; right: -6px; top: 20px;
+  font-size: 18px; color: #484f58;
+}
+.step-num {
+  width: 40px; height: 40px; border-radius: 50%; margin: 0 auto 8px;
+  background: #21262d; border: 2px solid #ffe600;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 16px; font-weight: 800; color: #ffe600;
+}
+.step-title { font-size: 12px; font-weight: 700; color: #e6edf3; margin-bottom: 4px; }
+.step-desc { font-size: 11px; color: #8b949e; line-height: 1.4; }
+
+/* ── AMBICION BLOCK ── */
+.ambicion {
+  background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+  border: 1px solid #ffe600; border-radius: 12px;
+  padding: 24px; text-align: center;
+}
+.ambicion h3 { font-size: 13px; font-weight: 700; color: #8b949e; text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 16px; }
+.ambicion .big { font-size: 48px; font-weight: 800; color: #ffe600; line-height: 1; }
+.ambicion .mid { font-size: 16px; color: #c9d1d9; margin: 8px 0; }
+.ambicion .small { font-size: 12px; color: #8b949e; }
+
+/* ── FOOTER ── */
+.footer { text-align: center; padding: 24px; font-size: 11px; color: #484f58; border-top: 1px solid #21262d; margin-top: 16px; }
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════ HEADER ═══════════════════════════ -->
+<div class="header">
+  <div class="header-left">
+    <span class="logo-badge">MELI</span>
+    <span class="badge-simpa">Grupo Simpa</span>
+    <span class="header-title">Piloto <em>Motos 110cc</em> — Canal Exclusivo MercadoLibre</span>
+  </div>
+  <div class="header-meta">
+    Mercado: <strong>Julio 2026 · CAFAM / ACARA</strong> &nbsp;·&nbsp; Oportunidad: <strong>Trx Motorcycles MLA</strong><br>
+    Datos de mercado: fuente pública · Datos MELI: QBR Q2 FY26
+  </div>
+</div>
+
+<!-- ═══════════════════════════ HERO ═══════════════════════════ -->
+<div class="hero">
+  <div class="hero-text">
+    <h2>El mercado de motos está en su <em>mejor momento.</em><br>¿Cómo entra Simpa al volumen?</h2>
+    <p>El segmento 110cc mueve el 80% de las unidades. Honda domina con el Wave 110S.
+       La oportunidad: traer una moto 110cc de Simpa al mercado argentino con <strong style="color:#e6edf3">distribución exclusiva por MercadoLibre</strong> — sin red de concesionarios, sin intermediarios, con financiamiento integrado.</p>
+  </div>
+  <div class="hero-kpis">
+    <div class="hero-kpi">
+      <div class="val">800K</div>
+      <div class="lbl">Motos proyectadas<br>Argentina 2026</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="val">80%</div>
+      <div class="lbl">Mercado<br>es ≤ 150cc</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="val">USD 2.3B</div>
+      <div class="lbl">TAM motos<br>en MLA</div>
+    </div>
+    <div class="hero-kpi">
+      <div class="val">0.0%</div>
+      <div class="lbl">MS MELI<br>hoy (2026)</div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════════════ PAGE ═══════════════════════════ -->
+<div class="page">
+
+  <!-- ── 1. MERCADO JULIO 2026 ── -->
+  <div class="s-head">
+    <div class="s-bar" style="background:#ffe600"></div>
+    <span class="s-title">1. El Mercado — Julio 2026</span>
+    <span class="s-sub">Fuente: CAFAM / ACARA · Datos publicados agosto 2026</span>
+  </div>
+
+  <div class="stat-grid">
+    <div class="stat-card">
+      <div class="val yellow">71.217</div>
+      <div class="lbl">Unidades patentadas<br>julio 2026</div>
+      <div class="sub">Mejor mes del año</div>
+    </div>
+    <div class="stat-card">
+      <div class="val green">+30.4%</div>
+      <div class="lbl">Crecimiento interanual<br>vs julio 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="val yellow">511.986</div>
+      <div class="lbl">Unidades acumuladas<br>enero–julio 2026</div>
+    </div>
+    <div class="stat-card">
+      <div class="val green">+41.9%</div>
+      <div class="lbl">Crecimiento YTD<br>vs mismo período 2025</div>
+    </div>
+    <div class="stat-card">
+      <div class="val orange">800K+</div>
+      <div class="lbl">Proyección año<br>completo 2026</div>
+      <div class="sub">Potencial récord histórico</div>
+    </div>
+    <div class="stat-card">
+      <div class="val blue">~18%</div>
+      <div class="lbl">Market share Honda<br>Top brand del mercado</div>
+    </div>
+  </div>
+
+  <div class="two-col">
+    <!-- Ranking marcas -->
+    <div class="card card-accent-yellow">
+      <h3>🏆 Ranking por Marca — Julio 2026</h3>
+      <table class="rank-table">
+        <thead>
+          <tr><th style="text-align:left">#&nbsp; Marca</th><th>Unidades</th><th>MS %</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="gold">1.</span> Honda</td>
+            <td>15.209</td>
+            <td><span class="pill pill-yellow">~21.4%</span></td>
+          </tr>
+          <tr>
+            <td>2. Gilera</td>
+            <td>8.590</td>
+            <td><span class="pill pill-green">~12.1%</span></td>
+          </tr>
+          <tr>
+            <td>3. Motomel</td>
+            <td>8.186</td>
+            <td><span class="pill pill-green">~11.5%</span></td>
+          </tr>
+          <tr>
+            <td>4. Keller</td>
+            <td>7.341</td>
+            <td><span class="pill pill-green">~10.3%</span></td>
+          </tr>
+          <tr>
+            <td>5. Corven</td>
+            <td>6.348</td>
+            <td><span class="pill pill-blue">~8.9%</span></td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr><td>Top 5 subtotal</td><td>45.674</td><td>64.1%</td></tr>
+        </tfoot>
+      </table>
+      <div class="insight" style="margin-top:12px">
+        El <strong>top 5 concentra el 64%</strong> del mercado.
+        Ninguna marca de Simpa está en este ranking — el volumen está en otro segmento.
+      </div>
+    </div>
+
+    <!-- Ranking modelos -->
+    <div class="card card-accent-blue">
+      <h3>🏍️ Modelos Más Vendidos — Julio 2026</h3>
+      <div style="margin-bottom:12px">
+        <div class="hbar-row">
+          <span class="hbar-label" style="color:#ffe600;font-weight:700">Honda Wave 110S</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:100%;background:#ffe600"></div></div>
+          <span class="hbar-val" style="color:#ffe600;font-weight:700">8.300</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Keller KN110-8</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:75.7%;background:#58a6ff"></div></div>
+          <span class="hbar-val">6.288</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Gilera Smash</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:75.3%;background:#3fb950"></div></div>
+          <span class="hbar-val">6.251</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Motomel B110</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:57.4%;background:#3fb950"></div></div>
+          <span class="hbar-val">4.763</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Corven Energy 110</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:47%;background:#3fb950"></div></div>
+          <span class="hbar-val">3.901</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label">Mondial LD 110 Max</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:35.6%;background:#8b949e"></div></div>
+          <span class="hbar-val">2.957</span>
+        </div>
+      </div>
+      <div class="insight insight-blue">
+        <strong>5 de los 6 modelos más vendidos son 110cc.</strong>
+        La Honda Wave 110S acumula <strong>50.695 unidades en lo que va del año</strong> — una moto cada 10 minutos.
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 2. POR QUÉ 110CC ── -->
+  <div class="s-head" style="margin-top:36px">
+    <div class="s-bar" style="background:#3fb950"></div>
+    <span class="s-title">2. Por qué el Segmento 110cc</span>
+    <span class="s-sub">El volumen real del mercado argentino</span>
+  </div>
+
+  <div class="three-col">
+    <div class="card card-accent-green">
+      <h3>📊 Dominio del Segmento</h3>
+      <div style="text-align:center;padding:12px 0">
+        <div style="font-size:52px;font-weight:800;color:#3fb950;line-height:1">80%</div>
+        <div style="font-size:12px;color:#8b949e;margin-top:6px">de las motos vendidas<br>son ≤ 150cc</div>
+      </div>
+      <div style="margin-top:8px">
+        <div class="hbar-row">
+          <span class="hbar-label" style="font-size:11px">≤ 150cc</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:80%;background:#3fb950"></div></div>
+          <span class="hbar-val">~80%</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label" style="font-size:11px">150–250cc</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:12%;background:#f0883e"></div></div>
+          <span class="hbar-val">~12%</span>
+        </div>
+        <div class="hbar-row">
+          <span class="hbar-label" style="font-size:11px">> 250cc (Simpa)</span>
+          <div class="hbar-track"><div class="hbar-fill" style="width:8%;background:#58a6ff"></div></div>
+          <span class="hbar-val">~8%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="card card-accent-yellow">
+      <h3>💰 Precio — Accesible y Financiable</h3>
+      <div style="text-align:center;padding:8px 0">
+        <div style="font-size:36px;font-weight:800;color:#ffe600">USD 1.5K–2K</div>
+        <div style="font-size:11px;color:#8b949e;margin-top:4px">ASP target segmento 110cc en MELI</div>
+      </div>
+      <div class="insight" style="margin-top:12px;font-size:12px">
+        <strong>80% de las motos se compran financiadas.</strong>
+        A USD 1.800, una moto 110cc financia en 12 cuotas a montos accesibles para el usuario MELI — dentro del rango de Credits MP.
+      </div>
+    </div>
+
+    <div class="card card-accent-orange">
+      <h3>🎯 La Oportunidad para Simpa</h3>
+      <div style="font-size:12px;color:#c9d1d9;line-height:1.7">
+        <div style="margin-bottom:10px">Las marcas de Simpa <strong style="color:#f0883e">(KTM, CFMoto, Royal Enfield...)</strong> operan en el segmento premium &gt;250cc.</div>
+        <div style="margin-bottom:10px">El <strong style="color:#e6edf3">110cc es terra incognita</strong> para Simpa — pero es donde vive el 80% del mercado.</div>
+        <div>Traer una <strong style="color:#ffe600">110cc nuevo, exclusivo para MELI</strong> → Simpa entra al volumen sin canibalizar su red actual.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 3. POR QUÉ MELI ── -->
+  <div class="s-head" style="margin-top:36px">
+    <div class="s-bar" style="background:#58a6ff"></div>
+    <span class="s-title">3. Por qué MercadoLibre como Canal Exclusivo</span>
+    <span class="s-sub">La ventaja de MELI vs el concesionario</span>
+  </div>
+
+  <div class="pillar-grid">
+    <div class="pillar-card">
+      <div class="pillar-icon">💳</div>
+      <div class="pillar-title">Credits MP</div>
+      <div class="pillar-desc"><strong style="color:#ffe600">1.2M usuarios</strong> con crédito BNPL pre-aprobado mayor a $20K ARS. La moto se puede financiar desde el checkout — sin banco, sin concesionario.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🏦</div>
+      <div class="pillar-title">Cuotas Cofondeadas</div>
+      <div class="pillar-desc">El precio en cuotas compite directo con el concesionario, con cuotas subsidiadas por el seller. <strong style="color:#ffe600">El comprador no necesita ir a ningún lado.</strong></div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🏪</div>
+      <div class="pillar-title">PUIS (Pick-Up in Store)</div>
+      <div class="pillar-desc">El cliente <strong style="color:#ffe600">compra 100% online</strong> y retira en el punto de entrega designado. Resuelve la logística sin necesidad de red de concesionarios.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">📦</div>
+      <div class="pillar-title">Canal Único = Margen Directo</div>
+      <div class="pillar-desc">Sin intermediarios. El sell-through es <strong style="color:#ffe600">100% trazable</strong> — Simpa conoce cada venta en tiempo real.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">🎯</div>
+      <div class="pillar-title">Audiencia Calificada</div>
+      <div class="pillar-desc">MELI tiene la base de compradores de motos y repuestos más grande de Argentina. Accesorios, cascos, repuestos — el comprador ya está en la plataforma.</div>
+    </div>
+    <div class="pillar-card">
+      <div class="pillar-icon">📈</div>
+      <div class="pillar-title">Visibilidad Garantizada</div>
+      <div class="pillar-desc">Landing ACC, Decorador, Home placement acordados. <strong style="color:#ffe600">Clips IA</strong> para contenido de producto escalable. No hay visibilidad sin tráfico — MELI lo garantiza.</div>
+    </div>
+  </div>
+
+  <div class="insight insight-green" style="margin-top:16px">
+    <strong>El diferencial clave:</strong> El concesionario gana más con la cuota que con la moto.
+    MELI ataca eso con Credits MP + cuotas cofondeadas — el comprador obtiene la misma financiación <strong>sin salir de casa</strong>.
+    Para Simpa: un canal donde <strong>no compite con concesionarios propios</strong>, sin presión de red propia, sin comisión de venta directa.
+  </div>
+
+  <!-- ── 4. EL MODELO ── -->
+  <div class="s-head" style="margin-top:36px">
+    <div class="s-bar" style="background:#f0883e"></div>
+    <span class="s-title">4. El Modelo del Negocio</span>
+    <span class="s-sub">Cómo funcionaría el piloto</span>
+  </div>
+
+  <div class="step-flow">
+    <div class="step-item">
+      <div class="step-num">1</div>
+      <div class="step-title">Simpa elige el modelo</div>
+      <div class="step-desc">Una moto 110cc del portfolio disponible, priceada para el mercado MLA entre USD 1.5K–2K</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">2</div>
+      <div class="step-title">Publicación exclusiva</div>
+      <div class="step-desc">1–3 publicaciones en MELI, con precio de lista + opción en cuotas cofondeadas</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">3</div>
+      <div class="step-title">Credits MP activa</div>
+      <div class="step-desc">1.2M usuarios BNPL reciben la campaña en agosto. Tráfico dirigido al listing desde día 1</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">4</div>
+      <div class="step-title">Retiro PUIS</div>
+      <div class="step-desc">El comprador retira en el punto designado por Simpa. Sin logística a domicilio, sin red de concesionarios</div>
+    </div>
+    <div class="step-item">
+      <div class="step-num">5</div>
+      <div class="step-title">Escala con datos</div>
+      <div class="step-desc">Con las primeras ventas se optimiza precio, cuotas y visibilidad. KPIs en tiempo real</div>
+    </div>
+  </div>
+
+  <!-- ── 5. AMBICIÓN ── -->
+  <div class="s-head" style="margin-top:36px">
+    <div class="s-bar" style="background:#ffe600"></div>
+    <span class="s-title">5. La Oportunidad de Negocio</span>
+    <span class="s-sub">Proyección de escala</span>
+  </div>
+
+  <div class="two-col">
+    <div class="ambicion">
+      <h3>Ambición MercadoLibre 2029</h3>
+      <div class="big">1.3%</div>
+      <div class="mid">Market Share en Trx Motos MLA</div>
+      <div class="small">USD 30M NMV adicionales · TAM USD 2.3B<br>Take-rate objetivo: ~10% | 15%</div>
+    </div>
+
+    <div style="display:flex;flex-direction:column;gap:12px">
+      <div class="card card-accent-green" style="margin-bottom:0">
+        <h3>📊 Escenario Piloto — Objetivo Año 1</h3>
+        <div class="two-col" style="gap:12px">
+          <div style="text-align:center;padding:10px;background:#1c2128;border-radius:8px">
+            <div style="font-size:28px;font-weight:800;color:#3fb950">500–1K</div>
+            <div style="font-size:11px;color:#8b949e;margin-top:4px">uds/mes objetivo<br>moderado</div>
+          </div>
+          <div style="text-align:center;padding:10px;background:#1c2128;border-radius:8px">
+            <div style="font-size:28px;font-weight:800;color:#ffe600">2K–3K</div>
+            <div style="font-size:11px;color:#8b949e;margin-top:4px">uds/mes objetivo<br>optimista</div>
+          </div>
+        </div>
+        <div class="insight insight-green" style="margin-top:12px;font-size:12px">
+          El mercado mueve <strong>71K motos/mes</strong>. Capturar el <strong>1%–3% del segmento 110cc exclusivamente en MELI</strong> es el objetivo del piloto — sin conflicto con el negocio actual de Simpa.
+        </div>
+      </div>
+
+      <div class="card card-accent-blue" style="margin-bottom:0">
+        <h3>🔑 Variables de Éxito</h3>
+        <div style="display:flex;flex-direction:column;gap:8px;font-size:12px;color:#c9d1d9">
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="color:#58a6ff;font-weight:800">→</span>
+            <span><strong style="color:#e6edf3">Precio de lista competitivo</strong> vs Honda Wave 110S</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="color:#58a6ff;font-weight:800">→</span>
+            <span><strong style="color:#e6edf3">Cuotas cofondeadas</strong> activas desde publicación</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="color:#58a6ff;font-weight:800">→</span>
+            <span><strong style="color:#e6edf3">Punto PUIS habilitado</strong> — zona GBA / CABA para arrancar</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="color:#58a6ff;font-weight:800">→</span>
+            <span><strong style="color:#e6edf3">Exclusividad MELI</strong> como diferenciador de canal</span>
+          </div>
+          <div style="display:flex;gap:8px;align-items:flex-start">
+            <span style="color:#58a6ff;font-weight:800">→</span>
+            <span><strong style="color:#e6edf3">Stock mínimo inicial</strong>: 50–100 unidades para validar demanda</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── 6. PRÓXIMOS PASOS ── -->
+  <div class="s-head" style="margin-top:36px">
+    <div class="s-bar" style="background:#3fb950"></div>
+    <span class="s-title">6. Próximos Pasos</span>
+    <span class="s-sub">De la propuesta al piloto</span>
+  </div>
+
+  <div class="three-col">
+    <div class="card card-accent-green">
+      <h3>✅ Semana 1–2</h3>
+      <div style="font-size:12px;color:#c9d1d9;line-height:1.8">
+        <div>· Simpa define el modelo 110cc</div>
+        <div>· Acuerdo de precio de lista + cuotas</div>
+        <div>· MELI confirma placement de agosto</div>
+        <div>· Definir punto de retiro PUIS</div>
+      </div>
+    </div>
+    <div class="card card-accent-yellow">
+      <h3>🚀 Semana 3–4</h3>
+      <div style="font-size:12px;color:#c9d1d9;line-height:1.8">
+        <div>· Publicación live en MELI</div>
+        <div>· Activación Credits MP (10 agosto)</div>
+        <div>· Landing ACC + Home placement</div>
+        <div>· Clips IA para contenido de producto</div>
+      </div>
+    </div>
+    <div class="card card-accent-blue">
+      <h3>📊 Mes 2–3</h3>
+      <div style="font-size:12px;color:#c9d1d9;line-height:1.8">
+        <div>· Primeras conversiones y learnings</div>
+        <div>· Optimización de precio y cuotas</div>
+        <div>· Expansión a interior (Rosario, Córdoba)</div>
+        <div>· Decision: escala del piloto</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  MercadoLibre Planning · Presentación interna · Grupo Simpa × Trx Motorcycles MLA · Agosto 2026<br>
+  Datos mercado: CAFAM/ACARA julio 2026 · Datos MELI: QBR Q2 FY26 · ASP target: fuente QBR Trx Motorcycles MLA
+</div>
+
+</body>
+</html>

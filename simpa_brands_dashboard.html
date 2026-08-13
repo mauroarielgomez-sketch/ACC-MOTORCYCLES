@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Grupo Simpa — Marcas en ACC Motorcycles</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: #0d1117; color: #c9d1d9;
+  font-size: 13px; min-height: 100vh; padding-bottom: 48px;
+}
+.header {
+  background: #161b22; border-bottom: 1px solid #30363d;
+  padding: 14px 28px; display: flex; align-items: center; justify-content: space-between;
+}
+.header-left { display: flex; align-items: center; gap: 14px; }
+.logo-badge {
+  background: #ffe600; color: #0d1117; font-weight: 800;
+  font-size: 11px; padding: 3px 9px; border-radius: 4px; letter-spacing: 1px;
+}
+.header-title { font-size: 17px; font-weight: 600; color: #e6edf3; }
+.header-meta { font-size: 11px; color: #8b949e; text-align: right; line-height: 1.8; }
+.header-meta strong { color: #c9d1d9; }
+
+.page { padding: 24px 28px; max-width: 1700px; margin: 0 auto; }
+
+.section-head { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+.s-bar { width: 4px; border-radius: 2px; flex-shrink: 0; }
+.s-title { font-size: 15px; font-weight: 700; color: #e6edf3; }
+.s-pill {
+  font-size: 11px; color: #8b949e; background: #21262d;
+  padding: 2px 10px; border-radius: 20px; border: 1px solid #30363d;
+}
+
+.legend {
+  display: flex; align-items: center; gap: 20px;
+  margin-bottom: 20px; font-size: 11px; color: #8b949e;
+}
+.legend-dot { width: 10px; height: 10px; border-radius: 2px; }
+
+/* BRAND GRID — single column stacked */
+.brand-grid { display: flex; flex-direction: column; gap: 10px; }
+
+.brand-card { border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+.brand-card-head {
+  padding: 12px 16px; background: #161b22;
+  display: flex; align-items: center; gap: 10px;
+  cursor: pointer; user-select: none; transition: background 0.15s;
+}
+.brand-card-head:hover { background: #1c2128; }
+.brand-bar { width: 4px; border-radius: 2px; flex-shrink: 0; height: 22px; }
+.brand-name { font-size: 16px; font-weight: 700; color: #e6edf3; }
+.brand-stats { font-size: 11px; color: #8b949e; margin-left: auto; }
+.brand-chevron { color: #484f58; font-size: 12px; margin-left: 10px; transition: transform 0.2s; flex-shrink: 0; }
+.brand-card.open .brand-chevron { transform: rotate(180deg); }
+.brand-card-body { display: none; border-top: 1px solid #30363d; }
+.brand-card.open .brand-card-body { display: block; }
+
+/* TABLE */
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; white-space: nowrap; }
+
+thead tr:first-child th {
+  background: #1c2128; padding: 9px 10px;
+  font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px;
+  border-bottom: 1px solid #30363d;
+}
+thead tr:last-child th {
+  background: #161b22; padding: 6px 10px;
+  font-size: 10px; font-weight: 600; color: #8b949e;
+  border-bottom: 2px solid #30363d; text-align: right;
+}
+th.col-range { text-align: left !important; }
+th.grp-con { color: #3fb950; border-left: 2px solid rgba(63,185,80,0.4); }
+th.grp-sin { color: #768390; border-left: 2px solid #30363d; }
+
+tbody tr:nth-child(even) { background: rgba(255,255,255,0.015); }
+tbody tr:hover { background: rgba(255,255,255,0.04); }
+td {
+  padding: 6px 10px; border-bottom: 1px solid #21262d;
+  text-align: right; color: #c9d1d9; font-variant-numeric: tabular-nums;
+}
+td.col-range { text-align: left; font-weight: 500; color: #e6edf3; font-size: 12px; width: 150px; }
+td.con-first { border-left: 2px solid rgba(63,185,80,0.4); }
+td.sin-first { border-left: 2px solid #30363d; }
+td.conv { font-weight: 700; font-size: 12px; }
+td.empty { color: #30363d; }
+tfoot td {
+  padding: 8px 10px; border-top: 2px solid #30363d; border-bottom: none;
+  font-weight: 700; color: #e6edf3; background: #1c2128;
+}
+
+.footer {
+  text-align: center; padding: 20px; font-size: 11px; color: #484f58;
+  border-top: 1px solid #21262d; margin-top: 8px;
+}
+
+/* TABS */
+.tab-nav {
+  background: #161b22; border-bottom: 1px solid #30363d;
+  padding: 0 28px; display: flex;
+}
+.tab-btn {
+  padding: 12px 22px; font-size: 13px; font-weight: 600;
+  color: #8b949e; cursor: pointer; border-bottom: 2px solid transparent;
+  transition: color 0.15s, border-color 0.15s;
+  background: none; border-top: none; border-left: none; border-right: none;
+  user-select: none;
+}
+.tab-btn:hover { color: #c9d1d9; }
+.tab-btn.active { color: #e6edf3; border-bottom-color: #ffe600; }
+.tab-pane { display: none; }
+.tab-pane.active { display: block; }
+
+/* DEMAND */
+.demand-summary { display: flex; gap: 14px; margin-bottom: 24px; flex-wrap: wrap; }
+.demand-stat {
+  background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 14px 20px; flex: 1; min-width: 140px;
+}
+.demand-stat-label { font-size: 11px; color: #8b949e; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+.demand-stat-value { font-size: 22px; font-weight: 700; color: #e6edf3; }
+.demand-stat-sub { font-size: 11px; color: #8b949e; margin-top: 2px; }
+.demand-table { width: 100%; border-collapse: collapse; }
+.demand-table th {
+  background: #1c2128; padding: 9px 14px; font-size: 11px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.4px; color: #8b949e;
+  border-bottom: 2px solid #30363d; text-align: right;
+}
+.demand-table th:first-child { text-align: left; }
+.demand-table td {
+  padding: 10px 14px; border-bottom: 1px solid #21262d;
+  text-align: right; color: #c9d1d9; font-variant-numeric: tabular-nums;
+  vertical-align: middle;
+}
+.demand-table td:first-child { text-align: left; }
+.demand-table tbody tr:nth-child(even) td { background: rgba(255,255,255,0.015); }
+.demand-table tbody tr:hover td { background: rgba(255,255,255,0.04); }
+.demand-table tfoot td {
+  border-top: 2px solid #30363d; border-bottom: none;
+  font-weight: 700; color: #e6edf3; background: #1c2128; padding: 10px 14px;
+}
+.brand-label { display: flex; align-items: center; gap: 9px; font-weight: 600; }
+.brand-dot { width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0; }
+.bar-cell { display: flex; align-items: center; gap: 8px; justify-content: flex-end; }
+.mini-bar { height: 6px; border-radius: 3px; flex-shrink: 0; }
+.zero-label { color: #484f58; }
+
+/* DONUT CHARTS */
+.donut-section { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 24px; }
+.donut-block { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 18px; }
+.donut-ttl { font-size: 12px; font-weight: 700; color: #e6edf3; margin-bottom: 14px; text-transform: uppercase; letter-spacing: 0.5px; }
+.donut-inner { display: flex; align-items: flex-start; gap: 16px; }
+.donut-legend { flex: 1; display: flex; flex-direction: column; gap: 6px; overflow-y: auto; max-height: 190px; }
+.donut-legend-row { display: flex; align-items: center; gap: 7px; font-size: 11px; }
+.donut-dot2 { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+.donut-brand2 { flex: 1; color: #c9d1d9; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.donut-val2 { color: #8b949e; min-width: 58px; text-align: right; font-variant-numeric: tabular-nums; }
+.donut-pct2 { color: #e6edf3; font-weight: 700; min-width: 40px; text-align: right; }
+@media (max-width: 750px) { .donut-section { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="logo-badge">MELI</span>
+    <span class="header-title">Grupo Simpa — Marcas en ACC Motorcycles</span>
+  </div>
+  <div class="header-meta">
+    Datos al: <strong>2026-08-11</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA &nbsp;·&nbsp; AGG1: ACC MOTORCYCLES<br>
+    SL/LL = Successful Listings / Live Listings (últimos 30 días)
+  </div>
+</div>
+
+<div class="tab-nav">
+  <button class="tab-btn active" onclick="switchTab('oferta',this)">Oferta — Live Listings</button>
+  <button class="tab-btn" onclick="switchTab('demanda',this)">Demanda — Órdenes 2026</button>
+</div>
+
+<div id="tab-oferta" class="tab-pane active">
+<div class="page">
+  <div class="section-head">
+    <div class="s-bar" style="background:#ffe600;height:22px"></div>
+    <span class="s-title">Repuestos y Accesorios por Marca</span>
+    <span class="s-pill">15 marcas — ordenadas por volumen de listings</span>
+  </div>
+  <div class="legend">
+    <span>SL/LL — intensidad de color:</span>
+    <span style="display:flex;align-items:center;gap:6px"><span class="legend-dot" style="background:rgba(63,185,80,0.15)"></span>Baja</span>
+    <span style="display:flex;align-items:center;gap:6px"><span class="legend-dot" style="background:rgba(63,185,80,0.4)"></span>Media</span>
+    <span style="display:flex;align-items:center;gap:6px"><span class="legend-dot" style="background:rgba(63,185,80,0.75)"></span>Alta</span>
+  </div>
+  <div id="brand-grid" class="brand-grid"></div>
+</div>
+</div><!-- /tab-oferta -->
+
+<div id="tab-demanda" class="tab-pane">
+<div class="page">
+  <div class="section-head">
+    <div class="s-bar" style="background:#ffe600;height:22px"></div>
+    <span class="s-title">Órdenes 2026 por Marca</span>
+    <span class="s-pill">Grupo Simpa · 15 marcas · TSI = unidades · TGMV = facturación ARS · YTD 2026</span>
+  </div>
+  <div class="demand-summary" id="demand-summary"></div>
+  <div class="donut-section">
+    <div id="chart-tsi"></div>
+    <div id="chart-tgmv"></div>
+  </div>
+  <div class="table-wrap"><table class="demand-table" id="demand-table"></table></div>
+</div>
+</div><!-- /tab-demanda -->
+
+<div class="footer">
+  MercadoLibre Planning &nbsp;·&nbsp; BT_LIVE_LISTINGS_MLA &nbsp;·&nbsp; D-1 &nbsp;·&nbsp; Grupo Simpa — Presentación interna
+</div>
+
+<script>
+const RANGES = [
+  '01. Hasta 5K','02. 5K a 15K','03. 15K a 33K','04. 33K a 50K',
+  '05. 50K a 75K','06. 75K a 90K','07. 90K a 120K','08. 120K a 150K',
+  '09. 150K a 175K','10. 175K a 220K','11. 220K a 250K','12. 250K a 300K',
+  '13. 300K a 450K','14. 450K a 600K','15. 600K a 1M','16. Mas de 1M'
+];
+
+const BRAND_ORDER = [
+  'KTM','Piaggio','CFMoto','Royal Enfield','Husqvarna',
+  'Can-Am','Harley-Davidson','Vespa','Moto Morini',
+  'Aprilia','Moto Guzzi','Gas Gas','QJ Motor','Super Soco','Segway'
+];
+
+const BRAND_COLORS = {
+  'KTM':            '#ff6600',
+  'Piaggio':        '#003da5',
+  'CFMoto':         '#00aeef',
+  'Royal Enfield':  '#8b0000',
+  'Husqvarna':      '#ffd700',
+  'Can-Am':         '#cc0000',
+  'Harley-Davidson':'#e8811a',
+  'Vespa':          '#00a550',
+  'Moto Morini':    '#a0522d',
+  'Aprilia':        '#d40000',
+  'Moto Guzzi':     '#8b0032',
+  'Gas Gas':        '#ff4500',
+  'QJ Motor':       '#003c7e',
+  'Super Soco':     '#1c9be8',
+  'Segway':         '#6abf4b',
+};
+
+const BD = {
+  'KTM': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:7,    s:0,  c:0.0, st:28}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:83,   s:8,  c:9.6, st:852}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:352,  s:36, c:10.2,st:9454}},
+    '04. 33K a 50K':  {con:{l:483, s:60, c:12.4,st:14488},      sin:{l:20,   s:0,  c:0.0, st:38}},
+    '05. 50K a 75K':  {con:{l:562, s:56, c:10.0,st:22692},      sin:{l:20,   s:2,  c:10.0,st:30}},
+    '06. 75K a 90K':  {con:{l:314, s:28, c:8.9, st:7695},       sin:{l:12,   s:1,  c:8.3, st:16}},
+    '07. 90K a 120K': {con:{l:509, s:44, c:8.6, st:4226},       sin:{l:20,   s:1,  c:5.0, st:57}},
+    '08. 120K a 150K':{con:{l:338, s:34, c:10.1,st:1461},       sin:{l:11,   s:0,  c:0.0, st:42}},
+    '09. 150K a 175K':{con:{l:215, s:9,  c:4.2, st:726},        sin:{l:10,   s:0,  c:0.0, st:15}},
+    '10. 175K a 220K':{con:{l:327, s:16, c:4.9, st:1376},       sin:{l:12,   s:0,  c:0.0, st:22}},
+    '11. 220K a 250K':{con:{l:155, s:6,  c:3.9, st:1105},       sin:{l:5,    s:0,  c:0.0, st:5}},
+    '12. 250K a 300K':{con:{l:247, s:14, c:5.7, st:1394},       sin:{l:10,   s:0,  c:0.0, st:10}},
+    '13. 300K a 450K':{con:{l:363, s:11, c:3.0, st:996},        sin:{l:9,    s:0,  c:0.0, st:12}},
+    '14. 450K a 600K':{con:{l:214, s:3,  c:1.4, st:1314},       sin:{l:10,   s:0,  c:0.0, st:13}},
+    '15. 600K a 1M':  {con:{l:262, s:1,  c:0.4, st:1722},       sin:{l:5,    s:0,  c:0.0, st:13}},
+    '16. Mas de 1M':  {con:{l:225, s:1,  c:0.4, st:1449},       sin:{l:7,    s:0,  c:0.0, st:7}},
+  },
+  'Piaggio': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:67,   s:0,  c:0.0, st:235}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:258,  s:4,  c:1.6, st:1613}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:451,  s:15, c:3.3, st:3419}},
+    '04. 33K a 50K':  {con:{l:218, s:7,  c:3.2, st:1295},       sin:{l:8,    s:1,  c:12.5,st:21}},
+    '05. 50K a 75K':  {con:{l:235, s:5,  c:2.1, st:1965},       sin:{l:11,   s:0,  c:0.0, st:11}},
+    '06. 75K a 90K':  {con:{l:72,  s:5,  c:6.9, st:257},        sin:{l:3,    s:0,  c:0.0, st:3}},
+    '07. 90K a 120K': {con:{l:137, s:3,  c:2.2, st:485},        sin:{l:3,    s:0,  c:0.0, st:3}},
+    '08. 120K a 150K':{con:{l:60,  s:0,  c:0.0, st:151},        sin:{l:2,    s:0,  c:0.0, st:4}},
+    '09. 150K a 175K':{con:{l:41,  s:0,  c:0.0, st:93},         sin:null},
+    '10. 175K a 220K':{con:{l:47,  s:0,  c:0.0, st:180},        sin:{l:1,    s:0,  c:0.0, st:2}},
+    '11. 220K a 250K':{con:{l:23,  s:0,  c:0.0, st:44},         sin:{l:2,    s:0,  c:0.0, st:4}},
+    '12. 250K a 300K':{con:{l:38,  s:0,  c:0.0, st:78},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:40,  s:0,  c:0.0, st:82},         sin:{l:3,    s:0,  c:0.0, st:3}},
+    '14. 450K a 600K':{con:{l:21,  s:0,  c:0.0, st:42},         sin:{l:2,    s:0,  c:0.0, st:5}},
+    '15. 600K a 1M':  {con:{l:17,  s:0,  c:0.0, st:19},         sin:{l:2,    s:0,  c:0.0, st:2}},
+    '16. Mas de 1M':  {con:{l:10,  s:0,  c:0.0, st:12},         sin:null},
+  },
+  'CFMoto': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:4,    s:0,  c:0.0, st:10}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:51,   s:2,  c:3.9, st:181}},
+    '03. 15K a 33K':  {con:{l:1,   s:0,  c:0.0, st:100},        sin:{l:124,  s:10, c:8.1, st:3345}},
+    '04. 33K a 50K':  {con:{l:124, s:13, c:10.5,st:34845},      sin:{l:2,    s:0,  c:0.0, st:188}},
+    '05. 50K a 75K':  {con:{l:232, s:24, c:10.3,st:28568},      sin:{l:7,    s:0,  c:0.0, st:11}},
+    '06. 75K a 90K':  {con:{l:146, s:11, c:7.5, st:7010},       sin:{l:3,    s:0,  c:0.0, st:4}},
+    '07. 90K a 120K': {con:{l:157, s:9,  c:5.7, st:13675},      sin:{l:4,    s:0,  c:0.0, st:22}},
+    '08. 120K a 150K':{con:{l:94,  s:12, c:12.8,st:3624},       sin:{l:5,    s:1,  c:20.0,st:11}},
+    '09. 150K a 175K':{con:{l:72,  s:1,  c:1.4, st:15158},      sin:null},
+    '10. 175K a 220K':{con:{l:93,  s:7,  c:7.5, st:5320},       sin:{l:2,    s:0,  c:0.0, st:2}},
+    '11. 220K a 250K':{con:{l:55,  s:4,  c:7.3, st:4326},       sin:{l:3,    s:0,  c:0.0, st:4}},
+    '12. 250K a 300K':{con:{l:48,  s:8,  c:16.7,st:1437},       sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:107, s:7,  c:6.5, st:6993},       sin:{l:5,    s:0,  c:0.0, st:5}},
+    '14. 450K a 600K':{con:{l:67,  s:4,  c:6.0, st:2001},       sin:{l:2,    s:0,  c:0.0, st:2}},
+    '15. 600K a 1M':  {con:{l:66,  s:2,  c:3.0, st:279},        sin:{l:3,    s:0,  c:0.0, st:3}},
+    '16. Mas de 1M':  {con:{l:34,  s:1,  c:2.9, st:35},         sin:{l:2,    s:0,  c:0.0, st:2}},
+  },
+  'Royal Enfield': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:4,    s:1,  c:25.0,st:6}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:58,   s:1,  c:1.7, st:323}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:109,  s:16, c:14.7,st:596}},
+    '04. 33K a 50K':  {con:{l:117, s:22, c:18.8,st:16140},      sin:{l:7,    s:0,  c:0.0, st:8}},
+    '05. 50K a 75K':  {con:{l:144, s:16, c:11.1,st:6476},       sin:{l:4,    s:0,  c:0.0, st:5}},
+    '06. 75K a 90K':  {con:{l:88,  s:4,  c:4.5, st:1313},       sin:{l:7,    s:0,  c:0.0, st:10}},
+    '07. 90K a 120K': {con:{l:96,  s:10, c:10.4,st:669},        sin:{l:2,    s:0,  c:0.0, st:2}},
+    '08. 120K a 150K':{con:{l:66,  s:7,  c:10.6,st:734},        sin:{l:2,    s:0,  c:0.0, st:4}},
+    '09. 150K a 175K':{con:{l:31,  s:5,  c:16.1,st:88},         sin:{l:4,    s:0,  c:0.0, st:6}},
+    '10. 175K a 220K':{con:{l:99,  s:9,  c:9.1, st:289},        sin:{l:4,    s:0,  c:0.0, st:32}},
+    '11. 220K a 250K':{con:{l:50,  s:0,  c:0.0, st:98},         sin:{l:2,    s:0,  c:0.0, st:2}},
+    '12. 250K a 300K':{con:{l:66,  s:7,  c:10.6,st:169},        sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:147, s:5,  c:3.4, st:334},        sin:{l:6,    s:0,  c:0.0, st:17}},
+    '14. 450K a 600K':{con:{l:67,  s:1,  c:1.5, st:131},        sin:{l:3,    s:0,  c:0.0, st:5}},
+    '15. 600K a 1M':  {con:{l:89,  s:1,  c:1.1, st:161},        sin:null},
+    '16. Mas de 1M':  {con:{l:67,  s:2,  c:3.0, st:115},        sin:{l:1,    s:0,  c:0.0, st:1}},
+  },
+  'Husqvarna': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:5,    s:0,  c:0.0, st:32}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:29,   s:3,  c:10.3,st:1930}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:51,   s:10, c:19.6,st:11273}},
+    '04. 33K a 50K':  {con:{l:56,  s:4,  c:7.1, st:1995},       sin:{l:1,    s:0,  c:0.0, st:3}},
+    '05. 50K a 75K':  {con:{l:83,  s:1,  c:1.2, st:5706},       sin:{l:7,    s:0,  c:0.0, st:37}},
+    '06. 75K a 90K':  {con:{l:53,  s:5,  c:9.4, st:447},        sin:{l:5,    s:0,  c:0.0, st:18}},
+    '07. 90K a 120K': {con:{l:56,  s:2,  c:3.6, st:133},        sin:{l:1,    s:0,  c:0.0, st:1}},
+    '08. 120K a 150K':{con:{l:43,  s:1,  c:2.3, st:453},        sin:{l:2,    s:0,  c:0.0, st:3}},
+    '09. 150K a 175K':{con:{l:27,  s:0,  c:0.0, st:116},        sin:{l:4,    s:0,  c:0.0, st:29}},
+    '10. 175K a 220K':{con:{l:40,  s:1,  c:2.5, st:103},        sin:{l:2,    s:0,  c:0.0, st:2}},
+    '11. 220K a 250K':{con:{l:14,  s:0,  c:0.0, st:154},        sin:null},
+    '12. 250K a 300K':{con:{l:22,  s:0,  c:0.0, st:153},        sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:52,  s:0,  c:0.0, st:140},        sin:{l:3,    s:0,  c:0.0, st:6}},
+    '14. 450K a 600K':{con:{l:23,  s:0,  c:0.0, st:100},        sin:{l:1,    s:0,  c:0.0, st:1}},
+    '15. 600K a 1M':  {con:{l:26,  s:0,  c:0.0, st:47},         sin:{l:1,    s:0,  c:0.0, st:2}},
+    '16. Mas de 1M':  {con:{l:24,  s:0,  c:0.0, st:61},         sin:{l:4,    s:0,  c:0.0, st:5}},
+  },
+  'Can-Am': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:4,    s:0,  c:0.0, st:54}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:14,   s:0,  c:0.0, st:89}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:32,   s:0,  c:0.0, st:491}},
+    '04. 33K a 50K':  {con:{l:14,  s:0,  c:0.0, st:137},        sin:{l:8,    s:0,  c:0.0, st:54}},
+    '05. 50K a 75K':  {con:{l:24,  s:0,  c:0.0, st:280},        sin:{l:4,    s:0,  c:0.0, st:24}},
+    '06. 75K a 90K':  {con:{l:8,   s:0,  c:0.0, st:114},        sin:null},
+    '07. 90K a 120K': {con:{l:28,  s:1,  c:3.6, st:213},        sin:{l:3,    s:0,  c:0.0, st:6}},
+    '08. 120K a 150K':{con:{l:21,  s:1,  c:4.8, st:102},        sin:{l:3,    s:0,  c:0.0, st:5}},
+    '09. 150K a 175K':{con:{l:15,  s:0,  c:0.0, st:137},        sin:{l:1,    s:0,  c:0.0, st:24}},
+    '10. 175K a 220K':{con:{l:24,  s:1,  c:4.2, st:178},        sin:{l:2,    s:0,  c:0.0, st:13}},
+    '11. 220K a 250K':{con:{l:16,  s:0,  c:0.0, st:31},         sin:{l:6,    s:0,  c:0.0, st:11}},
+    '12. 250K a 300K':{con:{l:49,  s:0,  c:0.0, st:189},        sin:{l:3,    s:0,  c:0.0, st:25}},
+    '13. 300K a 450K':{con:{l:46,  s:0,  c:0.0, st:262},        sin:{l:3,    s:0,  c:0.0, st:23}},
+    '14. 450K a 600K':{con:{l:40,  s:1,  c:2.5, st:187},        sin:{l:3,    s:0,  c:0.0, st:5}},
+    '15. 600K a 1M':  {con:{l:45,  s:1,  c:2.2, st:139},        sin:{l:10,   s:0,  c:0.0, st:29}},
+    '16. Mas de 1M':  {con:{l:62,  s:0,  c:0.0, st:544},        sin:{l:14,   s:0,  c:0.0, st:41}},
+  },
+  'Harley-Davidson': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:3,    s:0,  c:0.0, st:123}},
+    '02. 5K a 15K':   {con:null,                                 sin:null},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:10,   s:1,  c:10.0,st:27}},
+    '04. 33K a 50K':  {con:{l:10,  s:0,  c:0.0, st:37},         sin:null},
+    '05. 50K a 75K':  {con:{l:22,  s:3,  c:13.6,st:6827},       sin:{l:2,    s:0,  c:0.0, st:2}},
+    '06. 75K a 90K':  {con:{l:11,  s:0,  c:0.0, st:166},        sin:{l:2,    s:0,  c:0.0, st:2}},
+    '07. 90K a 120K': {con:{l:11,  s:0,  c:0.0, st:220},        sin:{l:6,    s:0,  c:0.0, st:6}},
+    '08. 120K a 150K':{con:{l:15,  s:0,  c:0.0, st:429},        sin:{l:4,    s:0,  c:0.0, st:4}},
+    '09. 150K a 175K':{con:{l:11,  s:0,  c:0.0, st:43},         sin:{l:5,    s:0,  c:0.0, st:5}},
+    '10. 175K a 220K':{con:{l:16,  s:0,  c:0.0, st:37},         sin:{l:14,   s:0,  c:0.0, st:14}},
+    '11. 220K a 250K':{con:{l:14,  s:0,  c:0.0, st:18},         sin:{l:3,    s:0,  c:0.0, st:3}},
+    '12. 250K a 300K':{con:{l:18,  s:0,  c:0.0, st:118},        sin:{l:7,    s:0,  c:0.0, st:16}},
+    '13. 300K a 450K':{con:{l:53,  s:0,  c:0.0, st:680},        sin:{l:19,   s:0,  c:0.0, st:20}},
+    '14. 450K a 600K':{con:{l:26,  s:0,  c:0.0, st:329},        sin:{l:10,   s:0,  c:0.0, st:19}},
+    '15. 600K a 1M':  {con:{l:10,  s:0,  c:0.0, st:14},         sin:{l:28,   s:0,  c:0.0, st:29}},
+    '16. Mas de 1M':  {con:{l:10,  s:0,  c:0.0, st:10},         sin:{l:7,    s:0,  c:0.0, st:7}},
+  },
+  'Vespa': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:5,    s:0,  c:0.0, st:56}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:16,   s:1,  c:6.3, st:92}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:33,   s:1,  c:3.0, st:344}},
+    '04. 33K a 50K':  {con:{l:20,  s:1,  c:5.0, st:72},         sin:{l:2,    s:0,  c:0.0, st:11}},
+    '05. 50K a 75K':  {con:{l:37,  s:2,  c:5.4, st:622},        sin:{l:6,    s:0,  c:0.0, st:13}},
+    '06. 75K a 90K':  {con:{l:13,  s:0,  c:0.0, st:42},         sin:{l:3,    s:0,  c:0.0, st:4}},
+    '07. 90K a 120K': {con:{l:8,   s:1,  c:12.5,st:19},         sin:{l:6,    s:0,  c:0.0, st:25}},
+    '08. 120K a 150K':{con:{l:10,  s:0,  c:0.0, st:19},         sin:{l:2,    s:0,  c:0.0, st:2}},
+    '09. 150K a 175K':{con:{l:13,  s:0,  c:0.0, st:27},         sin:{l:2,    s:0,  c:0.0, st:3}},
+    '10. 175K a 220K':{con:{l:14,  s:1,  c:7.1, st:36},         sin:{l:5,    s:0,  c:0.0, st:5}},
+    '11. 220K a 250K':{con:{l:5,   s:0,  c:0.0, st:48},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '12. 250K a 300K':{con:{l:7,   s:1,  c:14.3,st:10},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:6,   s:0,  c:0.0, st:7},          sin:null},
+    '14. 450K a 600K':{con:{l:7,   s:1,  c:14.3,st:37},         sin:{l:2,    s:0,  c:0.0, st:9}},
+    '15. 600K a 1M':  {con:{l:6,   s:1,  c:16.7,st:9},          sin:null},
+    '16. Mas de 1M':  {con:{l:4,   s:0,  c:0.0, st:4},          sin:{l:1,    s:0,  c:0.0, st:1}},
+  },
+  'Moto Morini': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:4,    s:0,  c:0.0, st:20}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:25,   s:1,  c:4.0, st:103}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:44,   s:4,  c:9.1, st:178}},
+    '04. 33K a 50K':  {con:{l:35,  s:3,  c:8.6, st:97},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '05. 50K a 75K':  {con:{l:21,  s:4,  c:19.0,st:624},        sin:null},
+    '06. 75K a 90K':  {con:{l:11,  s:1,  c:9.1, st:93},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '07. 90K a 120K': {con:{l:11,  s:0,  c:0.0, st:17},         sin:null},
+    '08. 120K a 150K':{con:{l:4,   s:0,  c:0.0, st:11},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '09. 150K a 175K':{con:{l:5,   s:0,  c:0.0, st:11},         sin:null},
+    '10. 175K a 220K':{con:{l:3,   s:1,  c:33.3,st:5},          sin:null},
+    '11. 220K a 250K':{con:{l:2,   s:1,  c:50.0,st:115},        sin:null},
+    '12. 250K a 300K':{con:{l:8,   s:1,  c:12.5,st:84},         sin:null},
+    '13. 300K a 450K':{con:{l:2,   s:0,  c:0.0, st:3},          sin:null},
+    '14. 450K a 600K':{con:{l:3,   s:0,  c:0.0, st:6},          sin:{l:1,    s:0,  c:0.0, st:1}},
+    '15. 600K a 1M':  {con:{l:3,   s:0,  c:0.0, st:8},          sin:null},
+    '16. Mas de 1M':  {con:{l:2,   s:0,  c:0.0, st:5},          sin:null},
+  },
+  'Aprilia': {
+    '01. Hasta 5K':    {con:null,                                 sin:{l:1,    s:0,  c:0.0, st:12}},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:4,    s:0,  c:0.0, st:32}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:8,    s:0,  c:0.0, st:1003}},
+    '04. 33K a 50K':  {con:{l:5,   s:0,  c:0.0, st:6},          sin:null},
+    '05. 50K a 75K':  {con:{l:26,  s:0,  c:0.0, st:1516},       sin:{l:2,    s:0,  c:0.0, st:5}},
+    '06. 75K a 90K':  {con:{l:9,   s:0,  c:0.0, st:109},        sin:null},
+    '07. 90K a 120K': {con:{l:12,  s:0,  c:0.0, st:1014},       sin:null},
+    '08. 120K a 150K':{con:{l:5,   s:0,  c:0.0, st:7},          sin:null},
+    '09. 150K a 175K':{con:{l:5,   s:0,  c:0.0, st:5},          sin:{l:1,    s:0,  c:0.0, st:1}},
+    '10. 175K a 220K':{con:{l:12,  s:0,  c:0.0, st:17},         sin:null},
+    '11. 220K a 250K':{con:{l:3,   s:0,  c:0.0, st:6},          sin:null},
+    '12. 250K a 300K':{con:{l:4,   s:0,  c:0.0, st:13},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:11,  s:0,  c:0.0, st:14},         sin:null},
+    '14. 450K a 600K':{con:{l:3,   s:0,  c:0.0, st:3},          sin:null},
+    '15. 600K a 1M':  {con:{l:8,   s:0,  c:0.0, st:8},          sin:null},
+    '16. Mas de 1M':  {con:{l:5,   s:0,  c:0.0, st:7},          sin:{l:2,    s:0,  c:0.0, st:2}},
+  },
+  'Moto Guzzi': {
+    '01. Hasta 5K':    {con:null,                                 sin:null},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:3,    s:1,  c:33.3,st:10}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:16,   s:5,  c:31.3,st:49}},
+    '04. 33K a 50K':  {con:{l:8,   s:0,  c:0.0, st:14},         sin:{l:4,    s:0,  c:0.0, st:10}},
+    '05. 50K a 75K':  {con:{l:12,  s:0,  c:0.0, st:313},        sin:{l:1,    s:0,  c:0.0, st:1}},
+    '06. 75K a 90K':  {con:{l:5,   s:0,  c:0.0, st:7},          sin:null},
+    '07. 90K a 120K': {con:{l:13,  s:0,  c:0.0, st:37},         sin:{l:2,    s:0,  c:0.0, st:3}},
+    '08. 120K a 150K':{con:{l:9,   s:0,  c:0.0, st:12},         sin:null},
+    '09. 150K a 175K':{con:{l:2,   s:0,  c:0.0, st:2},          sin:null},
+    '10. 175K a 220K':{con:{l:2,   s:0,  c:0.0, st:4},          sin:null},
+    '11. 220K a 250K':{con:{l:1,   s:0,  c:0.0, st:1},          sin:null},
+    '12. 250K a 300K':{con:{l:7,   s:0,  c:0.0, st:8},          sin:{l:1,    s:0,  c:0.0, st:1}},
+    '13. 300K a 450K':{con:{l:9,   s:0,  c:0.0, st:12},         sin:{l:1,    s:0,  c:0.0, st:1}},
+    '14. 450K a 600K':{con:{l:4,   s:0,  c:0.0, st:5},          sin:null},
+    '15. 600K a 1M':  {con:{l:4,   s:0,  c:0.0, st:4},          sin:null},
+    '16. Mas de 1M':  {con:{l:5,   s:0,  c:0.0, st:5},          sin:null},
+  },
+  'Gas Gas': {
+    '01. Hasta 5K':    {con:null,                                 sin:null},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:1,    s:0,  c:0.0, st:1}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:6,    s:0,  c:0.0, st:30}},
+    '04. 33K a 50K':  {con:{l:13,  s:0,  c:0.0, st:44},         sin:{l:3,    s:0,  c:0.0, st:15}},
+    '05. 50K a 75K':  {con:{l:12,  s:0,  c:0.0, st:213},        sin:null},
+    '06. 75K a 90K':  {con:{l:2,   s:0,  c:0.0, st:2},          sin:null},
+    '07. 90K a 120K': {con:{l:3,   s:0,  c:0.0, st:6},          sin:null},
+    '08. 120K a 150K':{con:{l:2,   s:0,  c:0.0, st:6},          sin:null},
+    '09. 150K a 175K':{con:{l:1,   s:0,  c:0.0, st:2},          sin:null},
+    '10. 175K a 220K':{con:{l:3,   s:0,  c:0.0, st:10},         sin:null},
+    '11. 220K a 250K':{con:{l:2,   s:0,  c:0.0, st:3},          sin:null},
+    '12. 250K a 300K':{con:{l:3,   s:0,  c:0.0, st:11},         sin:null},
+    '13. 300K a 450K':{con:{l:9,   s:0,  c:0.0, st:13},         sin:null},
+    '14. 450K a 600K':{con:{l:10,  s:0,  c:0.0, st:18},         sin:null},
+    '15. 600K a 1M':  {con:{l:5,   s:0,  c:0.0, st:6},          sin:null},
+    '16. Mas de 1M':  {con:{l:1,   s:0,  c:0.0, st:2},          sin:null},
+  },
+  'QJ Motor': {
+    '01. Hasta 5K':    {con:null,                                 sin:null},
+    '02. 5K a 15K':   {con:null,                                 sin:{l:2,    s:1,  c:50.0,st:8}},
+    '03. 15K a 33K':  {con:null,                                 sin:{l:8,    s:0,  c:0.0, st:18}},
+    '04. 33K a 50K':  {con:{l:9,   s:2,  c:22.2,st:26},         sin:null},
+    '05. 50K a 75K':  {con:{l:17,  s:1,  c:5.9, st:562},        sin:null},
+    '06. 75K a 90K':  {con:{l:7,   s:1,  c:14.3,st:44},         sin:null},
+    '07. 90K a 120K': {con:{l:2,   s:0,  c:0.0, st:7},          sin:null},
+    '08. 120K a 150K':{con:{l:3,   s:0,  c:0.0, st:16},         sin:null},
+    '09. 150K a 175K':{con:{l:2,   s:2,  c:100.0,st:13},        sin:null},
+    '10. 175K a 220K':{con:{l:4,   s:2,  c:50.0,st:10},         sin:null},
+    '11. 220K a 250K':{con:null,                                  sin:null},
+    '12. 250K a 300K':{con:null,                                  sin:null},
+    '13. 300K a 450K':{con:null,                                  sin:null},
+    '14. 450K a 600K':{con:{l:1,   s:0,  c:0.0, st:3},          sin:null},
+    '15. 600K a 1M':  {con:{l:1,   s:0,  c:0.0, st:1},          sin:null},
+    '16. Mas de 1M':  {con:{l:4,   s:0,  c:0.0, st:7},          sin:null},
+  },
+  'Super Soco': {
+    '01. Hasta 5K':    {con:null, sin:null},
+    '02. 5K a 15K':   {con:null, sin:null},
+    '03. 15K a 33K':  {con:null, sin:null},
+    '04. 33K a 50K':  {con:null, sin:null},
+    '05. 50K a 75K':  {con:{l:5,   s:0,  c:0.0, st:800},        sin:null},
+    '06. 75K a 90K':  {con:null, sin:null},
+    '07. 90K a 120K': {con:null, sin:null},
+    '08. 120K a 150K':{con:null, sin:null},
+    '09. 150K a 175K':{con:{l:1,   s:0,  c:0.0, st:1},          sin:null},
+    '10. 175K a 220K':{con:{l:3,   s:0,  c:0.0, st:3},          sin:null},
+    '11. 220K a 250K':{con:null, sin:null},
+    '12. 250K a 300K':{con:null, sin:null},
+    '13. 300K a 450K':{con:{l:2,   s:0,  c:0.0, st:2},          sin:null},
+    '14. 450K a 600K':{con:null, sin:null},
+    '15. 600K a 1M':  {con:null, sin:null},
+    '16. Mas de 1M':  {con:null, sin:null},
+  },
+  'Segway': {
+    '01. Hasta 5K':    {con:null, sin:null},
+    '02. 5K a 15K':   {con:null, sin:null},
+    '03. 15K a 33K':  {con:null, sin:{l:1,  s:0, c:0.0, st:1}},
+    '04. 33K a 50K':  {con:null, sin:null},
+    '05. 50K a 75K':  {con:null, sin:null},
+    '06. 75K a 90K':  {con:{l:2, s:0, c:0.0, st:2}, sin:null},
+    '07. 90K a 120K': {con:null, sin:null},
+    '08. 120K a 150K':{con:null, sin:null},
+    '09. 150K a 175K':{con:null, sin:null},
+    '10. 175K a 220K':{con:null, sin:null},
+    '11. 220K a 250K':{con:null, sin:null},
+    '12. 250K a 300K':{con:null, sin:null},
+    '13. 300K a 450K':{con:null, sin:null},
+    '14. 450K a 600K':{con:null, sin:{l:1, s:0, c:0.0, st:1}},
+    '15. 600K a 1M':  {con:null, sin:null},
+    '16. Mas de 1M':  {con:null, sin:null},
+  },
+};
+
+// ─── HELPERS ─────────────────────────────────────────────────────────────────
+function fmt(n) {
+  if (n == null) return '—';
+  if (n >= 1e6) return (n/1e6).toFixed(1) + 'M';
+  if (n >= 1e3) return Math.round(n/1e3) + 'K';
+  return n.toLocaleString('es-AR');
+}
+function convBg(c, maxC) {
+  if (!c) return '';
+  const t = Math.min(c / maxC, 1);
+  const alpha = 0.1 + t * 0.65;
+  return `background:rgba(63,185,80,${alpha.toFixed(2)});color:${t > 0.5 ? '#d2f4d3' : '#c9d1d9'}`;
+}
+function maxConv(d) {
+  let m = 0;
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con && row.con.c > m) m = row.con.c;
+    if (row.sin && row.sin.c > m) m = row.sin.c;
+  });
+  return m || 1;
+}
+function totalsOf(d) {
+  let tl=0, ts=0, tst=0, cl=0;
+  RANGES.forEach(r => {
+    const row = d[r]; if (!row) return;
+    if (row.con) { tl+=row.con.l; ts+=row.con.s; tst+=row.con.st; cl+=row.con.l; }
+    if (row.sin) { tl+=row.sin.l; ts+=row.sin.s; tst+=row.sin.st; }
+  });
+  return { l:tl, s:ts, st:tst, conv:tl?(ts/tl*100):0, pctFS:tl?(cl/tl*100):0 };
+}
+
+function renderTable(tableId, d) {
+  const mc = maxConv(d);
+  let conL=0, sinL=0;
+  RANGES.forEach(r => {
+    const row=d[r]; if(!row) return;
+    if(row.con) conL+=row.con.l;
+    if(row.sin) sinL+=row.sin.l;
+  });
+  const tot=conL+sinL;
+  const pctCon=tot?(conL/tot*100).toFixed(1):'0.0';
+  const pctSin=tot?(sinL/tot*100).toFixed(1):'0.0';
+
+  let h=`<thead><tr>
+    <th class="col-range" rowspan="2">Rango ASP (ARS)</th>
+    <th class="grp-con" colspan="6">🟢 Con Free Shipping <span style="background:rgba(63,185,80,0.15);color:#3fb950;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctCon}%</span></th>
+    <th class="grp-sin" colspan="6">⬜ Sin Free Shipping <span style="background:rgba(118,131,144,0.15);color:#8b949e;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctSin}%</span></th>
+  </tr><tr>
+    <th class="grp-con">Listings</th><th class="grp-con">% grupo</th><th class="grp-con">% tramo</th><th class="grp-con">Succ.</th><th class="grp-con">SL/LL</th><th class="grp-con">Stock</th>
+    <th class="grp-sin">Listings</th><th class="grp-sin">% grupo</th><th class="grp-sin">% tramo</th><th class="grp-sin">Succ.</th><th class="grp-sin">SL/LL</th><th class="grp-sin">Stock</th>
+  </tr></thead><tbody>`;
+
+  RANGES.forEach(r => {
+    const row=d[r]; if(!row) return;
+    const lbl=r.replace(/^\d+\.\s/,'');
+    const con=row.con, sin=row.sin;
+    const rowTotal=(con?con.l:0)+(sin?sin.l:0);
+    const pCgrp=con&&conL?(con.l/conL*100).toFixed(1):null;
+    const pSgrp=sin&&sinL?(sin.l/sinL*100).toFixed(1):null;
+    const pCtrm=con&&rowTotal?(con.l/rowTotal*100).toFixed(1):null;
+    const pStrm=sin&&rowTotal?(sin.l/rowTotal*100).toFixed(1):null;
+    const ps='color:#8b949e;font-size:11px';
+    h+=`<tr><td class="col-range">${lbl}</td>
+      ${con?`<td class="con-first">${fmt(con.l)}</td><td style="${ps}">${pCgrp}%</td><td style="${ps}">${pCtrm}%</td><td>${fmt(con.s)}</td><td class="conv con-first" style="${convBg(con.c,mc)}">${con.c.toFixed(1)}%</td><td>${fmt(con.st)}</td>`
+           :`<td class="con-first empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="conv con-first empty">—</td><td class="empty">—</td>`}
+      ${sin?`<td class="sin-first">${fmt(sin.l)}</td><td style="${ps}">${pSgrp}%</td><td style="${ps}">${pStrm}%</td><td>${fmt(sin.s)}</td><td class="conv sin-first" style="${convBg(sin.c,mc)}">${sin.c.toFixed(1)}%</td><td>${fmt(sin.st)}</td>`
+           :`<td class="sin-first empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="empty">—</td><td class="conv sin-first empty">—</td><td class="empty">—</td>`}
+    </tr>`;
+  });
+
+  let tc={l:0,s:0,st:0}, ts={l:0,s:0,st:0};
+  RANGES.forEach(r=>{const row=d[r];if(!row)return;if(row.con){tc.l+=row.con.l;tc.s+=row.con.s;tc.st+=row.con.st;}if(row.sin){ts.l+=row.sin.l;ts.s+=row.sin.s;ts.st+=row.sin.st;}});
+  const gt=tc.l+ts.l; const ps='color:#8b949e;font-size:11px';
+  h+=`</tbody><tfoot><tr><td class="col-range">TOTAL</td>
+    <td class="con-first">${fmt(tc.l)}</td><td style="${ps}">100%</td><td style="${ps}">${gt?(tc.l/gt*100).toFixed(1):0}%</td><td>${fmt(tc.s)}</td><td class="conv con-first">${tc.l?(tc.s/tc.l*100).toFixed(1):0}%</td><td>${fmt(tc.st)}</td>
+    <td class="sin-first">${fmt(ts.l)}</td><td style="${ps}">100%</td><td style="${ps}">${gt?(ts.l/gt*100).toFixed(1):0}%</td><td>${fmt(ts.s)}</td><td class="conv sin-first">${ts.l?(ts.s/ts.l*100).toFixed(1):0}%</td><td>${fmt(ts.st)}</td>
+  </tr></tfoot>`;
+  document.getElementById(tableId).innerHTML=h;
+}
+
+function toggleCard(head) { head.closest('.brand-card').classList.toggle('open'); }
+
+// ─── TAB SWITCHING ────────────────────────────────────────────────────────────
+function switchTab(name, btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + name).classList.add('active');
+  btn.classList.add('active');
+}
+
+// ─── DEMAND DATA ──────────────────────────────────────────────────────────────
+// Fuente: meli orders 2026-08-13.csv · consolidado por marca Grupo Simpa
+const DEMAND = [
+  {brand:'KTM',            color:'#ff6600', tsi:5007, tgmv:514799019},
+  {brand:'Royal Enfield',  color:'#8b0000', tsi:1902, tgmv:173016235},
+  {brand:'CFMoto',         color:'#00aeef', tsi:1623, tgmv:181078497},
+  {brand:'Piaggio',        color:'#003da5', tsi:474,  tgmv:28151934 },
+  {brand:'Husqvarna',      color:'#ffd700', tsi:355,  tgmv:31994932 },
+  {brand:'Moto Morini',    color:'#a0522d', tsi:109,  tgmv:7802762  },
+  {brand:'QJ Motor',       color:'#003c7e', tsi:75,   tgmv:6892197  },
+  {brand:'Vespa',          color:'#00a550', tsi:68,   tgmv:5940287  },
+  {brand:'Harley-Davidson',color:'#e8811a', tsi:56,   tgmv:4760941  },
+  {brand:'Can-Am',         color:'#cc0000', tsi:51,   tgmv:9754906  },
+  {brand:'Aprilia',        color:'#d40000', tsi:28,   tgmv:1817824  },
+  {brand:'Moto Guzzi',     color:'#8b0032', tsi:21,   tgmv:893516   },
+  {brand:'Gas Gas',        color:'#ff4500', tsi:9,    tgmv:1877944  },
+  {brand:'Super Soco',     color:'#1c9be8', tsi:0,    tgmv:0        },
+  {brand:'Segway',         color:'#6abf4b', tsi:0,    tgmv:0        },
+];
+
+(function renderDemand() {
+  const active    = DEMAND.filter(d => d.tsi > 0);
+  const totalTSI  = DEMAND.reduce((s,d) => s + d.tsi, 0);
+  const totalTGMV = DEMAND.reduce((s,d) => s + d.tgmv, 0);
+  const maxTSI    = Math.max(...active.map(d => d.tsi));
+  const maxTGMV   = Math.max(...active.map(d => d.tgmv));
+
+  const fmtARS = v => {
+    if (v >= 1e9) return 'ARS ' + (v/1e9).toFixed(2) + 'B';
+    if (v >= 1e6) return 'ARS ' + (v/1e6).toFixed(1) + 'M';
+    if (v >= 1e3) return 'ARS ' + (v/1e3).toFixed(0) + 'K';
+    return 'ARS ' + v.toFixed(0);
+  };
+  const fmtN = v => v.toLocaleString('es-AR');
+
+  document.getElementById('demand-summary').innerHTML = `
+    <div class="demand-stat">
+      <div class="demand-stat-label">TSI Total Simpa</div>
+      <div class="demand-stat-value">${fmtN(totalTSI)}</div>
+      <div class="demand-stat-sub">unidades vendidas · YTD 2026</div>
+    </div>
+    <div class="demand-stat">
+      <div class="demand-stat-label">TGMV Total Simpa</div>
+      <div class="demand-stat-value">ARS ${(totalTGMV/1e6).toFixed(1)}M</div>
+      <div class="demand-stat-sub">facturación · YTD 2026</div>
+    </div>
+    <div class="demand-stat">
+      <div class="demand-stat-label">ASP Promedio</div>
+      <div class="demand-stat-value">ARS ${Math.round(totalTGMV/totalTSI).toLocaleString('es-AR')}</div>
+      <div class="demand-stat-sub">precio promedio de venta</div>
+    </div>
+    <div class="demand-stat">
+      <div class="demand-stat-label">Marcas Activas</div>
+      <div class="demand-stat-value">${active.length} <span style="font-size:14px;color:#8b949e">/ 15</span></div>
+      <div class="demand-stat-sub">con órdenes en 2026</div>
+    </div>`;
+
+  const rows = DEMAND.map((d, i) => {
+    const rank = i + 1;
+    if (d.tsi === 0) return `
+      <tr>
+        <td><div class="brand-label"><span class="brand-dot" style="background:${d.color}"></span>${rank}. ${d.brand}</div></td>
+        <td class="zero-label">—</td><td class="zero-label">—</td>
+        <td class="zero-label">—</td><td class="zero-label">—</td>
+      </tr>`;
+    const tsiPct  = (d.tsi / totalTSI * 100).toFixed(1);
+    const asp     = Math.round(d.tgmv / d.tsi);
+    const barW    = Math.round(d.tsi  / maxTSI  * 130);
+    const barWgmv = Math.round(d.tgmv / maxTGMV * 130);
+    return `
+      <tr>
+        <td><div class="brand-label"><span class="brand-dot" style="background:${d.color}"></span>${rank}. ${d.brand}</div></td>
+        <td><div class="bar-cell">
+          <span>${fmtN(d.tsi)}</span>
+          <div class="mini-bar" style="width:${barW}px;background:${d.color};opacity:0.75"></div>
+        </div></td>
+        <td><div class="bar-cell">
+          <span>${fmtARS(d.tgmv)}</span>
+          <div class="mini-bar" style="width:${barWgmv}px;background:${d.color};opacity:0.4"></div>
+        </div></td>
+        <td>${fmtARS(asp)}</td>
+        <td>${tsiPct}%</td>
+      </tr>`;
+  }).join('');
+
+  document.getElementById('demand-table').innerHTML = `
+    <thead>
+      <tr>
+        <th style="text-align:left">Marca</th>
+        <th>TSI (unidades)</th>
+        <th>TGMV (facturación)</th>
+        <th>ASP</th>
+        <th>% TSI Simpa</th>
+      </tr>
+    </thead>
+    <tbody>${rows}</tbody>
+    <tfoot>
+      <tr>
+        <td>TOTAL SIMPA</td>
+        <td style="text-align:right">${fmtN(totalTSI)} uds</td>
+        <td style="text-align:right">${fmtARS(totalTGMV)}</td>
+        <td style="text-align:right">${fmtARS(Math.round(totalTGMV/totalTSI))}</td>
+        <td style="text-align:right">100%</td>
+      </tr>
+    </tfoot>`;
+})();
+
+// ─── DONUT CHART ─────────────────────────────────────────────────────────────
+function renderDonut(containerId, items, valueKey, title, fmtFn) {
+  const el = document.getElementById(containerId);
+  if (!el) return;
+  const active = items.filter(d => d[valueKey] > 0);
+  const total  = active.reduce((s, d) => s + d[valueKey], 0);
+  const R = 70, cx = 88, cy = 88;
+  const CIRC = 2 * Math.PI * R;
+  let cum = 0;
+  const segs = active.map(d => {
+    const dash = (d[valueKey] / total) * CIRC;
+    const seg  = { ...d, pct: d[valueKey] / total, dash, start: cum };
+    cum += dash;
+    return seg;
+  });
+  const paths = segs.map(s =>
+    `<circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="${s.color}" stroke-width="22" opacity="0.88"
+      stroke-dasharray="${s.dash} ${CIRC - s.dash}"
+      stroke-dashoffset="${CIRC - s.start}"
+      transform="rotate(-90 ${cx} ${cy})"/>`
+  ).join('');
+  const legend = segs.map(s =>
+    `<div class="donut-legend-row">
+      <span class="donut-dot2" style="background:${s.color}"></span>
+      <span class="donut-brand2">${s.brand}</span>
+      <span class="donut-val2">${fmtFn(s[valueKey])}</span>
+      <span class="donut-pct2">${(s.pct*100).toFixed(1)}%</span>
+    </div>`
+  ).join('');
+  el.innerHTML = `
+    <div class="donut-block">
+      <div class="donut-ttl">${title}</div>
+      <div class="donut-inner">
+        <svg viewBox="0 0 176 176" width="176" height="176" style="flex-shrink:0">
+          <circle cx="${cx}" cy="${cy}" r="${R}" fill="none" stroke="#21262d" stroke-width="22"/>
+          ${paths}
+        </svg>
+        <div class="donut-legend">${legend}</div>
+      </div>
+    </div>`;
+}
+renderDonut('chart-tsi',  DEMAND, 'tsi',  'TSI — Unidades vendidas',
+  n => n.toLocaleString('es-AR') + ' uds');
+renderDonut('chart-tgmv', DEMAND, 'tgmv', 'TGMV — Facturación ARS',
+  v => v >= 1e6 ? 'ARS '+(v/1e6).toFixed(1)+'M' : 'ARS '+(v/1e3).toFixed(0)+'K');
+
+// ─── RENDER ──────────────────────────────────────────────────────────────────
+const grid = document.getElementById('brand-grid');
+BRAND_ORDER.forEach(brand => {
+  const color = BRAND_COLORS[brand];
+  const data  = BD[brand];
+  const t     = totalsOf(data);
+  const id    = 'tbl-' + brand.replace(/[^a-z0-9]/gi,'_');
+
+  const div = document.createElement('div');
+  div.className = 'brand-card';
+  div.innerHTML = `
+    <div class="brand-card-head" onclick="toggleCard(this)">
+      <div class="brand-bar" style="background:${color}"></div>
+      <span class="brand-name" style="color:${color}">${brand}</span>
+      <span class="brand-stats">${fmt(t.l)} listings &nbsp;·&nbsp; SL/LL ${t.conv.toFixed(1)}% &nbsp;·&nbsp; FS ${t.pctFS.toFixed(1)}%</span>
+      <span class="brand-chevron">▼</span>
+    </div>
+    <div class="brand-card-body">
+      <div class="table-wrap"><table id="${id}"></table></div>
+    </div>`;
+  grid.appendChild(div);
+  renderTable(id, data);
+});
+</script>
+</body>
+</html>
