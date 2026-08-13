@@ -96,6 +96,41 @@ body {
 .legend-item { display: flex; align-items: center; gap: 6px; }
 .legend-dot { width: 10px; height: 10px; border-radius: 2px; }
 
+/* ── INSIGHTS TAB ── */
+.ins-grid { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-bottom: 28px; }
+@media (max-width:1100px){ .ins-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width:700px) { .ins-grid { grid-template-columns: 1fr; } }
+.ins-panel { background:#161b22; border:1px solid #30363d; border-radius:10px; overflow:hidden; }
+.ins-panel-head { padding:12px 16px; font-size:12px; font-weight:700; text-transform:uppercase; letter-spacing:.5px; display:flex; align-items:center; gap:8px; }
+.ins-panel-head.green  { background:rgba(63,185,80,.12);  color:#3fb950; border-bottom:1px solid rgba(63,185,80,.25); }
+.ins-panel-head.yellow { background:rgba(210,167,36,.12); color:#e3b341; border-bottom:1px solid rgba(210,167,36,.25); }
+.ins-panel-head.red    { background:rgba(248,81,73,.10);  color:#f85149; border-bottom:1px solid rgba(248,81,73,.25); }
+.ins-item { padding:11px 16px; border-bottom:1px solid #21262d; display:flex; flex-direction:column; gap:3px; }
+.ins-item:last-child { border-bottom:none; }
+.ins-item-top { display:flex; align-items:center; gap:8px; }
+.ins-rank { font-size:11px; font-weight:800; color:#484f58; min-width:18px; }
+.ins-cat { font-size:12px; font-weight:700; color:#e6edf3; }
+.ins-range { font-size:11px; color:#8b949e; }
+.ins-metrics { display:flex; gap:10px; margin-top:1px; }
+.ins-m { font-size:11px; }
+.ins-m.hi   { color:#3fb950; font-weight:700; }
+.ins-m.mid  { color:#e3b341; }
+.ins-m.lo   { color:#f85149; }
+.ins-m.muted{ color:#8b949e; }
+.ins-why { font-size:10px; color:#6e7681; margin-top:2px; font-style:italic; line-height:1.4; }
+
+/* domain insight rows */
+.dom-ins-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(340px,1fr)); gap:10px; }
+.dom-ins-card { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:12px 14px; }
+.dom-ins-title { font-size:12px; font-weight:700; color:#e6edf3; margin-bottom:8px; display:flex; align-items:center; gap:7px; }
+.dom-ins-dot { width:8px; height:8px; border-radius:50%; flex-shrink:0; }
+.dom-ins-row { display:flex; align-items:flex-start; gap:6px; font-size:11px; color:#c9d1d9; margin-bottom:5px; line-height:1.4; }
+.dom-ins-row:last-child { margin-bottom:0; }
+.dom-ins-badge { font-size:10px; font-weight:700; padding:1px 6px; border-radius:8px; flex-shrink:0; margin-top:1px; }
+.dom-ins-badge.g { background:rgba(63,185,80,.15); color:#3fb950; }
+.dom-ins-badge.y { background:rgba(227,179,65,.15); color:#e3b341; }
+.dom-ins-badge.r { background:rgba(248,81,73,.12);  color:#f85149; }
+
 /* TABLE */
 .table-wrap { overflow-x: auto; border-radius: 8px; border: 1px solid #30363d; }
 table { width: 100%; border-collapse: collapse; white-space: nowrap; }
@@ -188,6 +223,7 @@ tfoot td {
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="switchTab('agrupadores',this)">Agrupadores</button>
   <button class="nav-tab" onclick="switchTab('dominios',this)">Dominios</button>
+  <button class="nav-tab" onclick="switchTab('insights',this)">Insights & Oportunidades</button>
 </div>
 
 <!-- ══════════════ PANE 1: AGRUPADORES ══════════════ -->
@@ -269,6 +305,44 @@ tfoot td {
     </div>
     <div id="domains-container" class="agg2-grid"></div>
   </div>
+</div>
+</div>
+
+<!-- ══════════════ PANE 3: INSIGHTS ══════════════ -->
+<div id="pane-insights" class="tab-pane">
+<div class="page">
+
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#ffe600"></div>
+      <span class="s-title">Insights & Oportunidades — Top Ranking Global</span>
+      <span class="s-pill" id="ins-pill">Calculado automáticamente desde los datos de listings</span>
+    </div>
+    <div class="ins-grid">
+      <div class="ins-panel">
+        <div class="ins-panel-head green">🟢 Alta Demanda, Baja Oferta</div>
+        <div id="ins-demand"></div>
+      </div>
+      <div class="ins-panel">
+        <div class="ins-panel-head yellow">🟡 Activar Free Shipping</div>
+        <div id="ins-fs"></div>
+      </div>
+      <div class="ins-panel">
+        <div class="ins-panel-head red">🔴 Mercados Saturados — Evitar</div>
+        <div id="ins-sat"></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#58a6ff"></div>
+      <span class="s-title">Diagnóstico por Dominio</span>
+      <span class="s-pill">Mejor rango + alerta por categoría</span>
+    </div>
+    <div class="dom-ins-grid" id="ins-domains"></div>
+  </div>
+
 </div>
 </div>
 
@@ -1180,6 +1254,218 @@ function renderDomains() {
     renderTable('table-dom-' + domain, data);
   });
 }
+
+// ─── INSIGHTS ENGINE ─────────────────────────────────────────────────────────
+(function buildInsights() {
+
+  // All data sources with labels
+  const AGG_SOURCES = [
+    { key:'agg1', label:'ACC Motorcycles (AGG1)', color:'#ffe600' },
+    { key:'rp',   label:'Replacement Parts (AGG2)', color:'#58a6ff' },
+    { key:'ac',   label:'Accessories (AGG2)', color:'#a371f7' },
+    { key:'he',   label:'Helmets (AGG2)', color:'#f0883e' },
+  ];
+
+  const DOMAIN_SOURCES = DOMAIN_ORDER.map(k => ({
+    key: k, label: DOMAIN_LABELS[k], color: DOMAIN_COLORS[k], data: DD[k]
+  }));
+
+  const ALL_SOURCES = [
+    ...AGG_SOURCES.map(a => ({ ...a, data: DATA[a.key] })),
+    ...DOMAIN_SOURCES
+  ];
+
+  const RANGE_LABELS = {
+    '01. Hasta 5K':'Hasta $5K','02. 5K a 15K':'$5K–15K','03. 15K a 33K':'$15K–33K',
+    '04. 33K a 50K':'$33K–50K','05. 50K a 75K':'$50K–75K','06. 75K a 90K':'$75K–90K',
+    '07. 90K a 120K':'$90K–120K','08. 120K a 150K':'$120K–150K',
+    '09. 150K a 175K':'$150K–175K','10. 175K a 220K':'$175K–220K',
+    '11. 220K a 250K':'$220K–250K','12. 250K a 300K':'$250K–300K',
+    '13. 300K a 450K':'$300K–450K','14. 450K a 600K':'$450K–600K',
+    '15. 600K a 1M':'$600K–1M','16. Mas de 1M':'Más de $1M'
+  };
+
+  function rl(r) { return RANGE_LABELS[r] || r; }
+
+  // ── Demand score: high conv + low listings = opportunity ──
+  function demandScore(conv, listings) {
+    if (!conv || conv < 5 || !listings || listings < 10) return 0;
+    return conv / Math.max(1, Math.log10(listings) - 0.5);
+  }
+
+  // ── FS activation score: big Sin FS with minimal Con FS ──
+  function fsScore(sinConv, sinL, conL) {
+    if (!sinConv || sinConv < 3 || !sinL || sinL < 300) return 0;
+    const gap = Math.log10(sinL / Math.max(1, conL || 0) + 1);
+    return sinConv * gap;
+  }
+
+  // ── Saturation score: many listings + terrible conv ──
+  function satScore(conv, listings) {
+    if (!listings || listings < 8000) return 0;
+    if (conv > 2) return 0;
+    return listings * (1 - conv / 10);
+  }
+
+  const demand = [], fsAct = [], sat = [];
+
+  ALL_SOURCES.forEach(src => {
+    RANGES.forEach(r => {
+      const row = src.data[r]; if (!row) return;
+      const con = row.con, sin = row.sin;
+
+      // Demand
+      if (con && con.c >= 5) {
+        const sc = demandScore(con.c, con.l);
+        if (sc > 0) demand.push({
+          label: src.label, color: src.color, range: r,
+          conv: con.c, listings: con.l, score: sc,
+          why: `${con.c}% SL/LL con ${con.l.toLocaleString('es-AR')} listings Con FS`
+        });
+      }
+
+      // FS activation
+      if (sin && sin.c >= 3 && sin.l >= 300) {
+        const conL = (con && con.l) || 0;
+        const conPct = conL / sin.l;
+        if (conPct < 0.15) {
+          const sc = fsScore(sin.c, sin.l, conL);
+          if (sc > 0) fsAct.push({
+            label: src.label, color: src.color, range: r,
+            sinConv: sin.c, sinL: sin.l, conL,
+            score: sc,
+            why: `${sin.l.toLocaleString('es-AR')} listings Sin FS al ${sin.c}% conv vs solo ${conL.toLocaleString('es-AR')} Con FS`
+          });
+        }
+      }
+
+      // Saturation
+      if (con && con.l >= 8000 && con.c < 2) {
+        const sc = satScore(con.c, con.l);
+        if (sc > 0) sat.push({
+          label: src.label, color: src.color, range: r,
+          conv: con.c, listings: con.l, score: sc,
+          why: `${con.l.toLocaleString('es-AR')} listings Con FS con solo ${con.c}% SL/LL`
+        });
+      }
+    });
+  });
+
+  demand.sort((a,b) => b.score - a.score);
+  fsAct.sort((a,b)  => b.score - a.score);
+  sat.sort((a,b)    => b.score - a.score);
+
+  function renderPanel(elId, items, renderFn) {
+    const el = document.getElementById(elId);
+    if (!el) return;
+    el.innerHTML = items.slice(0,8).map((d,i) => renderFn(d, i+1)).join('');
+  }
+
+  renderPanel('ins-demand', demand, (d,i) => `
+    <div class="ins-item">
+      <div class="ins-item-top">
+        <span class="ins-rank">${i}</span>
+        <span class="ins-cat" style="color:${d.color}">${d.label}</span>
+      </div>
+      <span class="ins-range">${rl(d.range)}</span>
+      <div class="ins-metrics">
+        <span class="ins-m hi">SL/LL ${d.conv}%</span>
+        <span class="ins-m muted">${d.listings.toLocaleString('es-AR')} listings</span>
+      </div>
+      <div class="ins-why">${d.why}</div>
+    </div>`);
+
+  renderPanel('ins-fs', fsAct, (d,i) => `
+    <div class="ins-item">
+      <div class="ins-item-top">
+        <span class="ins-rank">${i}</span>
+        <span class="ins-cat" style="color:${d.color}">${d.label}</span>
+      </div>
+      <span class="ins-range">${rl(d.range)}</span>
+      <div class="ins-metrics">
+        <span class="ins-m mid">Sin FS ${d.sinConv}% conv</span>
+        <span class="ins-m muted">Con FS: ${d.conL.toLocaleString('es-AR')}</span>
+      </div>
+      <div class="ins-why">${d.why}</div>
+    </div>`);
+
+  renderPanel('ins-sat', sat, (d,i) => `
+    <div class="ins-item">
+      <div class="ins-item-top">
+        <span class="ins-rank">${i}</span>
+        <span class="ins-cat" style="color:${d.color}">${d.label}</span>
+      </div>
+      <span class="ins-range">${rl(d.range)}</span>
+      <div class="ins-metrics">
+        <span class="ins-m lo">SL/LL ${d.conv}%</span>
+        <span class="ins-m muted">${d.listings.toLocaleString('es-AR')} listings</span>
+      </div>
+      <div class="ins-why">${d.why}</div>
+    </div>`);
+
+  // ── Domain-level diagnostics ──
+  const domEl = document.getElementById('ins-domains');
+  if (domEl) {
+    domEl.innerHTML = DOMAIN_SOURCES.map(src => {
+      // Best demand range for this domain
+      let bestD = null, bestDsc = 0;
+      let bestFS = null, bestFSsc = 0;
+      let worstSat = null, worstSatSc = 0;
+
+      RANGES.forEach(r => {
+        const row = src.data[r]; if (!row) return;
+        const con = row.con, sin = row.sin;
+        if (con && con.c >= 5) {
+          const sc = demandScore(con.c, con.l);
+          if (sc > bestDsc) { bestDsc = sc; bestD = { r, conv: con.c, l: con.l }; }
+        }
+        if (sin && sin.c >= 3 && sin.l >= 200) {
+          const conL = (con && con.l) || 0;
+          if (conL / sin.l < 0.2) {
+            const sc = fsScore(sin.c, sin.l, conL);
+            if (sc > bestFSsc) { bestFSsc = sc; bestFS = { r, sinConv: sin.c, sinL: sin.l, conL }; }
+          }
+        }
+        if (con && con.l >= 5000 && con.c < 2) {
+          const sc = satScore(con.c, con.l);
+          if (sc > worstSatSc) { worstSatSc = sc; worstSat = { r, conv: con.c, l: con.l }; }
+        }
+      });
+
+      const rows = [];
+      if (bestD) rows.push(`
+        <div class="dom-ins-row">
+          <span class="dom-ins-badge g">OPORTUNIDAD</span>
+          <span><strong>${rl(bestD.r)}</strong> → ${bestD.conv}% SL/LL con ${bestD.l.toLocaleString('es-AR')} listings Con FS</span>
+        </div>`);
+      if (bestFS) rows.push(`
+        <div class="dom-ins-row">
+          <span class="dom-ins-badge y">ACTIVAR FS</span>
+          <span><strong>${rl(bestFS.r)}</strong> → ${bestFS.sinL.toLocaleString('es-AR')} Sin FS al ${bestFS.sinConv}% conv · solo ${bestFS.conL.toLocaleString('es-AR')} Con FS</span>
+        </div>`);
+      if (worstSat) rows.push(`
+        <div class="dom-ins-row">
+          <span class="dom-ins-badge r">SATURADO</span>
+          <span><strong>${rl(worstSat.r)}</strong> → ${worstSat.l.toLocaleString('es-AR')} listings Con FS con ${worstSat.conv}% SL/LL</span>
+        </div>`);
+      if (rows.length === 0) rows.push(`<div class="dom-ins-row"><span class="ins-m muted">Sin señales destacadas en este dominio</span></div>`);
+
+      return `
+        <div class="dom-ins-card">
+          <div class="dom-ins-title">
+            <span class="dom-ins-dot" style="background:${src.color}"></span>
+            ${src.label}
+          </div>
+          ${rows.join('')}
+        </div>`;
+    }).join('');
+  }
+
+  // Update pill with total signals found
+  const pill = document.getElementById('ins-pill');
+  if (pill) pill.textContent = `${demand.length} oportunidades de demanda · ${fsAct.length} de activación FS · ${sat.length} saturados detectados`;
+
+})();
 
 // ─── RENDER ──────────────────────────────────────────────────────────────────
 renderStats('stats-agg1', DATA.agg1);
