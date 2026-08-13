@@ -1,0 +1,485 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACC Motorcycles MLA — Reporte Ejecutivo 2026</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#0d1117;color:#e2e8f0;line-height:1.5;min-height:100vh}
+.container{max-width:1480px;margin:0 auto;padding:28px 24px}
+
+/* HEADER */
+.header{background:linear-gradient(135deg,#1a1f2e 0%,#0f172a 100%);border:1px solid #2d3748;border-radius:14px;padding:32px 36px;margin-bottom:24px;display:flex;justify-content:space-between;align-items:center;gap:24px}
+.header-title h1{font-size:26px;font-weight:800;color:#f1f5f9;letter-spacing:-0.5px}
+.header-title .subtitle{color:#64748b;font-size:13px;margin-top:5px}
+.header-badges{display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end}
+.badge{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;white-space:nowrap}
+.badge-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+.badge-amber{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+.badge-green{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25)}
+.badge-blue{background:rgba(59,130,246,.12);color:#60a5fa;border:1px solid rgba(59,130,246,.25)}
+
+/* SECTION LABEL */
+.section-label{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:#475569;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.section-label::after{content:'';flex:1;height:1px;background:#1e2535}
+
+/* ACC TOTAL CARD */
+.acc-card{background:#131920;border:1px solid #1e2d3d;border-radius:14px;padding:28px 32px;margin-bottom:24px}
+.acc-card-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:22px;gap:20px;flex-wrap:wrap}
+.acc-card-title{font-size:19px;font-weight:800;color:#f1f5f9}
+.acc-card-title small{display:block;font-size:12px;color:#475569;font-weight:400;margin-top:3px}
+.status-pill{display:inline-flex;align-items:center;gap:6px;padding:5px 13px;border-radius:20px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;white-space:nowrap}
+.pill-red{background:rgba(239,68,68,.12);color:#f87171;border:1px solid rgba(239,68,68,.25)}
+.pill-amber{background:rgba(245,158,11,.12);color:#fbbf24;border:1px solid rgba(245,158,11,.25)}
+.pill-green{background:rgba(34,197,94,.12);color:#4ade80;border:1px solid rgba(34,197,94,.25)}
+
+/* KPI GRID */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:22px}
+.kpi{background:#0d1117;border:1px solid #1e2535;border-radius:9px;padding:14px 16px}
+.kpi-lbl{font-size:10px;color:#475569;font-weight:700;text-transform:uppercase;letter-spacing:.5px;margin-bottom:5px}
+.kpi-val{font-size:21px;font-weight:800}
+.kpi-sub{font-size:10px;margin-top:3px}
+.pos{color:#4ade80}.neg{color:#f87171}.warn{color:#fbbf24}.neu{color:#64748b}
+
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:24px}
+.dd-block{}
+.dd-head{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:10px;display:flex;align-items:center;gap:6px}
+.dd-head-green{color:#4ade80}.dd-head-red{color:#f87171}
+.dd-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.dd-item{font-size:12.5px;color:#94a3b8;display:flex;align-items:flex-start;gap:7px;line-height:1.45}
+.dd-icon{font-size:11px;flex-shrink:0;margin-top:1px}
+
+/* AGG2 GRID */
+.agg2-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-bottom:24px}
+.agg2-card{background:#131920;border:1px solid #1e2d3d;border-radius:14px;overflow:hidden;display:flex;flex-direction:column}
+.agg2-head{padding:20px 22px;border-bottom:1px solid #1a2332}
+.agg2-name{font-size:13px;font-weight:800;color:#f1f5f9;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.seg-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0;display:inline-block;margin-right:6px}
+.dot-red{background:#ef4444;box-shadow:0 0 7px #ef4444}
+.dot-amber{background:#f59e0b;box-shadow:0 0 7px #f59e0b}
+.dot-green{background:#22c55e;box-shadow:0 0 7px #22c55e}
+
+.gap-box{background:rgba(239,68,68,.07);border:1px solid rgba(239,68,68,.18);border-radius:7px;padding:8px 14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center}
+.gap-lbl{font-size:11px;color:#64748b}
+.gap-val{font-size:20px;font-weight:900;color:#f87171}
+
+.mini-kpis{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mkpi{background:#0d1117;border-radius:6px;padding:8px 10px}
+.mkpi-lbl{font-size:9px;color:#475569;font-weight:700;text-transform:uppercase;letter-spacing:.3px}
+.mkpi-val{font-size:15px;font-weight:800;margin-top:2px}
+.mkpi-sub{font-size:9px;margin-top:1px}
+
+.agg2-body{padding:18px 22px;flex:1;display:flex;flex-direction:column;gap:14px}
+.dd-mini-head{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;margin-bottom:7px}
+.dd-mini-list{list-style:none;display:flex;flex-direction:column;gap:5px}
+.dd-mini-item{font-size:11.5px;color:#94a3b8;display:flex;align-items:flex-start;gap:6px;line-height:1.4}
+
+.steps-head{font-size:9px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:#60a5fa;margin-bottom:8px}
+.steps-list{list-style:none;display:flex;flex-direction:column;gap:6px}
+.step-row{display:flex;align-items:flex-start;gap:8px;font-size:11.5px;color:#94a3b8;line-height:1.4}
+.sn{background:rgba(59,130,246,.18);color:#60a5fa;border:1px solid rgba(59,130,246,.3);border-radius:4px;min-width:18px;height:18px;display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;flex-shrink:0;margin-top:1px}
+
+.divider{height:1px;background:#1a2332;margin:14px 0}
+
+/* EXEC SUMMARY */
+.exec{background:#131920;border:1px solid #1e2d3d;border-radius:14px;padding:28px 32px;margin-bottom:24px}
+.exec h2{font-size:17px;font-weight:800;color:#f1f5f9;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.exec-intro{background:#0d1117;border-left:3px solid #3b82f6;border-radius:0 8px 8px 0;padding:16px 20px;margin-bottom:22px;font-size:13px;color:#94a3b8;line-height:1.75}
+.exec-intro strong{color:#e2e8f0}
+
+.ptable{width:100%;border-collapse:collapse}
+.ptable th{text-align:left;padding:9px 14px;font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#475569;border-bottom:1px solid #1e2535}
+.ptable td{padding:11px 14px;font-size:12.5px;color:#94a3b8;border-bottom:1px solid #131920;vertical-align:top}
+.ptable tr:hover td{background:rgba(255,255,255,.015)}
+.pnum{background:rgba(59,130,246,.15);color:#60a5fa;border-radius:50%;width:22px;height:22px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:800}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:9px;font-weight:700;margin-right:3px;white-space:nowrap}
+.tag-all{background:rgba(99,102,241,.15);color:#a78bfa}
+.tag-rp{background:rgba(59,130,246,.15);color:#60a5fa}
+.tag-acc{background:rgba(34,197,94,.15);color:#4ade80}
+.tag-helm{background:rgba(245,158,11,.15);color:#fbbf24}
+.impact-h{color:#f87171;font-weight:700;font-size:12px}
+.impact-m{color:#fbbf24;font-weight:700;font-size:12px}
+.impact-s{color:#a78bfa;font-weight:700;font-size:12px}
+
+.summary-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:22px}
+.sbox{background:#0d1117;border:1px solid #1e2535;border-radius:9px;padding:16px}
+.sbox-title{font-size:11px;font-weight:800;margin-bottom:8px}
+.sbox p{font-size:11.5px;color:#64748b;line-height:1.65}
+
+.footer{text-align:center;padding:20px;color:#334155;font-size:11px}
+
+@media(max-width:1100px){.agg2-grid{grid-template-columns:1fr}.kpi-grid{grid-template-columns:repeat(3,1fr)}.summary-grid{grid-template-columns:repeat(2,1fr)}.two-col{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<div class="container">
+
+<!-- ═══ HEADER ═══ -->
+<div class="header">
+  <div class="header-title">
+    <h1>ACC Motorcycles MLA — Reporte Ejecutivo</h1>
+    <div class="subtitle">Análisis YTD 2026 &nbsp;·&nbsp; Site: MLA &nbsp;·&nbsp; Segmentos: Replacement Parts · Accessories · Helmets &nbsp;·&nbsp; Julio 2026</div>
+  </div>
+  <div class="header-badges">
+    <span class="badge badge-red">NMV vs Plan: −15.2% YTD</span>
+    <span class="badge badge-red">NASP: −12.0% YTD</span>
+    <span class="badge badge-amber">New Buyers: −5.9% YTD</span>
+    <span class="badge badge-red">BPC Total: −10.9pp</span>
+    <span class="badge badge-green">Visitas: +20.5%</span>
+    <span class="badge badge-green">Sellers: +82.8%</span>
+    <span class="badge badge-blue">Clips NMV: 13.8% YTD</span>
+  </div>
+</div>
+
+<!-- ═══ ACC TOTAL ═══ -->
+<div class="section-label">Resumen Total ACC Motorcycles</div>
+<div class="acc-card">
+  <div class="acc-card-top">
+    <div>
+      <div class="acc-card-title">ACC Motorcycles — Visión Consolidada
+        <small>Enero 2025 – Julio 2026 MTD &nbsp;|&nbsp; Todos los segmentos</small>
+      </div>
+    </div>
+    <span class="status-pill pill-red">● Crítico vs Plan</span>
+  </div>
+
+  <div class="kpi-grid">
+    <div class="kpi"><div class="kpi-lbl">NMV vs Plan YTD</div><div class="kpi-val neg">−15.2%</div><div class="kpi-sub neg">MTD Jun 26: −26.1%</div></div>
+    <div class="kpi"><div class="kpi-lbl">NMV YoY 2025</div><div class="kpi-val pos">+10.8%</div><div class="kpi-sub warn">2026 YTD: +1.9%→−14%</div></div>
+    <div class="kpi"><div class="kpi-lbl">NASP YoY</div><div class="kpi-val neg">−12.0%</div><div class="kpi-sub neg">Precio prom. en caída</div></div>
+    <div class="kpi"><div class="kpi-lbl">NSI YoY</div><div class="kpi-val pos">+16.4%</div><div class="kpi-sub pos">Volumen sano</div></div>
+    <div class="kpi"><div class="kpi-lbl">Visitas YTD</div><div class="kpi-val pos">+20.5%</div><div class="kpi-sub pos">Tráfico creciendo</div></div>
+    <div class="kpi"><div class="kpi-lbl">New Buyers YTD</div><div class="kpi-val neg">−5.9%</div><div class="kpi-sub neg">Era +120% en H1 2025</div></div>
+    <div class="kpi"><div class="kpi-lbl">BPC Total YTD</div><div class="kpi-val neg">−10.9pp</div><div class="kpi-sub neg">Competitividad baja</div></div>
+    <div class="kpi"><div class="kpi-lbl">% NMV Clips YTD</div><div class="kpi-val pos">13.8%</div><div class="kpi-sub pos">+171% en # clips</div></div>
+    <div class="kpi"><div class="kpi-lbl">Successful Sellers</div><div class="kpi-val pos">+82.8%</div><div class="kpi-sub pos">Supply histórico</div></div>
+    <div class="kpi"><div class="kpi-lbl">NMV CBT vs Plan</div><div class="kpi-val neg">−48.3%</div><div class="kpi-sub neg">Canal sin ejecutar</div></div>
+  </div>
+
+  <div class="two-col">
+    <div class="dd-block">
+      <div class="dd-head dd-head-green">▲ Drivers — qué está funcionando</div>
+      <ul class="dd-list">
+        <li class="dd-item"><span class="dd-icon pos">✦</span>Tráfico +20.5% YTD — top of funnel robusto en los 3 segmentos</li>
+        <li class="dd-item"><span class="dd-icon pos">✦</span>Supply explosivo: Successful Sellers +82.8% · New Sellers +165.5% YTD</li>
+        <li class="dd-item"><span class="dd-icon pos">✦</span>Clips como motor de NMV: crecimiento sostenido en los 3 segmentos en 2026</li>
+        <li class="dd-item"><span class="dd-icon pos">✦</span>FBM escalando (+4.1pp YTD) · Lead Time −8.2% YoY — logística mejorando</li>
+        <li class="dd-item"><span class="dd-icon pos">✦</span>CBT Accessories: de 0 a 200-280M/mes en 2026 — nuevo motor de NMV incremental</li>
+        <li class="dd-item"><span class="dd-icon pos">✦</span>Afiliados Mecánicos: programa desde 0 a 252K en ACC total — alto potencial de recurrencia</li>
+      </ul>
+    </div>
+    <div class="dd-block">
+      <div class="dd-head dd-head-red">▼ Draggers — qué está frenando</div>
+      <ul class="dd-list">
+        <li class="dd-item"><span class="dd-icon neg">✦</span><strong style="color:#e2e8f0">NASP −12% YTD:</strong> precio promedio cayendo en los 3 segmentos — el driver central del gap</li>
+        <li class="dd-item"><span class="dd-icon neg">✦</span>New Buyers negativos: de +120% en 2025 a −5.9% YTD 2026 — adquisición frenada</li>
+        <li class="dd-item"><span class="dd-icon neg">✦</span>BPC Total −10.9pp YTD · BPC Others −24.5pp: pérdida de competitividad de precio</li>
+        <li class="dd-item"><span class="dd-icon neg">✦</span>NMV CBT vs Plan −48.3% YTD: el canal de mayor potencial sigue sin ejecutar plenamente</li>
+        <li class="dd-item"><span class="dd-icon neg">✦</span>Top Brands cayendo en los 3 segmentos (hasta −70.5% en Helmets) — sin marcas, cae NASP y CVR</li>
+        <li class="dd-item"><span class="dd-icon neg">✦</span>NMV OEM −8.1% YTD: canal oficial de fabricantes deteriorándose en todos los segmentos</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ AGG2 GRID ═══ -->
+<div class="section-label">Análisis por Segmento (AGG2)</div>
+<div class="agg2-grid">
+
+  <!-- ── REPLACEMENT PARTS ── -->
+  <div class="agg2-card">
+    <div class="agg2-head">
+      <div class="agg2-name">
+        <span><span class="seg-dot dot-amber"></span>Motorcycle Replacement Parts</span>
+        <span class="status-pill pill-amber" style="font-size:10px">Riesgo</span>
+      </div>
+      <div class="gap-box"><span class="gap-lbl">NMV vs Plan YTD</span><span class="gap-val">−16.0%</span></div>
+      <div class="mini-kpis">
+        <div class="mkpi"><div class="mkpi-lbl">NMV YoY YTD</div><div class="mkpi-val pos">+1.9%</div><div class="mkpi-sub warn">vs −14% Accessories</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">NASP YoY</div><div class="mkpi-val neg">−13.8%</div><div class="mkpi-sub neg">Mayor caída del portf.</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Buy Box YTD</div><div class="mkpi-val neg">~0.5%</div><div class="mkpi-sub neg">vs 19% Accessories</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Productizado YTD</div><div class="mkpi-val neg">2.3%</div><div class="mkpi-sub neg">vs 52% Helmets</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">3P Asesoria Directa</div><div class="mkpi-val pos">+56.7%</div><div class="mkpi-sub pos">YTD — lider en AD</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">3P Verticales YTD</div><div class="mkpi-val pos">+44.4%</div><div class="mkpi-sub pos">Canal expansivo</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">NMV OEM YTD</div><div class="mkpi-val neg">−10.5%</div><div class="mkpi-sub neg">Canal deteriorado</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">New Buyers YTD</div><div class="mkpi-val warn">−1.6%</div><div class="mkpi-sub warn">Mejor del portf.</div></div>
+      </div>
+    </div>
+    <div class="agg2-body">
+      <div>
+        <div class="dd-mini-head dd-head-green">▲ Drivers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Successful Sellers +83.9% YTD — mayor supply del portfolio</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>3P Asesoria Directa +56.7% · Verticales +44.4% YTD</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Clips % NMV creciendo +198% # clips YTD</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>FBM: 7.2% → 13.2% (+4.1pp YTD)</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>New Sellers +136% YTD — base de vendedores récord</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dd-mini-head dd-head-red">▼ Draggers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span><strong style="color:#e2e8f0">Buy Box ~0.5%:</strong> sin catálogo productizado, sin pricing sistémico ni BPC sostenible</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>NASP −13.8% YTD — mayor presión de precio del portfolio</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>BPC absoluto 44-55% — 20pp debajo de Helmets y Accessories</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>NMV OEM −10.5% YTD y acelerando en MTD</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>NMV Mechanics pasó de +19.7% (2025) a −15.8% MTD</li>
+        </ul>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="steps-head">◆ Pasos para cerrar el gap vs Plan</div>
+        <ul class="steps-list">
+          <li class="step-row"><span class="sn">1</span>Productizar top 20% familias por volumen → habilita Buy Box + BPC sistémico + defensa de NASP</li>
+          <li class="step-row"><span class="sn">2</span>Escalar KB4 Mechanics: 134 afiliados → objetivo 1K+ para tracción de recurrencia en repuestos</li>
+          <li class="step-row"><span class="sn">3</span>Plan de recuperación OEM con acuerdos por marca y familia de repuestos</li>
+          <li class="step-row"><span class="sn">4</span>Mantener y escalar 3P AD + Verticales — es la fortaleza diferencial del segmento</li>
+          <li class="step-row"><span class="sn">5</span>Reducir Stockouts SKU Estrella FBM — impacto directo en CVR de los ítems más vendidos</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── ACCESSORIES ── -->
+  <div class="agg2-card">
+    <div class="agg2-head">
+      <div class="agg2-name">
+        <span><span class="seg-dot dot-red"></span>Motorcycle Accessories</span>
+        <span class="status-pill pill-red" style="font-size:10px">Crítico</span>
+      </div>
+      <div class="gap-box"><span class="gap-lbl">NMV vs Plan YTD</span><span class="gap-val">−14.0%</span></div>
+      <div class="mini-kpis">
+        <div class="mkpi"><div class="mkpi-lbl">NMV YoY YTD</div><div class="mkpi-val neg">−14.0%</div><div class="mkpi-sub neg">Peor del portfolio</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">NASP YoY</div><div class="mkpi-val neg">−9.4%</div><div class="mkpi-sub warn">Mejor que RP</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">% NMV Clips YTD</div><div class="mkpi-val pos">30.2%</div><div class="mkpi-sub pos">Jun 26: 36.7%</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">CBT 2026</div><div class="mkpi-val pos">200-280M</div><div class="mkpi-sub pos">Por mes — nuevo motor</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Buy Box YTD</div><div class="mkpi-val pos">19.9%</div><div class="mkpi-sub pos">Catálogo maduro</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Productizado YTD</div><div class="mkpi-val pos">26.0%</div><div class="mkpi-sub pos">2do del portfolio</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">New Buyers YTD</div><div class="mkpi-val neg">−12.6%</div><div class="mkpi-sub neg">Con +34% tráfico ⚠</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">BPC Others YTD</div><div class="mkpi-val neg">−25.0pp</div><div class="mkpi-sub neg">Peor del portfolio</div></div>
+      </div>
+    </div>
+    <div class="agg2-body">
+      <div>
+        <div class="dd-mini-head dd-head-green">▲ Drivers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span><strong style="color:#e2e8f0">CBT: 0 → 280M/mes</strong> — el único motor genuinamente nuevo de NMV en 2026</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Clips 30.2% YTD (36.7% Jun) — contenido como motor de conversión principal</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Successful Sellers +102.5% YTD — mayor explosión de supply del portfolio</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>OEM estable +2.5% YTD — único segmento que no pierde el canal OEM</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Visitas +34.3% YTD — tráfico muy superior al promedio ACC</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dd-mini-head dd-head-red">▼ Draggers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span><strong style="color:#e2e8f0">New Buyers −12.6% YTD</strong> con +34% tráfico → hay fricción severa en conversión de nuevos</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>BPC Others −25.0pp YTD — precios no competitivos en marketplaces alternativos</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>NMV 3P Verticales −11.4% YTD — equipo comercial no activo aquí</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>3P Asesoria Directa −2.1% YTD — sin nuevos acuerdos comerciales en el segmento</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>NMV YoY −14.0% — único segmento con NMV total en negativo</li>
+        </ul>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="steps-head">◆ Pasos para cerrar el gap vs Plan</div>
+        <ul class="steps-list">
+          <li class="step-row"><span class="sn">1</span>Intervención urgente BPC Others: pricing vs competidores en marketplaces alternativos (−25pp es el mayor gap del portfolio)</li>
+          <li class="step-row"><span class="sn">2</span>Campaña adquisición New Buyers usando Clips como gancho de descubrimiento para primera compra</li>
+          <li class="step-row"><span class="sn">3</span>Reactivar 3P Verticales y AD — ambos en negativo sin razón estructural clara</li>
+          <li class="step-row"><span class="sn">4</span>Consolidar y escalar CBT: mayor diferencial 2026, necesita soporte comercial y catálogo</li>
+          <li class="step-row"><span class="sn">5</span>Análisis CVR por familia de producto: hay fricción entre tráfico y conversión</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── HELMETS ── -->
+  <div class="agg2-card">
+    <div class="agg2-head">
+      <div class="agg2-name">
+        <span><span class="seg-dot dot-red"></span>Motorcycle Helmets</span>
+        <span class="status-pill pill-red" style="font-size:10px">Crítico</span>
+      </div>
+      <div class="gap-box"><span class="gap-lbl">NMV vs Plan YTD</span><span class="gap-val">−15.5%</span></div>
+      <div class="mini-kpis">
+        <div class="mkpi"><div class="mkpi-lbl">NMV YoY YTD</div><div class="mkpi-val warn">+4.1%</div><div class="mkpi-sub pos">Mejor del portfolio</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">NASP YoY</div><div class="mkpi-val neg">−14.0%</div><div class="mkpi-sub neg">Sin marcas, cae mix</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Productizado YTD</div><div class="mkpi-val pos">52.6%</div><div class="mkpi-sub pos">🏆 Lider absoluto</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">% NMV Clips</div><div class="mkpi-val pos">37.0%</div><div class="mkpi-sub pos">🏆 Jun: 43%</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Visitas YTD</div><div class="mkpi-val pos">+56.5%</div><div class="mkpi-sub pos">🏆 Máximo tráfico</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">CVR</div><div class="mkpi-val neg">0.9%</div><div class="mkpi-sub neg">⚠ Mitad del portf.</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">Top Brands KB1</div><div class="mkpi-val neg">−70.5%</div><div class="mkpi-sub neg">🔴 Alarma crítica</div></div>
+        <div class="mkpi"><div class="mkpi-lbl">PNR</div><div class="mkpi-val neg">6.1%</div><div class="mkpi-sub neg">Más alto del portf.</div></div>
+      </div>
+    </div>
+    <div class="agg2-body">
+      <div>
+        <div class="dd-mini-head dd-head-green">▲ Drivers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span><strong style="color:#e2e8f0">Productizado 52.6%:</strong> el catálogo más estructurado — blueprint para los demás segmentos</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Clips 37% YTD (43% Jun) — donde el contenido más convierte del portfolio</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>Visitas +56.5% YTD — el mayor crecimiento de tráfico de los 3 segmentos</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>3P Asesoria Directa +48% YTD · Verticales 39.7% penetración</li>
+          <li class="dd-mini-item"><span class="dd-icon pos">+</span>BPC Others +8.3pp YTD — único segmento que mejora en competitividad Others</li>
+        </ul>
+      </div>
+      <div>
+        <div class="dd-mini-head dd-head-red">▼ Draggers</div>
+        <ul class="dd-mini-list">
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span><strong style="color:#e2e8f0">Top Brands −70.5%:</strong> marcas premium abandonaron el canal → caída en cadena de NASP, CVR y percepción</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span><strong style="color:#e2e8f0">CVR 0.9%:</strong> con +56% tráfico convierte la mitad del resto — hay fricción severa post-click</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>PNR 6.1% — mayor tasa de reclamos: listings inexactos, tallas, fragilidad en envío</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>Stockouts pico 41.2% Mar 26 + DOH +60% Jun 26 — inventario mal distribuido</li>
+          <li class="dd-mini-item"><span class="dd-icon neg">−</span>CBT ~5M/mes vs 280M en Accessories — canal sin desarrollar</li>
+        </ul>
+      </div>
+      <div class="divider"></div>
+      <div>
+        <div class="steps-head">◆ Pasos para cerrar el gap vs Plan</div>
+        <ul class="steps-list">
+          <li class="step-row"><span class="sn">1</span><strong style="color:#e2e8f0">Recuperar Top Brands urgente:</strong> diagnóstico de salida + plan de reincorporación con condiciones diferenciales</li>
+          <li class="step-row"><span class="sn">2</span>CVR 0.9% → 1.2%: con el tráfico actual, +0.3pp CVR ≈ +30% NMV. Palancas: marcas + precio + stock</li>
+          <li class="step-row"><span class="sn">3</span>Reducir PNR 6.1%: auditar listings de tallas, mejorar empaque de despacho, fichas de producto más precisas</li>
+          <li class="step-row"><span class="sn">4</span>Redistribuir inventario FBM: DOH alto en algunos SKUs mientras otros tienen 0 stock</li>
+          <li class="step-row"><span class="sn">5</span>Activar CBT en Helmets replicando modelo Accessories — marcas premium internacionales son el caso natural</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<!-- ═══ EXECUTIVE SUMMARY ═══ -->
+<div class="section-label">Resumen Ejecutivo para el Director</div>
+<div class="exec">
+  <h2>
+    <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24" style="color:#60a5fa;flex-shrink:0"><path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+    Plan de Acción — Cierre de Gap vs Plan
+  </h2>
+
+  <div class="exec-intro">
+    ACC Motorcycles MLA tiene un <strong>motor de oferta y tráfico sano</strong> (+20.5% visitas, +82.8% sellers, +16.4% volumen), pero los <strong>tres segmentos están entre −14% y −16% vs Plan en NMV YTD</strong>, con la brecha acelerándose en junio (hasta −26% MTD). La causa raíz es triple: <strong>precio promedio cayendo sistemáticamente</strong> (NASP −12%), <strong>competitividad de precios deteriorada</strong> (BPC −10.9pp), y <strong>adquisición de nuevos compradores frenada</strong> (de +120% en 2025 a −5.9% en 2026). Los motores de recuperación existen y tienen tracción demostrada: Clips, CBT, Productizado y KB4 Mechanics. La prioridad es ejecutarlos con urgencia y segmentación quirúrgica.
+  </div>
+
+  <table class="ptable">
+    <thead>
+      <tr>
+        <th style="width:36px">#</th>
+        <th style="width:40%">Acción</th>
+        <th>Segmento</th>
+        <th>Impacto</th>
+        <th>Plazo</th>
+        <th>KPI objetivo</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><div class="pnum">1</div></td>
+        <td><strong style="color:#e2e8f0">Recuperar Top Brands en Helmets</strong> — diagnóstico de qué marcas salieron y plan de reincorporación con condiciones diferenciales urgentes</td>
+        <td><span class="tag tag-helm">Helmets</span></td>
+        <td><span class="impact-h">Muy Alto</span></td>
+        <td>0-30 días</td>
+        <td>NASP ↑ · CVR ↑ · NMV ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">2</div></td>
+        <td><strong style="color:#e2e8f0">Productizar catálogo en Replacement Parts</strong> — top 20% familias por volumen para habilitar Buy Box y pricing sistémico (hoy en 2.3%, Helmets tiene 52.6%)</td>
+        <td><span class="tag tag-rp">Repl. Parts</span></td>
+        <td><span class="impact-h">Muy Alto</span></td>
+        <td>30-60 días</td>
+        <td>BPC ↑ · NASP ↑ · CVR ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">3</div></td>
+        <td><strong style="color:#e2e8f0">CVR Helmets: 0.9% → 1.2%</strong> — con el tráfico actual (+56.5% YTD), cada +0.1pp CVR equivale a ~10% más NMV. Palancas: Top Brands + precio + redistribución de stock</td>
+        <td><span class="tag tag-helm">Helmets</span></td>
+        <td><span class="impact-h">Muy Alto</span></td>
+        <td>0-30 días</td>
+        <td>CVR ↑ · NMV ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">4</div></td>
+        <td><strong style="color:#e2e8f0">BPC Others Accessories</strong> — −25pp YTD es el mayor gap de competitividad del portfolio. Revisar pricing vs competidores en marketplaces alternativos</td>
+        <td><span class="tag tag-acc">Accessories</span></td>
+        <td><span class="impact-h">Alto</span></td>
+        <td>0-30 días</td>
+        <td>BPC ↑ · CVR ↑ · NMV ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">5</div></td>
+        <td><strong style="color:#e2e8f0">New Buyers Accessories</strong> — −12.6% YTD con +34% tráfico: usar Clips como gancho de adquisición para primera compra + analizar fricción en la página de producto</td>
+        <td><span class="tag tag-acc">Accessories</span></td>
+        <td><span class="impact-h">Alto</span></td>
+        <td>30 días</td>
+        <td>New Buyers ↑ · NMV futuro ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">6</div></td>
+        <td><strong style="color:#e2e8f0">Activar CBT en Helmets</strong> — Accessories demostró el modelo: de 0 a 280M/mes. Las marcas premium internacionales de cascos son el caso natural de CBT más obvio del portfolio</td>
+        <td><span class="tag tag-helm">Helmets</span></td>
+        <td><span class="impact-m">Alto</span></td>
+        <td>60-90 días</td>
+        <td>NMV CBT ↑ · NASP ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">7</div></td>
+        <td><strong style="color:#e2e8f0">Reactivar Verticales y AD en Accessories</strong> — −11.4% y −2.1% YTD mientras Replacement Parts crece +44% y +56% en los mismos canales. Sin razón estructural para la diferencia</td>
+        <td><span class="tag tag-acc">Accessories</span></td>
+        <td><span class="impact-m">Medio</span></td>
+        <td>30 días</td>
+        <td>NMV Verticales ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">8</div></td>
+        <td><strong style="color:#e2e8f0">Escalar KB4 Mechanics en Replacement Parts</strong> — 134 afiliados vs 252K en ACC total. El programa de mecánicos es el canal de recurrencia natural para repuestos: escalar con plan estructurado</td>
+        <td><span class="tag tag-rp">Repl. Parts</span></td>
+        <td><span class="impact-m">Medio</span></td>
+        <td>60-90 días</td>
+        <td>Recurrencia ↑ · NMV ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">9</div></td>
+        <td><strong style="color:#e2e8f0">Reducir PNR en Helmets</strong> — 6.1% vs 3.6-4.4% en el resto. Auditar listings de tallas, mejorar empaque de despacho, fichas de producto más precisas. Cada punto de PNR impacta CVR futuro vía reviews</td>
+        <td><span class="tag tag-helm">Helmets</span></td>
+        <td><span class="impact-m">Medio</span></td>
+        <td>30-60 días</td>
+        <td>PNR ↓ · NPS ↑ · CVR ↑</td>
+      </tr>
+      <tr>
+        <td><div class="pnum">10</div></td>
+        <td><strong style="color:#e2e8f0">Transversal — NASP y New Buyers</strong> — acciones de categoría ACC: campaña de adquisición cross-segmento + mix hacia productos de mayor precio vía Top Brands + Combo Premium + Productizado</td>
+        <td><span class="tag tag-all">Todos</span></td>
+        <td><span class="impact-s">Sistémico</span></td>
+        <td>60-90 días</td>
+        <td>NASP ↑ · New Buyers ↑ · NMV ↑</td>
+      </tr>
+    </tbody>
+  </table>
+
+  <div class="summary-grid">
+    <div class="sbox">
+      <div class="sbox-title" style="color:#4ade80">✅ No tocar — está funcionando</div>
+      <p>Supply explosivo en los 3 segmentos. Clips como motor de NMV. CBT en Accessories como modelo replicable. FBM escalando. Promesas logísticas mejorando. Mechanics Afiliados arrancando.</p>
+    </div>
+    <div class="sbox">
+      <div class="sbox-title" style="color:#f87171">🔴 Urgente — 0 a 30 días</div>
+      <p>Recuperar Top Brands en Helmets. Intervenir CVR (0.9%). Atacar BPC Others en Accessories (−25pp). Estos 3 tienen el mayor impacto inmediato en NMV y en cierre del gap vs Plan.</p>
+    </div>
+    <div class="sbox">
+      <div class="sbox-title" style="color:#fbbf24">⚡ Estratégico — 30 a 90 días</div>
+      <p>Productizar Replacement Parts. Activar CBT en Helmets. Reactivar New Buyers con Clips. Escalar KB4 Mechanics. Fortalecer OEM en RP. Reactivar Verticales y AD en Accessories.</p>
+    </div>
+    <div class="sbox">
+      <div class="sbox-title" style="color:#60a5fa">📊 El insight clave</div>
+      <p>El NMV crece en volumen (+16.4% NSI) pero NASP cae −12%. El negocio vende <em>más unidades a menor precio</em>. Recuperar NASP via mix (Top Brands + Productizado + Combo Premium) cierra parte del gap sin necesitar más tráfico.</p>
+    </div>
+  </div>
+</div>
+
+<div class="footer">ACC Motorcycles MLA &nbsp;·&nbsp; Reporte Ejecutivo Julio 2026 &nbsp;·&nbsp; Análisis basado en datos YTD del dashboard de gestión de categoría</div>
+
+</div>
+</body>
+</html>
