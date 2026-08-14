@@ -1444,8 +1444,8 @@ function renderDomains() {
         });
       }
 
-      // FS activation
-      if (sin && sin.c >= 3 && sin.l >= 300) {
+      // FS activation (exclude sub-15K — FS not applicable at those price points)
+      if (sin && sin.c >= 3 && sin.l >= 300 && r !== '01. Hasta 5K' && r !== '02. 5K a 15K') {
         const conL = (con && con.l) || 0;
         const conPct = conL / sin.l;
         if (conPct < 0.15) {
@@ -1539,7 +1539,7 @@ function renderDomains() {
           const sc = demandScore(con.c, con.l);
           if (sc > bestDsc) { bestDsc = sc; bestD = { r, conv: con.c, l: con.l }; }
         }
-        if (sin && sin.c >= 3 && sin.l >= 200) {
+        if (sin && sin.c >= 3 && sin.l >= 200 && r !== '01. Hasta 5K' && r !== '02. 5K a 15K') {
           const conL = (con && con.l) || 0;
           if (conL / sin.l < 0.2) {
             const sc = fsScore(sin.c, sin.l, conL);
