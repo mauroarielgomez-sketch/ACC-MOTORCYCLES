@@ -206,6 +206,42 @@ tfoot td {
   border-top: 1px solid #21262d; margin-top: 8px;
 }
 
+/* ── METODOLOGÍA BOX ── */
+.metodologia {
+  background: #161b22; border: 1px solid #30363d; border-radius: 8px;
+  padding: 18px 22px; margin-bottom: 28px;
+}
+.metodologia-title { font-size: 12px; font-weight: 700; color: #e3b341; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 10px; display: flex; align-items: center; gap: 7px; }
+.metodologia-body { font-size: 12px; color: #8b949e; line-height: 1.7; }
+.metodologia-body strong { color: #c9d1d9; }
+.metodologia-steps { display: flex; flex-direction: column; gap: 6px; margin-top: 10px; }
+.metodologia-step { display: flex; align-items: flex-start; gap: 10px; font-size: 12px; color: #8b949e; }
+.metodologia-step-num { background: #21262d; border: 1px solid #30363d; color: #c9d1d9; font-weight: 700; font-size: 11px; width: 20px; height: 20px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+/* ── PARETO / 80-20 TAB ── */
+.pareto-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(360px, 1fr)); gap: 14px; }
+.pareto-card { background: #161b22; border: 1px solid #30363d; border-radius: 8px; overflow: hidden; }
+.pareto-card-head { padding: 11px 14px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid #21262d; }
+.pareto-card-name { font-size: 13px; font-weight: 700; color: #e6edf3; flex: 1; }
+.pareto-card-badge { font-size: 11px; font-weight: 700; padding: 2px 9px; border-radius: 10px; }
+.pareto-card-badge.concentrated { background: rgba(63,185,80,.15); color: #3fb950; }
+.pareto-card-badge.dispersed    { background: rgba(248,81,73,.12);  color: #f85149; }
+.pareto-card-badge.mid          { background: rgba(227,179,65,.12); color: #e3b341; }
+.pareto-card-body { padding: 10px 14px; }
+.pareto-row { display: flex; align-items: center; gap: 8px; margin-bottom: 6px; }
+.pareto-row:last-child { margin-bottom: 0; }
+.pareto-range { font-size: 11px; color: #8b949e; min-width: 120px; flex-shrink: 0; }
+.pareto-bar-wrap { flex: 1; height: 14px; background: #21262d; border-radius: 3px; overflow: hidden; position: relative; }
+.pareto-bar-fill { height: 100%; border-radius: 3px; }
+.pareto-bar-fill.in80  { background: #3fb950; }
+.pareto-bar-fill.out80 { background: #30363d; }
+.pareto-sl-val { font-size: 11px; color: #c9d1d9; min-width: 44px; text-align: right; font-variant-numeric: tabular-nums; }
+.pareto-pct-val { font-size: 10px; color: #8b949e; min-width: 36px; text-align: right; }
+.pareto-cutoff { border-top: 1px dashed rgba(227,179,65,0.5); margin: 4px 0 8px; display: flex; align-items: center; gap: 6px; padding-top: 6px; }
+.pareto-cutoff-label { font-size: 10px; color: #e3b341; font-style: italic; }
+.pareto-summary { font-size: 11px; color: #8b949e; padding: 8px 14px; border-top: 1px solid #21262d; background: rgba(255,255,255,.02); }
+.pareto-summary strong { color: #e6edf3; }
+
 /* ── BRECHA DE CONVERSIÓN TAB ── */
 .brecha-bar-row {
   display: flex; align-items: center; gap: 10px;
@@ -270,6 +306,7 @@ tfoot td {
   <button class="nav-tab" onclick="switchTab('insights',this)">Insights & Oportunidades</button>
   <button class="nav-tab" onclick="switchTab('brecha',this)">Brecha de Conversión</button>
   <button class="nav-tab" onclick="switchTab('ejecutiva',this)">Vista Ejecutiva</button>
+  <button class="nav-tab" onclick="switchTab('pareto',this)">Regla 80/20</button>
 </div>
 
 <!-- ══════════════ PANE 1: AGRUPADORES ══════════════ -->
@@ -392,7 +429,61 @@ tfoot td {
 </div>
 </div>
 
-<!-- ══════════════ PANE 4: BRECHA DE CONVERSIÓN ══════════════ -->
+<!-- ══════════════ PANE 4: REGLA 80/20 ══════════════ -->
+<div id="pane-pareto" class="tab-pane">
+<div class="page">
+
+  <!-- Metodología -->
+  <div class="metodologia">
+    <div class="metodologia-title">📐 Cómo se calcula este análisis</div>
+    <div class="metodologia-body">
+      Este análisis aplica el <strong>principio de Pareto (80/20)</strong> dentro de los <strong>Successful Listings (SL)</strong> de cada dominio:
+      cuántos tramos de precio concentran el 80% de las conversiones totales del dominio.
+    </div>
+    <div class="metodologia-steps">
+      <div class="metodologia-step">
+        <div class="metodologia-step-num">1</div>
+        <div>Por cada dominio, se calcula el <strong>SL por tramo de precio</strong> sumando los SL de Con FS y Sin FS (es decir, <code style="background:#21262d;padding:1px 5px;border-radius:3px;color:#c9d1d9">con.s + sin.s</code> para cada rango).</div>
+      </div>
+      <div class="metodologia-step">
+        <div class="metodologia-step-num">2</div>
+        <div>Los tramos se <strong>ordenan de mayor a menor SL</strong> para identificar cuáles son los más relevantes dentro de la categoría.</div>
+      </div>
+      <div class="metodologia-step">
+        <div class="metodologia-step-num">3</div>
+        <div>Se acumula el SL tramo a tramo y se marca el <strong>punto de corte al 80%</strong>: todos los rangos por encima de esa línea son los que dominan las ventas. Los que quedan debajo tienen impacto marginal.</div>
+      </div>
+      <div class="metodologia-step">
+        <div class="metodologia-step-num">4</div>
+        <div>Se clasifica el dominio según cuántos tramos hacen el 80%: <strong style="color:#3fb950">1–2 tramos = muy concentrado</strong> (foco claro), <strong style="color:#e3b341">3–4 = moderado</strong>, <strong style="color:#f85149">5+ = disperso</strong> (sin tramo dominante).</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Summary tiles -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#e3b341"></div>
+      <span class="s-title">Concentración global de SL</span>
+      <span class="s-pill" id="pareto-pill">Calculado automáticamente desde datos de listings</span>
+    </div>
+    <div class="stat-row" id="pareto-tiles"></div>
+  </div>
+
+  <!-- Cards por dominio -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#58a6ff"></div>
+      <span class="s-title">Distribución por dominio</span>
+      <span class="s-pill">Verde = tramos dentro del 80% · Gris = fuera del 80%</span>
+    </div>
+    <div class="pareto-grid" id="pareto-grid"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ PANE 5: BRECHA DE CONVERSIÓN ══════════════ -->
 <div id="pane-brecha" class="tab-pane">
 <div class="page">
 
@@ -1597,6 +1688,141 @@ setCount('cnt-rp', DATA.rp);
 setCount('cnt-ac', DATA.ac);
 setCount('cnt-he', DATA.he);
 renderDomains();
+
+// ─── REGLA 80/20 ─────────────────────────────────────────────────────────────
+(function buildPareto() {
+  // Helper: short range label
+  function rl(r) { return r.replace(/^\d+\.\s*/, ''); }
+
+  // Compute per-domain pareto
+  const domPareto = DOMAIN_ORDER.map(k => {
+    const ranges = DD[k];
+    if (!ranges) return null;
+    // Sum SL per range (con.s + sin.s)
+    const rangeData = RANGES.map(r => {
+      const d = ranges[r]; if (!d) return { r, sl: 0 };
+      const sl = ((d.con && d.con.s) || 0) + ((d.sin && d.sin.s) || 0);
+      return { r, sl };
+    }).filter(x => x.sl > 0);
+
+    if (rangeData.length === 0) return null;
+
+    const totalSL = rangeData.reduce((a, b) => a + b.sl, 0);
+    rangeData.sort((a, b) => b.sl - a.sl);
+
+    // Find 80% cutoff
+    let cum = 0, cutoffIdx = rangeData.length - 1;
+    for (let i = 0; i < rangeData.length; i++) {
+      cum += rangeData[i].sl;
+      if (cum / totalSL >= 0.80) { cutoffIdx = i; break; }
+    }
+    const rangesFor80 = cutoffIdx + 1;
+    const maxSL = rangeData[0].sl;
+
+    return {
+      key: k,
+      label: DOMAIN_LABELS[k] || k,
+      color: DOMAIN_COLORS[k] || '#8b949e',
+      totalSL, rangeData, cutoffIdx, rangesFor80, maxSL
+    };
+  }).filter(Boolean);
+
+  // Global stats
+  const globalTotalSL = domPareto.reduce((a, d) => a + d.totalSL, 0);
+  const avgRanges = domPareto.length > 0
+    ? (domPareto.reduce((a, d) => a + d.rangesFor80, 0) / domPareto.length).toFixed(1)
+    : '—';
+  const mostConcentrated = [...domPareto].sort((a, b) => a.rangesFor80 - b.rangesFor80)[0];
+  const mostDispersed    = [...domPareto].sort((a, b) => b.rangesFor80 - a.rangesFor80)[0];
+
+  // Pill
+  const pill = document.getElementById('pareto-pill');
+  if (pill) pill.textContent = `${domPareto.length} dominios · promedio ${avgRanges} tramos para el 80% de SL`;
+
+  // Tiles
+  const tilesEl = document.getElementById('pareto-tiles');
+  if (tilesEl) {
+    tilesEl.innerHTML = `
+      <div class="tile">
+        <div class="tile-label">SL Total del portfolio</div>
+        <div class="tile-value" style="color:#3fb950">${fmt(globalTotalSL)}</div>
+        <div class="tile-sub">Suma de todos los dominios</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Promedio de tramos para el 80%</div>
+        <div class="tile-value" style="color:#e3b341">${avgRanges}</div>
+        <div class="tile-sub">Por dominio</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Más concentrado</div>
+        <div class="tile-value" style="color:#3fb950;font-size:16px;margin-top:4px">${mostConcentrated ? mostConcentrated.label : '—'}</div>
+        <div class="tile-sub">${mostConcentrated ? mostConcentrated.rangesFor80 + ' tramo(s) hacen el 80%' : ''}</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Más disperso</div>
+        <div class="tile-value" style="color:#f85149;font-size:16px;margin-top:4px">${mostDispersed ? mostDispersed.label : '—'}</div>
+        <div class="tile-sub">${mostDispersed ? mostDispersed.rangesFor80 + ' tramos para el 80%' : ''}</div>
+      </div>`;
+  }
+
+  // Cards
+  const gridEl = document.getElementById('pareto-grid');
+  if (!gridEl) return;
+
+  // Sort: most concentrated first
+  const sorted = [...domPareto].sort((a, b) => a.rangesFor80 - b.rangesFor80);
+
+  gridEl.innerHTML = sorted.map(d => {
+    const badge = d.rangesFor80 <= 2
+      ? `<span class="pareto-card-badge concentrated">${d.rangesFor80} tramo${d.rangesFor80 > 1 ? 's' : ''} = 80%</span>`
+      : d.rangesFor80 <= 4
+        ? `<span class="pareto-card-badge mid">${d.rangesFor80} tramos = 80%</span>`
+        : `<span class="pareto-card-badge dispersed">${d.rangesFor80} tramos = 80%</span>`;
+
+    // Build rows
+    let cumSL = 0;
+    const rows = d.rangeData.map((item, i) => {
+      const prevCum = cumSL;
+      cumSL += item.sl;
+      const isIn80 = i <= d.cutoffIdx;
+      const barW = d.maxSL > 0 ? (item.sl / d.maxSL * 100).toFixed(1) : 0;
+      const pctOfTotal = d.totalSL > 0 ? (item.sl / d.totalSL * 100).toFixed(1) : 0;
+      const cumPct = d.totalSL > 0 ? (cumSL / d.totalSL * 100).toFixed(0) : 0;
+
+      let cutoffHtml = '';
+      if (i === d.cutoffIdx) {
+        cutoffHtml = `<div class="pareto-cutoff"><div style="flex:1;height:1px;background:rgba(227,179,65,0.4)"></div><div class="pareto-cutoff-label">↑ ${cumPct}% del SL acumulado</div><div style="flex:1;height:1px;background:rgba(227,179,65,0.4)"></div></div>`;
+      }
+
+      return `
+        <div class="pareto-row">
+          <div class="pareto-range">${rl(item.r)}</div>
+          <div class="pareto-bar-wrap">
+            <div class="pareto-bar-fill ${isIn80 ? 'in80' : 'out80'}" style="width:${barW}%"></div>
+          </div>
+          <div class="pareto-sl-val">${fmt(item.sl)}</div>
+          <div class="pareto-pct-val">${pctOfTotal}%</div>
+        </div>${cutoffHtml}`;
+    }).join('');
+
+    const top1Pct = d.totalSL > 0 ? (d.rangeData[0].sl / d.totalSL * 100).toFixed(0) : 0;
+    const top1Range = rl(d.rangeData[0].r);
+
+    return `
+      <div class="pareto-card">
+        <div class="pareto-card-head">
+          <span class="dom-ins-dot" style="background:${d.color};width:9px;height:9px;border-radius:50%;flex-shrink:0"></span>
+          <span class="pareto-card-name">${d.label}</span>
+          ${badge}
+        </div>
+        <div class="pareto-card-body">${rows}</div>
+        <div class="pareto-summary">
+          El tramo <strong>${top1Range}</strong> solo genera el <strong>${top1Pct}%</strong> del total de SL
+          · ${fmt(d.totalSL)} SL en total
+        </div>
+      </div>`;
+  }).join('');
+})();
 
 // ─── BRECHA DE CONVERSIÓN ────────────────────────────────────────────────────
 (function buildBrecha() {
