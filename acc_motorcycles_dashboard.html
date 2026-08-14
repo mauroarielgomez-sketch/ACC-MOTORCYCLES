@@ -205,6 +205,50 @@ tfoot td {
   font-size: 11px; color: #484f58;
   border-top: 1px solid #21262d; margin-top: 8px;
 }
+
+/* ── BRECHA DE CONVERSIÓN TAB ── */
+.brecha-bar-row {
+  display: flex; align-items: center; gap: 10px;
+  padding: 7px 0; border-bottom: 1px solid #21262d;
+}
+.brecha-bar-row:last-child { border-bottom: none; }
+.brecha-label { width: 180px; font-size: 12px; font-weight: 600; color: #e6edf3; flex-shrink: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.brecha-bars { flex: 1; position: relative; height: 18px; background: #21262d; border-radius: 3px; overflow: hidden; }
+.brecha-bar-sl { position: absolute; left: 0; top: 0; height: 100%; background: #3fb950; border-radius: 3px 0 0 3px; transition: width 0.4s; }
+.brecha-bar-gap { position: absolute; top: 0; height: 100%; background: rgba(248,81,73,0.3); border-radius: 0 3px 3px 0; }
+.brecha-pct-sl  { font-size: 11px; font-weight: 700; color: #3fb950; min-width: 36px; text-align: right; }
+.brecha-pct-gap { font-size: 11px; color: #f85149; min-width: 36px; text-align: right; }
+.brecha-nums { font-size: 11px; color: #8b949e; min-width: 120px; text-align: right; }
+
+/* ── VISTA EJECUTIVA TAB ── */
+.exec-hero { text-align: center; padding: 40px 28px 28px; }
+.exec-hero-headline {
+  font-size: 36px; font-weight: 800; color: #f85149; line-height: 1.2; margin-bottom: 12px;
+}
+.exec-hero-sub { font-size: 16px; color: #8b949e; }
+.exec-kpi-row { display: grid; grid-template-columns: repeat(3,1fr); gap: 16px; margin: 28px 0; }
+.exec-kpi {
+  background: #161b22; border: 1px solid #30363d; border-radius: 10px;
+  padding: 20px 24px; text-align: center;
+}
+.exec-kpi-val { font-size: 32px; font-weight: 800; color: #e6edf3; }
+.exec-kpi-label { font-size: 12px; color: #8b949e; margin-top: 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.exec-kpi-note { font-size: 11px; color: #484f58; margin-top: 4px; }
+.exec-top-title { font-size: 14px; font-weight: 700; color: #e6edf3; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+.exec-top-row { display: flex; align-items: center; gap: 12px; margin-bottom: 10px; }
+.exec-rank { font-size: 20px; font-weight: 800; color: #484f58; min-width: 28px; }
+.exec-dom-name { font-size: 13px; font-weight: 700; color: #e6edf3; min-width: 180px; }
+.exec-gap-bar-wrap { flex: 1; height: 20px; background: #21262d; border-radius: 4px; overflow: hidden; position: relative; }
+.exec-gap-bar { height: 100%; background: rgba(248,81,73,0.55); border-radius: 4px; }
+.exec-gap-pct { font-size: 12px; font-weight: 700; color: #f85149; min-width: 50px; text-align: right; }
+.exec-gap-abs { font-size: 11px; color: #8b949e; min-width: 80px; text-align: right; }
+.exec-actions { background: #161b22; border: 1px solid #30363d; border-radius: 10px; padding: 20px 24px; }
+.exec-action-title { font-size: 13px; font-weight: 700; color: #e6edf3; margin-bottom: 14px; }
+.exec-action-item { display: flex; align-items: flex-start; gap: 12px; margin-bottom: 14px; padding-bottom: 14px; border-bottom: 1px solid #21262d; }
+.exec-action-item:last-child { border-bottom: none; margin-bottom: 0; padding-bottom: 0; }
+.exec-action-num { background: #ffe600; color: #0d1117; font-size: 12px; font-weight: 800; width: 24px; height: 24px; border-radius: 50%; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+.exec-action-text { font-size: 13px; color: #c9d1d9; line-height: 1.5; }
+.exec-action-text strong { color: #e6edf3; }
 </style>
 </head>
 <body>
@@ -224,6 +268,8 @@ tfoot td {
   <button class="nav-tab active" onclick="switchTab('agrupadores',this)">Agrupadores</button>
   <button class="nav-tab" onclick="switchTab('dominios',this)">Dominios</button>
   <button class="nav-tab" onclick="switchTab('insights',this)">Insights & Oportunidades</button>
+  <button class="nav-tab" onclick="switchTab('brecha',this)">Brecha de Conversión</button>
+  <button class="nav-tab" onclick="switchTab('ejecutiva',this)">Vista Ejecutiva</button>
 </div>
 
 <!-- ══════════════ PANE 1: AGRUPADORES ══════════════ -->
@@ -341,6 +387,84 @@ tfoot td {
       <span class="s-pill">Mejor rango + alerta por categoría</span>
     </div>
     <div class="dom-ins-grid" id="ins-domains"></div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ PANE 4: BRECHA DE CONVERSIÓN ══════════════ -->
+<div id="pane-brecha" class="tab-pane">
+<div class="page">
+
+  <!-- Summary tiles -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#f85149"></div>
+      <span class="s-title">Brecha de Conversión — Vista Global</span>
+      <span class="s-pill" id="brecha-pill">Calculado automáticamente desde datos de listings</span>
+    </div>
+    <div class="stat-row" id="brecha-tiles"></div>
+  </div>
+
+  <!-- Horizontal bar chart by domain -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#58a6ff"></div>
+      <span class="s-title">SL/LL por Dominio</span>
+      <span class="s-pill">Verde = SL (convierte) · Rojo = Gap (no convierte)</span>
+    </div>
+    <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+      <div style="display:flex;gap:20px;font-size:10px;color:#8b949e;margin-bottom:12px;">
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:#3fb950;border-radius:2px;display:inline-block"></span>Exitosos (SL)</span>
+        <span style="display:flex;align-items:center;gap:5px;"><span style="width:12px;height:12px;background:rgba(248,81,73,0.4);border-radius:2px;display:inline-block"></span>No convierten (Gap)</span>
+      </div>
+      <div id="brecha-bars"></div>
+    </div>
+  </div>
+
+  <!-- Table -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#e3b341"></div>
+      <span class="s-title">Detalle por Dominio</span>
+      <span class="s-pill">Ordenado por Gap absoluto (desc)</span>
+    </div>
+    <div class="table-wrap">
+      <table id="brecha-table"></table>
+    </div>
+  </div>
+
+</div>
+</div>
+
+<!-- ══════════════ PANE 5: VISTA EJECUTIVA ══════════════ -->
+<div id="pane-ejecutiva" class="tab-pane">
+<div class="page">
+
+  <!-- Hero headline -->
+  <div class="exec-hero" id="exec-hero"></div>
+
+  <!-- 3 KPIs -->
+  <div class="exec-kpi-row" id="exec-kpis"></div>
+
+  <!-- Top 5 gap domains -->
+  <div class="section">
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;">
+      <div>
+        <div class="exec-top-title">
+          <span style="color:#f85149">■</span>
+          Top 5 categorías con mayor brecha
+        </div>
+        <div id="exec-top5"></div>
+      </div>
+      <div>
+        <div class="exec-top-title">
+          <span style="color:#ffe600">■</span>
+          3 Acciones concretas para Mariano
+        </div>
+        <div class="exec-actions" id="exec-actions"></div>
+      </div>
+    </div>
   </div>
 
 </div>
@@ -1477,6 +1601,217 @@ setCount('cnt-rp', DATA.rp);
 setCount('cnt-ac', DATA.ac);
 setCount('cnt-he', DATA.he);
 renderDomains();
+
+// ─── BRECHA DE CONVERSIÓN ────────────────────────────────────────────────────
+(function buildBrecha() {
+  // Aggregate totals per domain (sum all ranges, con+sin)
+  const domStats = DOMAIN_ORDER.map(k => {
+    let ll = 0, sl = 0;
+    const ranges = DD[k];
+    if (!ranges) return { key: k, label: DOMAIN_LABELS[k] || k, color: DOMAIN_COLORS[k] || '#8b949e', ll: 0, sl: 0, gap: 0, pct: 0 };
+    RANGES.forEach(r => {
+      const d = ranges[r];
+      if (!d) return;
+      if (d.con) { ll += d.con.l || 0; sl += d.con.s || 0; }
+      if (d.sin) { ll += d.sin.l || 0; sl += d.sin.s || 0; }
+    });
+    const gap = ll - sl;
+    const pct = ll > 0 ? (sl / ll * 100) : 0;
+    return { key: k, label: DOMAIN_LABELS[k] || k, color: DOMAIN_COLORS[k] || '#8b949e', ll, sl, gap, pct };
+  }).filter(d => d.ll > 0);
+
+  // Global totals (agg1)
+  let totalLL = 0, totalSL = 0;
+  RANGES.forEach(r => {
+    const d = DATA.agg1[r];
+    if (!d) return;
+    if (d.con) { totalLL += d.con.l || 0; totalSL += d.con.s || 0; }
+    if (d.sin) { totalLL += d.sin.l || 0; totalSL += d.sin.s || 0; }
+  });
+  const totalGap = totalLL - totalSL;
+  const globalPct = totalLL > 0 ? (totalSL / totalLL * 100) : 0;
+
+  // Tiles
+  const tilesEl = document.getElementById('brecha-tiles');
+  if (tilesEl) {
+    tilesEl.innerHTML = `
+      <div class="tile">
+        <div class="tile-label">Total Live Listings</div>
+        <div class="tile-value">${fmt(totalLL)}</div>
+        <div class="tile-sub">Con + Sin FS · Todos los dominios</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Successful Listings (SL)</div>
+        <div class="tile-value" style="color:#3fb950">${fmt(totalSL)}</div>
+        <div class="tile-sub">Al menos 1 orden en últimos 30 días</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">SL/LL% Global</div>
+        <div class="tile-value" style="color:${globalPct >= 5 ? '#3fb950' : globalPct >= 2 ? '#e3b341' : '#f85149'}">${globalPct.toFixed(1)}%</div>
+        <div class="tile-sub">Tasa de conversión global</div>
+      </div>
+      <div class="tile">
+        <div class="tile-label">Listings sin convertir</div>
+        <div class="tile-value" style="color:#f85149">${fmt(totalGap)}</div>
+        <div class="tile-sub">${(100 - globalPct).toFixed(1)}% no vendió nada en 30 días</div>
+      </div>`;
+  }
+
+  // Update pill
+  const pill = document.getElementById('brecha-pill');
+  if (pill) pill.textContent = `${domStats.length} dominios analizados · SL/LL global ${globalPct.toFixed(1)}%`;
+
+  // Sort by gap desc for bars
+  const sorted = [...domStats].sort((a, b) => b.gap - a.gap);
+  const maxGap = sorted[0]?.gap || 1;
+
+  // Bar chart
+  const barsEl = document.getElementById('brecha-bars');
+  if (barsEl) {
+    barsEl.innerHTML = sorted.map(d => {
+      const slPct = d.ll > 0 ? (d.sl / d.ll * 100) : 0;
+      const gapPct = 100 - slPct;
+      return `
+        <div class="brecha-bar-row">
+          <div class="brecha-label" title="${d.label}">${d.label}</div>
+          <div class="brecha-bars">
+            <div class="brecha-bar-sl" style="width:${slPct.toFixed(1)}%"></div>
+            <div class="brecha-bar-gap" style="left:${slPct.toFixed(1)}%;width:${gapPct.toFixed(1)}%"></div>
+          </div>
+          <div class="brecha-pct-sl">${slPct.toFixed(1)}%</div>
+          <div class="brecha-pct-gap">−${gapPct.toFixed(1)}%</div>
+          <div class="brecha-nums">${fmt(d.sl)} / ${fmt(d.ll)}</div>
+        </div>`;
+    }).join('');
+  }
+
+  // Table
+  const tableEl = document.getElementById('brecha-table');
+  if (tableEl) {
+    const rows = sorted.map((d, i) => {
+      const slPct = d.ll > 0 ? (d.sl / d.ll * 100) : 0;
+      const color = slPct >= 5 ? '#3fb950' : slPct >= 2 ? '#e3b341' : '#f85149';
+      return `<tr>
+        <td style="text-align:left;font-weight:700;color:${d.color}">${d.label}</td>
+        <td>${fmt(d.ll)}</td>
+        <td style="color:#3fb950">${fmt(d.sl)}</td>
+        <td style="color:#f85149">${fmt(d.gap)}</td>
+        <td class="conv" style="color:${color}">${slPct.toFixed(1)}%</td>
+      </tr>`;
+    }).join('');
+    tableEl.innerHTML = `
+      <thead>
+        <tr>
+          <th style="text-align:left;background:#1c2128;padding:9px 10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #30363d">Dominio</th>
+          <th style="background:#1c2128;padding:9px 10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #30363d;text-align:right">LL Total</th>
+          <th style="background:#1c2128;padding:9px 10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #30363d;text-align:right;color:#3fb950">SL</th>
+          <th style="background:#1c2128;padding:9px 10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:1px solid #30363d;text-align:right;color:#f85149">Gap (no conv.)</th>
+          <th style="background:#1c2128;padding:9px 10px;font-size:11px;font-weight:700;text-transform:uppercase;border-bottom:2px solid #30363d;text-align:right">SL/LL%</th>
+        </tr>
+      </thead>
+      <tbody>${rows}</tbody>`;
+  }
+
+  // Store for ejecutiva tab
+  window._brechaData = { domStats, sorted, totalLL, totalSL, totalGap, globalPct };
+})();
+
+// ─── VISTA EJECUTIVA ─────────────────────────────────────────────────────────
+(function buildEjecutiva() {
+  // Wait for brecha data
+  const b = window._brechaData;
+  if (!b) return;
+  const { sorted, totalLL, totalSL, totalGap, globalPct } = b;
+  const noConvPct = (100 - globalPct).toFixed(1);
+
+  // Hero
+  const heroEl = document.getElementById('exec-hero');
+  if (heroEl) {
+    heroEl.innerHTML = `
+      <div class="exec-hero-headline">El ${noConvPct}% de los listings<br>no vendió nada en los últimos 30 días</div>
+      <div class="exec-hero-sub">Sobre un universo de <strong style="color:#e6edf3">${fmt(totalLL)}</strong> listings activos en ACC Motorcycles</div>`;
+  }
+
+  // KPIs
+  const kpisEl = document.getElementById('exec-kpis');
+  if (kpisEl) {
+    const topDomain = sorted[0];
+    const bestDomain = [...b.domStats].sort((a, b) => b.pct - a.pct)[0];
+    kpisEl.innerHTML = `
+      <div class="exec-kpi">
+        <div class="exec-kpi-val" style="color:#f85149">${fmt(totalGap)}</div>
+        <div class="exec-kpi-label">Listings sin una sola orden</div>
+        <div class="exec-kpi-note">En los últimos 30 días</div>
+      </div>
+      <div class="exec-kpi">
+        <div class="exec-kpi-val" style="color:#e3b341">${topDomain ? topDomain.label : '—'}</div>
+        <div class="exec-kpi-label">Dominio con mayor brecha absoluta</div>
+        <div class="exec-kpi-note">${topDomain ? fmt(topDomain.gap) + ' listings sin convertir' : ''}</div>
+      </div>
+      <div class="exec-kpi">
+        <div class="exec-kpi-val" style="color:#3fb950">${bestDomain ? bestDomain.pct.toFixed(1) + '%' : '—'}</div>
+        <div class="exec-kpi-label">Mejor SL/LL% del portfolio</div>
+        <div class="exec-kpi-note">${bestDomain ? bestDomain.label : ''}</div>
+      </div>`;
+  }
+
+  // Top 5 gap domains
+  const top5El = document.getElementById('exec-top5');
+  if (top5El) {
+    const top5 = sorted.slice(0, 5);
+    const maxGap = top5[0]?.gap || 1;
+    top5El.innerHTML = top5.map((d, i) => {
+      const barW = (d.gap / maxGap * 100).toFixed(1);
+      const gapPct = d.ll > 0 ? (d.gap / d.ll * 100) : 0;
+      return `
+        <div class="exec-top-row">
+          <div class="exec-rank">${i + 1}</div>
+          <div class="exec-dom-name" style="color:${d.color}">${d.label}</div>
+          <div class="exec-gap-bar-wrap">
+            <div class="exec-gap-bar" style="width:${barW}%"></div>
+          </div>
+          <div class="exec-gap-pct">${gapPct.toFixed(1)}% gap</div>
+          <div class="exec-gap-abs">${fmt(d.gap)} sin conv.</div>
+        </div>`;
+    }).join('');
+  }
+
+  // 3 actions from insights
+  const actionsEl = document.getElementById('exec-actions');
+  if (actionsEl) {
+    // Pick top demand domain (highest slPct with decent ll)
+    const topDemand = [...b.domStats].filter(d => d.ll > 5000).sort((a, b) => b.pct - a.pct)[0];
+    // Pick worst domain (biggest gap)
+    const worst = sorted[0];
+    // Pick domain with most SL growth potential (high gap + mid pct)
+    const potential = sorted.filter(d => d.pct >= 1 && d.pct < 5 && d.ll > 10000).sort((a, b) => b.gap - a.gap)[0] || sorted[1];
+
+    actionsEl.innerHTML = `
+      <div class="exec-action-title">Acciones recomendadas</div>
+      <div class="exec-action-item">
+        <div class="exec-action-num">1</div>
+        <div class="exec-action-text">
+          <strong>Activar Free Shipping en ${topDemand ? topDemand.label : 'dominios clave'}</strong><br>
+          Es el dominio con mayor tasa de conversión (${topDemand ? topDemand.pct.toFixed(1) + '%' : '—'} SL/LL).
+          Priorizar sellers sin FS para escalar la base de listings que convierten.
+        </div>
+      </div>
+      <div class="exec-action-item">
+        <div class="exec-action-num">2</div>
+        <div class="exec-action-text">
+          <strong>Intervenir ${worst ? worst.label : 'dominio crítico'} — ${worst ? fmt(worst.gap) : '—'} listings sin una sola venta</strong><br>
+          Es el dominio con la mayor brecha absoluta del portfolio. Revisar pricing, fotos y descripción con sellers activos.
+        </div>
+      </div>
+      <div class="exec-action-item">
+        <div class="exec-action-num">3</div>
+        <div class="exec-action-text">
+          <strong>Desarrollar ${potential ? potential.label : 'dominios con potencial'} con SL/LL actual de ${potential ? potential.pct.toFixed(1) + '%' : '—'}</strong><br>
+          Categoría con alto volumen de listings y conversión aún baja. Doble palanca: mejorar listings existentes + atraer nuevos sellers con propuesta de valor.
+        </div>
+      </div>`;
+  }
+})();
 </script>
 </body>
 </html>
