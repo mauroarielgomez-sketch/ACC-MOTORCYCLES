@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Direct Import China — ACC Motorcycles MELI</title>
+<style>
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+  background: #0d1117; color: #c9d1d9; font-size: 13px;
+  min-height: 100vh; padding-bottom: 60px;
+}
+.header {
+  background: #161b22; border-bottom: 1px solid #30363d;
+  padding: 18px 32px; display: flex; align-items: center; justify-content: space-between;
+}
+.logo { background:#ffe600; color:#0d1117; font-weight:800; font-size:11px; padding:3px 9px; border-radius:4px; letter-spacing:1px; }
+.header-title { font-size:18px; font-weight:700; color:#e6edf3; margin-left:14px; }
+.header-left { display:flex; align-items:center; gap:14px; }
+.header-meta { font-size:11px; color:#8b949e; text-align:right; line-height:1.8; }
+.header-meta strong { color:#c9d1d9; }
+
+.page { max-width:1400px; margin:0 auto; padding:32px; }
+
+/* Hero */
+.hero { text-align:center; padding:48px 0 36px; }
+.hero-eyebrow { font-size:11px; color:#8b949e; text-transform:uppercase; letter-spacing:1px; margin-bottom:10px; }
+.hero-title { font-size:36px; font-weight:800; color:#e6edf3; line-height:1.2; margin-bottom:14px; }
+.hero-title span { color:#ffe600; }
+.hero-sub { font-size:15px; color:#8b949e; max-width:680px; margin:0 auto; line-height:1.6; }
+
+/* Methodology */
+.metod { background:#161b22; border:1px solid #30363d; border-radius:10px; padding:20px 24px; margin-bottom:32px; }
+.metod-title { font-size:12px; font-weight:700; color:#e3b341; text-transform:uppercase; letter-spacing:.5px; margin-bottom:12px; display:flex; align-items:center; gap:7px; }
+.metod-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:14px; }
+.metod-item { display:flex; align-items:flex-start; gap:9px; font-size:12px; color:#8b949e; line-height:1.5; }
+.metod-num { background:#21262d; border:1px solid #30363d; color:#e3b341; font-weight:800; font-size:11px; min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; flex-shrink:0; }
+.metod-item strong { color:#c9d1d9; }
+
+/* Section */
+.section { margin-bottom:40px; }
+.section-head { display:flex; align-items:center; gap:10px; margin-bottom:18px; }
+.s-bar { width:4px; height:22px; border-radius:2px; }
+.s-title { font-size:16px; font-weight:700; color:#e6edf3; }
+.s-pill { font-size:11px; color:#8b949e; background:#21262d; padding:2px 10px; border-radius:20px; border:1px solid #30363d; }
+
+/* Score matrix */
+.matrix-wrap { overflow-x:auto; border-radius:10px; border:1px solid #30363d; }
+table.matrix { width:100%; border-collapse:collapse; white-space:nowrap; }
+table.matrix thead th { background:#1c2128; padding:10px 14px; font-size:11px; font-weight:700; text-transform:uppercase; letter-spacing:.4px; border-bottom:2px solid #30363d; text-align:center; color:#8b949e; }
+table.matrix thead th:first-child { text-align:left; color:#e6edf3; }
+table.matrix tbody tr:hover { background:rgba(255,255,255,.03); }
+table.matrix tbody tr:nth-child(even) { background:rgba(255,255,255,.015); }
+table.matrix td { padding:9px 14px; border-bottom:1px solid #21262d; text-align:center; font-variant-numeric:tabular-nums; }
+table.matrix td:first-child { text-align:left; }
+.cat-dot { display:inline-block; width:9px; height:9px; border-radius:50%; margin-right:7px; }
+.cat-name { font-size:13px; font-weight:700; color:#e6edf3; }
+.score-bar { display:flex; align-items:center; gap:6px; justify-content:center; }
+.score-pip { width:10px; height:10px; border-radius:2px; }
+.score-pip.on  { background:#3fb950; }
+.score-pip.mid { background:#e3b341; }
+.score-pip.off { background:#21262d; border:1px solid #30363d; }
+.tier-badge { font-size:10px; font-weight:800; padding:2px 8px; border-radius:10px; }
+.tier1 { background:rgba(63,185,80,.15); color:#3fb950; }
+.tier2 { background:rgba(227,179,65,.12); color:#e3b341; }
+.tier3 { background:rgba(139,148,158,.12); color:#8b949e; }
+.metric-val { font-size:13px; font-weight:700; color:#e6edf3; }
+.metric-sub { font-size:10px; color:#8b949e; display:block; }
+
+/* Category cards */
+.cat-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(420px,1fr)); gap:16px; }
+.cat-card { background:#161b22; border:1px solid #30363d; border-radius:10px; overflow:hidden; }
+.cat-card-head { padding:14px 18px; display:flex; align-items:center; gap:10px; border-bottom:1px solid #21262d; }
+.cat-card-icon { font-size:20px; }
+.cat-card-info { flex:1; }
+.cat-card-name { font-size:15px; font-weight:700; color:#e6edf3; }
+.cat-card-sub  { font-size:11px; color:#8b949e; margin-top:2px; }
+.cat-card-tier { margin-left:auto; }
+
+.cat-body { padding:14px 18px; }
+.cat-kpi-row { display:grid; grid-template-columns:repeat(3,1fr); gap:10px; margin-bottom:14px; }
+.cat-kpi { background:#0d1117; border:1px solid #21262d; border-radius:6px; padding:10px 12px; text-align:center; }
+.cat-kpi-val { font-size:18px; font-weight:800; }
+.cat-kpi-label { font-size:10px; color:#8b949e; text-transform:uppercase; letter-spacing:.4px; margin-top:3px; }
+
+.ranges-title { font-size:11px; color:#8b949e; text-transform:uppercase; letter-spacing:.5px; margin-bottom:8px; }
+.range-row { display:flex; align-items:center; gap:8px; margin-bottom:5px; }
+.range-label { font-size:11px; color:#8b949e; min-width:110px; }
+.range-bar-wrap { flex:1; height:14px; background:#21262d; border-radius:3px; overflow:hidden; }
+.range-bar { height:100%; border-radius:3px; }
+.range-conv { font-size:11px; font-weight:700; min-width:36px; text-align:right; }
+.range-sl   { font-size:10px; color:#8b949e; min-width:60px; text-align:right; }
+
+.rationale { background:#0d1117; border-radius:6px; padding:11px 14px; margin-top:12px; }
+.rationale-title { font-size:11px; color:#ffe600; font-weight:700; margin-bottom:6px; }
+.rationale-item { font-size:12px; color:#8b949e; line-height:1.5; display:flex; gap:6px; margin-bottom:4px; }
+.rationale-item:last-child { margin-bottom:0; }
+.rationale-item::before { content:"→"; color:#30363d; flex-shrink:0; }
+
+/* Risks */
+.risks-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; }
+.risk-card { background:#161b22; border:1px solid #30363d; border-radius:8px; padding:16px 18px; }
+.risk-title { font-size:12px; font-weight:700; margin-bottom:10px; display:flex; align-items:center; gap:7px; }
+.risk-item { font-size:12px; color:#8b949e; line-height:1.5; margin-bottom:6px; padding-left:12px; position:relative; }
+.risk-item::before { content:"•"; position:absolute; left:0; color:#484f58; }
+
+/* Footer */
+.footer { text-align:center; padding:24px; font-size:11px; color:#484f58; border-top:1px solid #21262d; margin-top:8px; }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <div class="header-left">
+    <span class="logo">MELI</span>
+    <span class="header-title">Direct Import China — ACC Motorcycles</span>
+  </div>
+  <div class="header-meta">
+    Fuente: BT_LIVE_LISTINGS_MLA · Datos al <strong>2026-08-17</strong><br>
+    Análisis basado en SL/LL%, volumen y viabilidad de importación
+  </div>
+</div>
+
+<div class="page">
+
+  <!-- Hero -->
+  <div class="hero">
+    <div class="hero-eyebrow">Análisis estratégico · ACC Motorcycles Argentina</div>
+    <div class="hero-title">¿Qué traer de China?<br><span>Los datos hablan por sí solos.</span></div>
+    <div class="hero-sub">
+      Identificamos las categorías con mayor demanda comprobada en MELI (SL/LL%),
+      bajo nivel de competencia con Free Shipping, y mayor ventaja competitiva de importación directa desde China.
+    </div>
+  </div>
+
+  <!-- Metodología -->
+  <div class="metod">
+    <div class="metod-title">📐 Metodología de scoring</div>
+    <div class="metod-grid">
+      <div class="metod-item">
+        <div class="metod-num">1</div>
+        <div><strong>Conversión (SL/LL%)</strong> — Qué % de los listings activos vendió al menos 1 unidad en los últimos 30 días. Proxy de demanda real.</div>
+      </div>
+      <div class="metod-item">
+        <div class="metod-num">2</div>
+        <div><strong>Volumen de SL</strong> — Cantidad absoluta de listings exitosos. Indica el tamaño del mercado y la repetición de compra.</div>
+      </div>
+      <div class="metod-item">
+        <div class="metod-num">3</div>
+        <div><strong>Viabilidad import</strong> — Facilidad de sourcing en China, estandarización del producto, compatibilidad con modelos populares en Argentina.</div>
+      </div>
+      <div class="metod-item">
+        <div class="metod-num">4</div>
+        <div><strong>Riesgo regulatorio</strong> — Normas IRAM, homologación, restricciones de seguridad. Productos de seguridad (cascos) tienen barrera alta.</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Scoring Matrix -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#ffe600"></div>
+      <span class="s-title">Ranking de categorías</span>
+      <span class="s-pill">Ordenado por score total · Datos reales BT_LIVE_LISTINGS_MLA</span>
+    </div>
+    <div class="matrix-wrap">
+      <table class="matrix">
+        <thead>
+          <tr>
+            <th style="text-align:left">Categoría</th>
+            <th>Mejor SL/LL%</th>
+            <th>SL Total</th>
+            <th>Conversión</th>
+            <th>Volumen</th>
+            <th>Import China</th>
+            <th>Riesgo Reg.</th>
+            <th>Score</th>
+            <th>Tier</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="cat-dot" style="background:#56d364"></span><span class="cat-name">Kits de Transmisión</span></td>
+            <td><span class="metric-val" style="color:#3fb950">15.8%</span><span class="metric-sub">33K–50K</span></td>
+            <td><span class="metric-val">2,039</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><span class="metric-val" style="color:#ffe600">19/20</span></td>
+            <td><span class="tier-badge tier1">TIER 1</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-dot" style="background:#58a6ff"></span><span class="cat-name">Carenados</span></td>
+            <td><span class="metric-val" style="color:#3fb950">12.9%</span><span class="metric-sub">33K–50K</span></td>
+            <td><span class="metric-val">3,196</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><span class="metric-val" style="color:#ffe600">18/20</span></td>
+            <td><span class="tier-badge tier1">TIER 1</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-dot" style="background:#79c0ff"></span><span class="cat-name">Bloques de Cilindro</span></td>
+            <td><span class="metric-val" style="color:#3fb950">19.4%</span><span class="metric-sub">33K–50K</span></td>
+            <td><span class="metric-val">1,474</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><span class="metric-val" style="color:#ffe600">17/20</span></td>
+            <td><span class="tier-badge tier1">TIER 1</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-dot" style="background:#7ee787"></span><span class="cat-name">Silenciadores / Escapes</span></td>
+            <td><span class="metric-val" style="color:#3fb950">10.6%</span><span class="metric-sub">90K–120K</span></td>
+            <td><span class="metric-val">924</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><span class="metric-val" style="color:#e3b341">15/20</span></td>
+            <td><span class="tier-badge tier2">TIER 2</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-dot" style="background:#39d353"></span><span class="cat-name">Pilotos (Lluvia)</span></td>
+            <td><span class="metric-val" style="color:#3fb950">11.8%</span><span class="metric-sub">33K–50K</span></td>
+            <td><span class="metric-val">815</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span></div></td>
+            <td><span class="metric-val" style="color:#e3b341">15/20</span></td>
+            <td><span class="tier-badge tier2">TIER 2</span></td>
+          </tr>
+          <tr>
+            <td><span class="cat-dot" style="background:#f0883e"></span><span class="cat-name">Cascos</span></td>
+            <td><span class="metric-val" style="color:#3fb950">31.7%</span><span class="metric-sub">33K–50K</span></td>
+            <td><span class="metric-val">4,629</span><span class="metric-sub">SL mensuales</span></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip on"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><div class="score-bar"><span class="score-pip off"></span><span class="score-pip off"></span><span class="score-pip off"></span><span class="score-pip off"></span><span class="score-pip off"></span></div></td>
+            <td><span class="metric-val" style="color:#e3b341">14/20</span></td>
+            <td><span class="tier-badge tier2">TIER 2</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Category cards TIER 1 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#3fb950"></div>
+      <span class="s-title">TIER 1 — Alta Prioridad</span>
+      <span class="s-pill">Máxima demanda comprobada + máxima viabilidad de import</span>
+    </div>
+    <div class="cat-grid">
+
+      <!-- Kits Transmisión -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">⛓️</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Kits de Transmisión</div>
+            <div class="cat-card-sub">Cadenas · Piñones · Coronas — para 110cc/150cc/200cc</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier1">TIER 1 · #1</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">15.8%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">2,039</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#ffe600">33K–90K</div>
+              <div class="cat-kpi-label">Sweet spot ARS</div>
+            </div>
+          </div>
+          <div class="ranges-title">Tramos con mayor conversión (Con FS)</div>
+          <div class="range-row">
+            <div class="range-label">33K – 50K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:100%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">15.8%</div>
+            <div class="range-sl">585 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">50K – 75K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:64%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">10.1%</div>
+            <div class="range-sl">458 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">75K – 90K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:70%;background:#e3b341"></div></div>
+            <div class="range-conv" style="color:#e3b341">11.1%</div>
+            <div class="range-sl">214 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">90K – 120K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:60%;background:#e3b341"></div></div>
+            <div class="range-conv" style="color:#e3b341">9.5%</div>
+            <div class="range-sl">234 SL</div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">Por qué China gana aquí</div>
+            <div class="rationale-item">China fabrica el 80%+ de los kits de transmisión del mundo. DID, RK y JT tienen fábricas en China continental.</div>
+            <div class="rationale-item">Los bikes más vendidos en Argentina (Honda Wave, Mondial, Motomel) tienen kits universales de Aliexpress/1688 a fracción del precio local.</div>
+            <div class="rationale-item">Producto commodity: sin regulación especial, fácil de importar, alta rotación.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Carenados -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">🏍️</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Carenados</div>
+            <div class="cat-card-sub">Plásticos de carrocería — 110cc / 150cc / motos deportivas</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier1">TIER 1 · #2</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">12.9%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">3,196</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#ffe600">33K–90K</div>
+              <div class="cat-kpi-label">Sweet spot ARS</div>
+            </div>
+          </div>
+          <div class="ranges-title">Tramos con mayor conversión (Con FS)</div>
+          <div class="range-row">
+            <div class="range-label">33K – 50K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:100%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">12.9%</div>
+            <div class="range-sl">613 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">50K – 75K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:85%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">11.0%</div>
+            <div class="range-sl">592 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">75K – 90K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:81%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">10.4%</div>
+            <div class="range-sl">262 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">90K – 120K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:60%;background:#e3b341"></div></div>
+            <div class="range-conv" style="color:#e3b341">7.8%</div>
+            <div class="range-sl">309 SL</div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">Por qué China gana aquí</div>
+            <div class="rationale-item">China es el proveedor mundial #1 de plásticos de moto. Enorme oferta en 1688 para Honda, Yamaha, Suzuki y marcas nacionales.</div>
+            <div class="rationale-item">3,196 SL/mes indica una demanda sostenida de reposición — mercado que no depende de tendencias.</div>
+            <div class="rationale-item">Diferencial de precio vs local: hasta 60–70%. Margen para MELI + seller muy atractivo.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bloques de Cilindro -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">🔧</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Bloques de Cilindro</div>
+            <div class="cat-card-sub">Motor completo · Cilindros · Pistones — 110cc / 150cc</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier1">TIER 1 · #3</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">19.4%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">1,474</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#ffe600">33K–90K</div>
+              <div class="cat-kpi-label">Sweet spot ARS</div>
+            </div>
+          </div>
+          <div class="ranges-title">Tramos con mayor conversión (Con FS)</div>
+          <div class="range-row">
+            <div class="range-label">33K – 50K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:100%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">19.4%</div>
+            <div class="range-sl">204 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">50K – 75K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:64%;background:#3fb950"></div></div>
+            <div class="range-conv" style="color:#3fb950">12.4%</div>
+            <div class="range-sl">353 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">75K – 90K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:40%;background:#e3b341"></div></div>
+            <div class="range-conv" style="color:#e3b341">7.7%</div>
+            <div class="range-sl">182 SL</div>
+          </div>
+          <div class="range-row">
+            <div class="range-label">90K – 120K</div>
+            <div class="range-bar-wrap"><div class="range-bar" style="width:16%;background:#e3b341"></div></div>
+            <div class="range-conv" style="color:#e3b341">3.2%</div>
+            <div class="range-sl">208 SL</div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">Por qué China gana aquí</div>
+            <div class="rationale-item">Las motos 110cc más vendidas en Argentina (Honda Wave, Mondial RX, Motomel Blitz) usan motores LIFAN-clone — producidos masivamente en China.</div>
+            <div class="rationale-item">19.4% SL/LL en 33K–50K es el top 3 de conversión de todo el portfolio. Demanda altísima, reposición frecuente.</div>
+            <div class="rationale-item">Ticket medio-alto (33K–75K ARS) = mayor GMV por transacción. Interesante para financing.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Category cards TIER 2 -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#e3b341"></div>
+      <span class="s-title">TIER 2 — Buena oportunidad con consideraciones</span>
+      <span class="s-pill">Alta demanda pero con condicionantes de sourcing o regulatorios</span>
+    </div>
+    <div class="cat-grid">
+
+      <!-- Silenciadores -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">💨</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Silenciadores / Escapes</div>
+            <div class="cat-card-sub">Aftermarket · Deportivos · Reposición</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier2">TIER 2 · #4</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">10.6%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">924</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#ffe600">33K–300K</div>
+              <div class="cat-kpi-label">Sweet spot ARS</div>
+            </div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">Por qué China gana aquí</div>
+            <div class="rationale-item">Demanda distribuida en múltiples rangos (33K–300K) = mercado amplio y diverso.</div>
+            <div class="rationale-item">China tiene enorme catálogo de escapes universales y específicos por modelo. Marcas como Akrapovic china-made vs originales.</div>
+            <div class="rationale-item">Considerar: algunos municipios tienen regulaciones de ruido. Asegurar catálogo "homologable".</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pilotos -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">🧥</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Pilotos de Lluvia</div>
+            <div class="cat-card-sub">Trajes impermeables · Combinaciones · 1 y 2 piezas</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier2">TIER 2 · #5</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">11.8%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">815</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#ffe600">33K–50K</div>
+              <div class="cat-kpi-label">Sweet spot ARS</div>
+            </div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">Por qué China gana aquí</div>
+            <div class="rationale-item">Producto estacional con pick invernal claro (Argentina). Planificación de stock en China con 60 días de lead time.</div>
+            <div class="rationale-item">China es el mayor productor mundial de indumentaria impermeable. Ticket bajo-medio = sin barreras de precio para el comprador.</div>
+            <div class="rationale-item">Sin regulación de seguridad estricta. Fácil entrada al mercado.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Cascos (especial) -->
+      <div class="cat-card">
+        <div class="cat-card-head">
+          <div class="cat-card-icon">🪖</div>
+          <div class="cat-card-info">
+            <div class="cat-card-name">Cascos <span style="font-size:10px;color:#f85149;font-weight:400">(alta barrera regulatoria)</span></div>
+            <div class="cat-card-sub">Integrales · Abatibles · ½ casco — certificación IRAM obligatoria</div>
+          </div>
+          <div class="cat-card-tier"><span class="tier-badge tier2">TIER 2 · #6</span></div>
+        </div>
+        <div class="cat-body">
+          <div class="cat-kpi-row">
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#3fb950">31.7%</div>
+              <div class="cat-kpi-label">Mejor SL/LL%</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#e6edf3">4,629</div>
+              <div class="cat-kpi-label">SL mensuales</div>
+            </div>
+            <div class="cat-kpi">
+              <div class="cat-kpi-val" style="color:#f85149">IRAM</div>
+              <div class="cat-kpi-label">Certificación</div>
+            </div>
+          </div>
+          <div class="rationale">
+            <div class="rationale-title">La oportunidad vs el riesgo</div>
+            <div class="rationale-item">Categoría #1 en demanda absoluta (4,629 SL/mes) y #1 en conversión (31.7%). Es la gran oportunidad.</div>
+            <div class="rationale-item">PERO: Argentina exige certificación IRAM 3651 para venta. Muchos cascos chinos sin certificar = riesgo legal para MELI y sellers.</div>
+            <div class="rationale-item">Camino posible: importar marcas chinas que ya tienen DOT + ECE y tramitar IRAM (costo ~USD 15K–30K por modelo). Requiere partner local certificado.</div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Risks -->
+  <div class="section">
+    <div class="section-head">
+      <div class="s-bar" style="background:#f85149"></div>
+      <span class="s-title">Consideraciones clave</span>
+      <span class="s-pill">Antes de importar</span>
+    </div>
+    <div class="risks-grid">
+      <div class="risk-card">
+        <div class="risk-title" style="color:#e3b341">⚠️ Operaciones</div>
+        <div class="risk-item">Lead time China → Argentina: 45–90 días (marítimo). Planificar stock con anticipación.</div>
+        <div class="risk-item">Tipo de cambio: calcular margen con escenarios de devaluación. Productos en ARS con costo en USD.</div>
+        <div class="risk-item">Aranceles de importación: verificar código NCM por categoría. Algunos repuestos tienen arancel reducido.</div>
+        <div class="risk-item">Calidad: primer contenedor siempre con muestra física validada. Fábricas en Zhongshan, Wenzhou y Guangzhou son las más desarrolladas.</div>
+      </div>
+      <div class="risk-card">
+        <div class="risk-title" style="color:#3fb950">✅ Ventajas en MELI</div>
+        <div class="risk-item">Seller con FS activo convierte hasta 3x más que sin FS en Kits de Transmisión y Carenados.</div>
+        <div class="risk-item">Precio competitivo de China permite activar FS sin erosionar margen.</div>
+        <div class="risk-item">Financiamiento en cuotas (3x–12x sin interés en campañas) amplía el ticket percibido para el comprador.</div>
+        <div class="risk-item">MELI Fulfillment reduce fricción operativa post-importación.</div>
+      </div>
+      <div class="risk-card">
+        <div class="risk-title" style="color:#58a6ff">📋 Próximos pasos</div>
+        <div class="risk-item"><strong style="color:#c9d1d9">1.</strong> Validar ticket promedio real de los 3 TIER 1 con datos de órdenes (NMV/NSI).</div>
+        <div class="risk-item"><strong style="color:#c9d1d9">2.</strong> Identificar sellers top actuales de Carenados + Kits de Transmisión para co-desarrollo de catálogo.</div>
+        <div class="risk-item"><strong style="color:#c9d1d9">3.</strong> Solicitar cotizaciones en 1688.com para los 3 TIER 1 con volúmenes de 500–1.000 unidades/mes.</div>
+        <div class="risk-item"><strong style="color:#c9d1d9">4.</strong> Definir modelo: importación propia MELI vs incentivo a seller existente para hacer el import.</div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<div class="footer">
+  MercadoLibre ACC Motorcycles &nbsp;·&nbsp; Datos al 2026-08-17 · BT_LIVE_LISTINGS_MLA &nbsp;·&nbsp; Análisis estratégico — uso interno
+</div>
+
+</body>
+</html>
