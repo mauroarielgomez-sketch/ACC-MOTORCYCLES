@@ -34,8 +34,9 @@ except ImportError:
     sys.exit(1)
 
 # ─── CONFIG ──────────────────────────────────────────────────────────────────
-HTML_PATH    = Path(__file__).parent / "acc_motorcycles_kpi_grid.html"
-BQ_PROJECT   = "meli-bi-data"
+HTML_PATH       = Path(__file__).parent / "acc_motorcycles_kpi_grid.html"
+DASHBOARD_PATH  = Path(__file__).parent / "acc_motorcycles_dashboard.html"
+BQ_PROJECT      = "meli-bi-data"
 ROADMAP_TABLE = "`meli-bi-data.WHOWNER.DM_VPA_ROADMAP_FINAL`"
 AGG1         = "ACC MOTORCYCLES"
 SITE         = "MLA"
@@ -556,6 +557,14 @@ def main():
     print(f"  ✅ HTML actualizado exitosamente → {HTML_PATH}")
     print(f"  📅 Timestamp: {ts}")
 
+    # 10. Query live listings and update dashboard
+    print("  → Consultando BT_LIVE_LISTINGS_MLA para el dashboard ...")
+    try:
+        df_listings, photo_date = query_live_listings(client)
+        update_dashboard_html(df_listings, photo_date)
+    except Exception as e:
+        print(f"  ⚠  Error actualizando dashboard: {e}")
+
     # 11. Push to GitHub automatically
     _push_to_github(ts)
 
@@ -686,6 +695,230 @@ def build_nmv_ars_summary(df_nmv, vsp_dict=None):
     }
 
 
+# ─── DASHBOARD: LIVE LISTINGS UPDATE ─────────────────────────────────────────
+
+LISTINGS_TABLE = "`meli-sbox.PLANNINGMLA.BT_LIVE_LISTINGS_MLA`"
+
+DASH_MARKER_START = "// @@DASHBOARD_DATA_START@@"
+DASH_MARKER_END   = "// @@DASHBOARD_DATA_END@@"
+
+DASH_RANGES = [
+    ('01. Hasta 5K',    0,       5000),
+    ('02. 5K a 15K',   5000,    15000),
+    ('03. 15K a 33K',  15000,   33000),
+    ('04. 33K a 50K',  33000,   50000),
+    ('05. 50K a 75K',  50000,   75000),
+    ('06. 75K a 90K',  75000,   90000),
+    ('07. 90K a 120K', 90000,   120000),
+    ('08. 120K a 150K',120000,  150000),
+    ('09. 150K a 175K',150000,  175000),
+    ('10. 175K a 220K',175000,  220000),
+    ('11. 220K a 250K',220000,  250000),
+    ('12. 250K a 300K',250000,  300000),
+    ('13. 300K a 450K',300000,  450000),
+    ('14. 450K a 600K',450000,  600000),
+    ('15. 600K a 1M',  600000,  1000000),
+    ('16. Mas de 1M',  1000000, None),
+]
+
+DASH_DOMAIN_KEYS = [
+    'MOTORCYCLE_HELMETS','MOTORCYCLE_FAIRINGS','MOTORCYCLE_INTERCOMMUNICATORS',
+    'MOTORCYCLE_BLOCK_CYLINDERS','MOTORCYCLE_TRANSMISSION_KITS','MOTORCYCLE_JACKETS',
+    'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS','MOTORCYCLIST_GLOVES','VEHICLE_MUFFLERS',
+    'MOTORCYCLE_RAIN_SUITS','MOTORCYCLE_CASES','MOTORCYCLE_BOOTS',
+    'VEHICLE_CARBURETORS','BICYCLE_AND_MOTORCYCLE_LOCKS','VEHICLE_COVERS',
+    'MOTORCYCLE_REPLACEMENTS','MOTORCYCLE_WHEELS','VEHICLE_WINDSHIELDS',
+    'MOTORCYCLE_SPEEDOMETERS','NECK_GAITERS_AND_BALACLAVAS','MOTORCYCLE_PANTS',
+    'MOTORCYCLE_LUGGAGE_RACKS','MOTORCYCLE_SUITS','VEHICLE_FUEL_TANKS',
+    'MOTORCYCLE_REARVIEW_MIRRORS','MOTORCYCLE_CRASH_BARS','VEHICLE_ENGINE_GASKETS',
+    'MOTORCYCLE_FORK_TUBES','MOTORCYCLE_HANDLEBARS','VEHICLE_EXHAUSTS',
+]
+
+DASH_AGG2_MAP = {
+    'REPLACEMENT PARTS': 'rp',
+    'ACCESSORIES':       'ac',
+    'HELMETS':           'he',
+}
+
+
+def query_live_listings(client):
+    """Query BT_LIVE_LISTINGS_MLA for ACC Motorcycles. Returns (df, photo_date_str)."""
+    sql = f"""
+    WITH latest AS (
+      SELECT MAX(PHOTO_DATE) AS d FROM {LISTINGS_TABLE}
+    )
+    SELECT
+      latest.d                                                    AS photo_date,
+      ITE_VERTICAL.DOM_DOMAIN_ID                                  AS domain_id,
+      ITE_VERTICAL.DOM_DOMAIN_AGG2                                AS agg2,
+      CASE
+        WHEN BASE_PRICE < 5000     THEN '01. Hasta 5K'
+        WHEN BASE_PRICE < 15000    THEN '02. 5K a 15K'
+        WHEN BASE_PRICE < 33000    THEN '03. 15K a 33K'
+        WHEN BASE_PRICE < 50000    THEN '04. 33K a 50K'
+        WHEN BASE_PRICE < 75000    THEN '05. 50K a 75K'
+        WHEN BASE_PRICE < 90000    THEN '06. 75K a 90K'
+        WHEN BASE_PRICE < 120000   THEN '07. 90K a 120K'
+        WHEN BASE_PRICE < 150000   THEN '08. 120K a 150K'
+        WHEN BASE_PRICE < 175000   THEN '09. 150K a 175K'
+        WHEN BASE_PRICE < 220000   THEN '10. 175K a 220K'
+        WHEN BASE_PRICE < 250000   THEN '11. 220K a 250K'
+        WHEN BASE_PRICE < 300000   THEN '12. 250K a 300K'
+        WHEN BASE_PRICE < 450000   THEN '13. 300K a 450K'
+        WHEN BASE_PRICE < 600000   THEN '14. 450K a 600K'
+        WHEN BASE_PRICE < 1000000  THEN '15. 600K a 1M'
+        ELSE                            '16. Mas de 1M'
+      END                                                         AS range_label,
+      CASE
+        WHEN ITE_SHP.ITE_ITEM_SHIPPING_TAGS LIKE '%mandatory_free_shipping%' THEN 'con'
+        ELSE 'sin'
+      END                                                         AS fs_type,
+      COUNT(*)                                                    AS listings,
+      COUNTIF(ITE_PERFORMANCE.ORDERS_LAST_30DAYS > 0)            AS successful,
+      ROUND(100.0 * COUNTIF(ITE_PERFORMANCE.ORDERS_LAST_30DAYS > 0) / COUNT(*), 1) AS sl_ll,
+      SUM(QUANTITY_AVAILABLE)                                     AS stock
+    FROM {LISTINGS_TABLE}, latest
+    WHERE PHOTO_DATE = latest.d
+      AND ITE_VERTICAL.DOM_DOMAIN_AGG1 = 'ACC MOTORCYCLES'
+    GROUP BY 1, 2, 3, 4, 5
+    ORDER BY 2, 3, 4, 5
+    """
+    df = client.query(sql).to_dataframe()
+    photo_date = str(df['photo_date'].iloc[0]) if not df.empty else 'N/A'
+    if hasattr(photo_date, 'date'):
+        photo_date = str(photo_date.date())
+    return df, photo_date[:10]
+
+
+def _row_to_js(l, s, c, st):
+    """Serialize one con/sin cell as JS object string."""
+    return f"{{l:{int(l)},s:{int(s)},c:{c},st:{int(st)}}}"
+
+
+def build_dashboard_data_js(df):
+    """
+    Build replacement JS block (RANGES + DATA + DD) from listings DataFrame.
+    Returns the full JS string to inject between the markers.
+    """
+    import math
+
+    RANGE_KEYS = [r[0] for r in DASH_RANGES]
+
+    # Index df: (domain_id, range_label, fs_type) -> row
+    idx = {}
+    for _, row in df.iterrows():
+        key = (str(row['domain_id']), str(row['range_label']), str(row['fs_type']))
+        idx[key] = row
+
+    # Index by (agg2, range_label, fs_type) for AGG2-level aggregation
+    agg2_idx = {}  # agg2_key -> range_label -> fs_type -> {l,s,c,st}
+    agg1_idx = {}  # range_label -> fs_type -> {l,s,c,st}
+
+    for _, row in df.iterrows():
+        agg2_raw = str(row['agg2'])
+        agg2_key = DASH_AGG2_MAP.get(agg2_raw)
+        rl = str(row['range_label'])
+        fs = str(row['fs_type'])
+        l, s, st = int(row['listings']), int(row['successful']), int(row['stock'])
+
+        # agg1
+        if rl not in agg1_idx:
+            agg1_idx[rl] = {}
+        if fs not in agg1_idx[rl]:
+            agg1_idx[rl][fs] = {'l': 0, 's': 0, 'st': 0}
+        agg1_idx[rl][fs]['l'] += l
+        agg1_idx[rl][fs]['s'] += s
+        agg1_idx[rl][fs]['st'] += st
+
+        if agg2_key:
+            if agg2_key not in agg2_idx:
+                agg2_idx[agg2_key] = {}
+            if rl not in agg2_idx[agg2_key]:
+                agg2_idx[agg2_key][rl] = {}
+            if fs not in agg2_idx[agg2_key][rl]:
+                agg2_idx[agg2_key][rl][fs] = {'l': 0, 's': 0, 'st': 0}
+            agg2_idx[agg2_key][rl][fs]['l'] += l
+            agg2_idx[agg2_key][rl][fs]['s'] += s
+            agg2_idx[agg2_key][rl][fs]['st'] += st
+
+    def make_cell(d):
+        if not d or d['l'] == 0:
+            return 'null'
+        c = round(100.0 * d['s'] / d['l'], 1) if d['l'] > 0 else 0.0
+        return _row_to_js(d['l'], d['s'], c, d['st'])
+
+    def serialize_range_dict(range_source):
+        """range_source: {range_label: {fs_type: {l,s,st}}}"""
+        lines = []
+        for rl in RANGE_KEYS:
+            fs_data = range_source.get(rl, {})
+            con = make_cell(fs_data.get('con'))
+            sin = make_cell(fs_data.get('sin'))
+            label = f"'{rl}'"
+            lines.append(f"    {label:{28}}: {{con:{con}, sin:{sin}}},")
+        return '\n'.join(lines)
+
+    # Build DATA object
+    data_parts = {'agg1': serialize_range_dict(agg1_idx)}
+    for ak in ['rp', 'ac', 'he']:
+        data_parts[ak] = serialize_range_dict(agg2_idx.get(ak, {}))
+
+    data_js = "const DATA = {\n"
+    for seg, body in data_parts.items():
+        data_js += f"  {seg}: {{\n{body}\n  }},\n"
+    data_js += "};"
+
+    # Build DD object (per domain)
+    dd_js = "const DD = {\n"
+    for dk in DASH_DOMAIN_KEYS:
+        dd_js += f"  '{dk}': {{\n"
+        for rl in RANGE_KEYS:
+            con_row = idx.get((dk, rl, 'con'))
+            sin_row = idx.get((dk, rl, 'sin'))
+            con_cell = (_row_to_js(int(con_row['listings']), int(con_row['successful']),
+                                   float(con_row['sl_ll']), int(con_row['stock']))
+                        if con_row is not None else 'null')
+            sin_cell = (_row_to_js(int(sin_row['listings']), int(sin_row['successful']),
+                                   float(sin_row['sl_ll']), int(sin_row['stock']))
+                        if sin_row is not None else 'null')
+            label = f"'{rl}'"
+            dd_js += f"    {label:{28}}: {{con:{con_cell}, sin:{sin_cell}}},\n"
+        dd_js += "  },\n"
+    dd_js += "};"
+
+    ranges_js = ("const RANGES = [\n  " +
+                 ",\n  ".join(f"'{r[0]}'" for r in DASH_RANGES) +
+                 "\n];")
+
+    return f"// ─── RANGES ─────────────────────────────────────────────────────────────────\n{ranges_js}\n\n// ─── AGG1 / AGG2 DATA ────────────────────────────────────────────────────────\n{data_js}\n\n// ─── DOMAIN DATA ─────────────────────────────────────────────────────────────\n{dd_js}"
+
+
+def update_dashboard_html(df, photo_date):
+    """Inject fresh DATA + DD into acc_motorcycles_dashboard.html and update the date."""
+    print(f"  → Actualizando {DASHBOARD_PATH.name} con datos al {photo_date} ...")
+    html = DASHBOARD_PATH.read_text(encoding='utf-8')
+
+    # Replace data block between markers
+    if DASH_MARKER_START not in html or DASH_MARKER_END not in html:
+        print("  ⚠  Marcadores no encontrados en dashboard HTML — abortando actualización de dashboard.")
+        return
+
+    new_data_js = build_dashboard_data_js(df)
+    new_block = f"{DASH_MARKER_START}\n{new_data_js}\n{DASH_MARKER_END}"
+    pattern = re.escape(DASH_MARKER_START) + r".*?" + re.escape(DASH_MARKER_END)
+    html = re.sub(pattern, new_block, html, flags=re.DOTALL)
+
+    # Update photo date in header
+    html = re.sub(
+        r'(<strong id="dashboard-photo-date">)[^<]*(</strong>)',
+        rf'\g<1>{photo_date}\g<2>',
+        html
+    )
+
+    DASHBOARD_PATH.write_text(html, encoding='utf-8')
+    print(f"  ✅ Dashboard actualizado → {DASHBOARD_PATH.name} (foto: {photo_date})")
+
+
 TAB_SEG_MAP = [
     ("tab-total",       "all"),
     ("tab-helmets",     "motorcycle_helmets"),
@@ -772,16 +1005,16 @@ def update_nmv_cells_in_html(html, all_data):
 
 
 def _push_to_github(ts_str):
-    """Commit and push the updated HTML to GitHub Pages."""
+    """Commit and push the updated HTML files to GitHub Pages."""
     repo_dir = HTML_PATH.parent
-    file_name = HTML_PATH.name
     commit_msg = f"Auto-update KPI grid: {ts_str}"
 
-    commands = [
-        ["git", "-C", str(repo_dir), "add", file_name],
-        ["git", "-C", str(repo_dir), "commit", "-m", commit_msg],
-        ["git", "-C", str(repo_dir), "push"],
-    ]
+    files_to_stage = [HTML_PATH.name, DASHBOARD_PATH.name]
+    commands = (
+        [["git", "-C", str(repo_dir), "add"] + files_to_stage] +
+        [["git", "-C", str(repo_dir), "commit", "-m", commit_msg]] +
+        [["git", "-C", str(repo_dir), "push"]]
+    )
 
     print("  → Subiendo a GitHub ...")
     for cmd in commands:

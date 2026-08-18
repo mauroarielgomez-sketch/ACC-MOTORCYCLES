@@ -295,7 +295,7 @@ tfoot td {
     <span class="header-title">ACC Motorcycles — Live Listings Dashboard</span>
   </div>
   <div class="header-meta">
-    Datos al: <strong>2026-08-11</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA<br>
+    Datos al: <strong id="dashboard-photo-date">2026-08-11</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA<br>
     SL/LL = Successful Listings / Live Listings Live (últimos 30 días) &nbsp;·&nbsp; Actualización: Semanal
   </div>
 </div>
@@ -562,6 +562,7 @@ tfoot td {
 </div>
 
 <script>
+// @@DASHBOARD_DATA_START@@
 // ─── RANGES ──────────────────────────────────────────────────────────────────
 const RANGES = [
   '01. Hasta 5K','02. 5K a 15K','03. 15K a 33K','04. 33K a 50K',
@@ -1275,6 +1276,8 @@ const DD = {
     '16. Mas de 1M':  {con:{l:404,  s:1,   c:0.2, st:15608},     sin:{l:188,   s:1,   c:0.5, st:3445}},
   },
 };
+
+// @@DASHBOARD_DATA_END@@
 
 // ─── HELPERS ─────────────────────────────────────────────────────────────────
 function fmt(n) {
