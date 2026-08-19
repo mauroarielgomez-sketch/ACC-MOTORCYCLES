@@ -307,6 +307,7 @@ tfoot td {
   <button class="nav-tab" onclick="switchTab('brecha',this)">Brecha de Conversión</button>
   <button class="nav-tab" onclick="switchTab('ejecutiva',this)">Vista Ejecutiva</button>
   <button class="nav-tab" onclick="switchTab('pareto',this)">80/20</button>
+  <button class="nav-tab" onclick="switchTab('aclaracion',this)">Aclaración</button>
 </div>
 
 <!-- ══════════════ PANE 1: AGRUPADORES ══════════════ -->
@@ -554,6 +555,135 @@ tfoot td {
     </div>
   </div>
 
+</div>
+</div>
+
+<!-- ══════════════ PANE 7: ACLARACIÓN ══════════════ -->
+<div id="pane-aclaracion" class="tab-pane">
+<div class="page">
+
+  <div style="max-width:860px;margin:0 auto;padding-top:8px;">
+
+    <div style="margin-bottom:28px;">
+      <div class="section-head">
+        <div class="s-bar" style="background:#ffe600"></div>
+        <span class="s-title">Glosario de métricas</span>
+        <span class="s-pill">Fuente: BT_LIVE_LISTINGS_MLA</span>
+      </div>
+
+      <table style="width:100%;border-collapse:collapse;border:1px solid #30363d;border-radius:10px;overflow:hidden;">
+        <thead>
+          <tr style="background:#1c2128;">
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8b949e;border-bottom:2px solid #30363d;">Métrica</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8b949e;border-bottom:2px solid #30363d;">Qué mide</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8b949e;border-bottom:2px solid #30363d;">Período</th>
+            <th style="padding:10px 16px;text-align:left;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.4px;color:#8b949e;border-bottom:2px solid #30363d;">Nota</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr style="background:#161b22;">
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;font-weight:700;color:#e6edf3;white-space:nowrap;">LL — Listings Live</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#c9d1d9;">Cantidad de listings activos en el marketplace</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#3fb950;font-weight:600;white-space:nowrap;">Foto puntual (PHOTO_DATE)</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#8b949e;font-size:12px;">Estado del catálogo en un día específico</td>
+          </tr>
+          <tr>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;font-weight:700;color:#e6edf3;white-space:nowrap;">SL — Successful Listings</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#c9d1d9;">Listings que recibieron <strong style="color:#e6edf3;">al menos 1 orden</strong> en los últimos 30 días</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#e3b341;font-weight:600;white-space:nowrap;">Ventana móvil 30 días</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#8b949e;font-size:12px;">Métrica binaria por listing: vendió o no vendió</td>
+          </tr>
+          <tr style="background:#161b22;">
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;font-weight:700;color:#e6edf3;white-space:nowrap;">SL/LL%</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#c9d1d9;">Porcentaje del catálogo activo que logró al menos una venta</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#e3b341;font-weight:600;white-space:nowrap;">Ventana móvil 30 días</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#8b949e;font-size:12px;">Proxy de conversión y salud del catálogo</td>
+          </tr>
+          <tr>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;font-weight:700;color:#e6edf3;white-space:nowrap;">Stock</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#c9d1d9;">Unidades disponibles declaradas en los listings activos</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#3fb950;font-weight:600;white-space:nowrap;">Foto puntual (PHOTO_DATE)</td>
+            <td style="padding:11px 16px;border-bottom:1px solid #21262d;color:#8b949e;font-size:12px;">No es unidades vendidas, es disponibilidad declarada</td>
+          </tr>
+          <tr style="background:#161b22;">
+            <td style="padding:11px 16px;font-weight:700;color:#8b949e;white-space:nowrap;">Facturación / NMV</td>
+            <td style="padding:11px 16px;color:#8b949e;">No disponible en este dashboard</td>
+            <td style="padding:11px 16px;color:#8b949e;">—</td>
+            <td style="padding:11px 16px;color:#8b949e;font-size:12px;">Fuente separada: BT_ORD_ORDERS → ver KPI Grid</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div style="margin-bottom:28px;">
+      <div class="section-head">
+        <div class="s-bar" style="background:#58a6ff"></div>
+        <span class="s-title">Preguntas frecuentes</span>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;">
+
+        <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:700;color:#e3b341;margin-bottom:7px;">¿LL y SL son del mismo momento?</div>
+          <div style="font-size:13px;color:#8b949e;line-height:1.7;">
+            Técnicamente sí — ambos provienen de la misma foto (<strong style="color:#c9d1d9">PHOTO_DATE</strong>). La diferencia es que LL cuenta listings activos en ese día, mientras que SL usa el campo pre-calculado <code style="background:#0d1117;padding:1px 5px;border-radius:3px;color:#79c0ff;">ORDERS_LAST_30DAYS</code> que refleja actividad de los 30 días previos a esa foto.
+          </div>
+        </div>
+
+        <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:700;color:#e3b341;margin-bottom:7px;">¿Un listing que vendió 100 unidades y uno que vendió 1 cuentan igual?</div>
+          <div style="font-size:13px;color:#8b949e;line-height:1.7;">
+            Sí. SL es binario: <strong style="color:#c9d1d9;">vendió o no vendió</strong>. El objetivo de SL/LL es medir la <em>salud del catálogo</em> — qué fracción del inventario publicado está convirtiendo —, no el volumen de ventas. Para intensidad de ventas (cuánto vendió cada listing) habría que sumar <code style="background:#0d1117;padding:1px 5px;border-radius:3px;color:#79c0ff;">ORDERS_LAST_30DAYS</code>, que no está incluido en este dashboard.
+          </div>
+        </div>
+
+        <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:700;color:#e3b341;margin-bottom:7px;">¿Podemos ver facturación por rango de precio o por dominio?</div>
+          <div style="font-size:13px;color:#8b949e;line-height:1.7;">
+            No directamente desde BT_LIVE_LISTINGS_MLA. El NMV (ARS) del KPI Grid proviene de <strong style="color:#c9d1d9;">BT_ORD_ORDERS</strong> y está agregado por segmento y mes — sin apertura por rango de precio ni por dominio con este nivel de detalle. Para cruzar facturación × rango de precio sería necesario construir una query ad hoc.
+          </div>
+        </div>
+
+        <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:700;color:#e3b341;margin-bottom:7px;">¿Qué significa Free Shipping aquí?</div>
+          <div style="font-size:13px;color:#8b949e;line-height:1.7;">
+            Con Free Shipping = listings que tienen el beneficio de envío gratis activo al momento del PHOTO_DATE. En Argentina corresponde al plan <strong style="color:#c9d1d9;">FULFILLMENT (FBM)</strong> o sellers que activan FS por costo propio. No incluye envíos pagos con descuento ni promociones temporales de envío.
+          </div>
+        </div>
+
+        <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;">
+          <div style="font-size:13px;font-weight:700;color:#e3b341;margin-bottom:7px;">¿Con qué frecuencia se actualiza el dashboard?</div>
+          <div style="font-size:13px;color:#8b949e;line-height:1.7;">
+            El script de actualización corre automáticamente <strong style="color:#c9d1d9;">lunes a viernes a las 5:00 AM</strong> via Windows Task Scheduler. La foto de BT_LIVE_LISTINGS_MLA tiene latencia D-1, por lo que el PHOTO_DATE visible en el header siempre corresponde al día hábil anterior.
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <div>
+      <div class="section-head">
+        <div class="s-bar" style="background:#3fb950"></div>
+        <span class="s-title">Fuentes de datos</span>
+      </div>
+      <div style="background:#161b22;border:1px solid #30363d;border-radius:8px;padding:16px 20px;display:flex;flex-direction:column;gap:10px;">
+        <div style="display:flex;gap:14px;align-items:baseline;">
+          <span style="font-size:12px;font-weight:700;color:#3fb950;min-width:220px;">BT_LIVE_LISTINGS_MLA</span>
+          <span style="font-size:12px;color:#8b949e;">Fuente de este dashboard. Foto diaria de listings activos con ORDERS_LAST_30DAYS precalculado.</span>
+        </div>
+        <div style="height:1px;background:#21262d;"></div>
+        <div style="display:flex;gap:14px;align-items:baseline;">
+          <span style="font-size:12px;font-weight:700;color:#58a6ff;min-width:220px;">BT_ORD_ORDERS</span>
+          <span style="font-size:12px;color:#8b949e;">Fuente del NMV (ARS) en el KPI Grid. Transacciones reales con GMV/NMV en moneda local.</span>
+        </div>
+        <div style="height:1px;background:#21262d;"></div>
+        <div style="display:flex;gap:14px;align-items:baseline;">
+          <span style="font-size:12px;font-weight:700;color:#a371f7;min-width:220px;">DM_VPA_ROADMAP_FINAL</span>
+          <span style="font-size:12px;color:#8b949e;">Fuente del KPI Grid para NSI, CVR, BM%, DC%, Visitas y métricas de roadmap.</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
 </div>
 </div>
 
