@@ -1510,6 +1510,7 @@ function renderTable(id, d) {
   let h = `<thead>
     <tr>
       <th class="col-range" rowspan="2">Rango ASP (ARS)</th>
+      <th class="col-range" rowspan="2" style="text-align:right !important" title="Listings (Con+Sin FS) de este rango">Total LL</th>
       <th class="col-range" rowspan="2" style="text-align:right !important" title="Listings (Con+Sin FS) de este rango sobre el total general">% del total</th>
       <th class="grp-con" colspan="6">🟢 Con Free Shipping <span style="background:rgba(63,185,80,0.15);color:#3fb950;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctCon}%</span></th>
       <th class="grp-sin" colspan="6">⬜ Sin Free Shipping <span style="background:rgba(118,131,144,0.15);color:#8b949e;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctSin}%</span></th>
@@ -1535,6 +1536,7 @@ function renderTable(id, d) {
     const pctStyle = 'color:#8b949e;font-size:11px';
     h += `<tr>
       <td class="col-range">${lbl}</td>
+      <td style="font-weight:600;color:#e6edf3">${fmt(rowTotal)}</td>
       <td style="font-weight:600;color:#e6edf3">${pRowTot}%</td>
       ${con
         ? `<td class="con-first">${fmt(con.l)}</td>
@@ -1565,6 +1567,7 @@ function renderTable(id, d) {
   });
   h += `</tbody><tfoot><tr>
     <td class="col-range">TOTAL</td>
+    <td style="font-weight:700;color:#e6edf3">${fmt(tc.l+ts.l)}</td>
     <td style="font-weight:700;color:#e6edf3">100%</td>
     ${(()=>{ const gt=tc.l+ts.l; const ps='color:#8b949e;font-size:11px'; return `
     <td class="con-first">${fmt(tc.l)}</td>
