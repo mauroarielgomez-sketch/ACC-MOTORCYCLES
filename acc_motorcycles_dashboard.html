@@ -1510,6 +1510,7 @@ function renderTable(id, d) {
   let h = `<thead>
     <tr>
       <th class="col-range" rowspan="2">Rango ASP (ARS)</th>
+      <th class="col-range" rowspan="2" style="text-align:right !important" title="Listings (Con+Sin FS) de este rango sobre el total general">% del total</th>
       <th class="grp-con" colspan="6">🟢 Con Free Shipping <span style="background:rgba(63,185,80,0.15);color:#3fb950;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctCon}%</span></th>
       <th class="grp-sin" colspan="6">⬜ Sin Free Shipping <span style="background:rgba(118,131,144,0.15);color:#8b949e;font-size:10px;padding:1px 7px;border-radius:10px;margin-left:6px;font-weight:700">${pctSin}%</span></th>
     </tr>
@@ -1530,9 +1531,11 @@ function renderTable(id, d) {
     const pSgrp = sin && sinL    ? (sin.l/sinL*100).toFixed(1)    : null;
     const pCtrm = con && rowTotal ? (con.l/rowTotal*100).toFixed(1) : null;
     const pStrm = sin && rowTotal ? (sin.l/rowTotal*100).toFixed(1) : null;
+    const pRowTot = tot ? (rowTotal/tot*100).toFixed(1) : '0.0';
     const pctStyle = 'color:#8b949e;font-size:11px';
     h += `<tr>
       <td class="col-range">${lbl}</td>
+      <td style="font-weight:600;color:#e6edf3">${pRowTot}%</td>
       ${con
         ? `<td class="con-first">${fmt(con.l)}</td>
            <td style="${pctStyle}">${pCgrp}%</td>
@@ -1562,6 +1565,7 @@ function renderTable(id, d) {
   });
   h += `</tbody><tfoot><tr>
     <td class="col-range">TOTAL</td>
+    <td style="font-weight:700;color:#e6edf3">100%</td>
     ${(()=>{ const gt=tc.l+ts.l; const ps='color:#8b949e;font-size:11px'; return `
     <td class="con-first">${fmt(tc.l)}</td>
     <td style="${ps}">100%</td>
