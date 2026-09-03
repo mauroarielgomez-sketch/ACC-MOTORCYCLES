@@ -1,0 +1,840 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bidcom · Oportunidad de Sourcing en China — Motopartes</title>
+<style>
+  :root{
+    color-scheme: light;
+    --surface-1:      #fcfcfb;
+    --page-plane:     #f9f9f7;
+    --text-primary:   #0b0b0b;
+    --text-secondary: #52514e;
+    --text-muted:     #898781;
+    --gridline:       #e1e0d9;
+    --baseline:       #c3c2b7;
+    --border:         rgba(11,11,11,0.10);
+    --card-shadow:    0 1px 2px rgba(11,11,11,0.06), 0 4px 16px rgba(11,11,11,0.04);
+
+    --series-1: #2a78d6; /* blue */
+    --series-2: #eb6834; /* orange */
+    --series-3: #1baf7a; /* aqua */
+    --series-4: #eda100; /* yellow */
+    --series-5: #e87ba4; /* magenta */
+    --series-6: #008300; /* green */
+    --series-7: #4a3aa7; /* violet */
+    --series-8: #e34948; /* red */
+
+    --seq-100:#cde2fb; --seq-200:#9ec5f4; --seq-300:#6da7ec; --seq-400:#3987e5;
+    --seq-500:#256abf; --seq-600:#184f95; --seq-700:#0d366b;
+
+    --status-good: #0ca30c;
+    --status-warning: #fab219;
+    --status-serious: #ec835a;
+    --status-critical: #d03b3b;
+
+    --success-text: #006300;
+  }
+  :root[data-theme="dark"]{
+    color-scheme: dark;
+    --surface-1:      #1a1a19;
+    --page-plane:     #0d0d0d;
+    --text-primary:   #ffffff;
+    --text-secondary: #c3c2b7;
+    --text-muted:     #898781;
+    --gridline:       #2c2c2a;
+    --baseline:       #383835;
+    --border:         rgba(255,255,255,0.10);
+    --card-shadow:    0 1px 2px rgba(0,0,0,0.3), 0 4px 16px rgba(0,0,0,0.25);
+
+    --series-1: #3987e5;
+    --series-2: #d95926;
+    --series-3: #199e70;
+    --series-4: #c98500;
+    --series-5: #d55181;
+    --series-6: #008300;
+    --series-7: #9085e9;
+    --series-8: #e66767;
+
+    --status-good: #0ca30c;
+    --status-warning: #fab219;
+    --status-serious: #ec835a;
+    --status-critical: #d03b3b;
+
+    --success-text: #0ca30c;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:var(--page-plane);
+    color:var(--text-primary);
+    font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+    line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:28px 20px 80px;}
+
+  header.top{
+    display:flex; align-items:flex-start; justify-content:space-between;
+    gap:16px; margin-bottom:20px; flex-wrap:wrap;
+  }
+  header.top h1{font-size:1.5rem;margin:0 0 4px;}
+  header.top p.sub{margin:0;color:var(--text-secondary);font-size:0.92rem;}
+  .theme-toggle{
+    border:1px solid var(--border); background:var(--surface-1); color:var(--text-primary);
+    border-radius:8px; padding:8px 14px; font-size:0.85rem; cursor:pointer;
+  }
+  .fx-badge{
+    display:inline-flex; gap:6px; align-items:center;
+    background:var(--surface-1); border:1px solid var(--border); border-radius:999px;
+    padding:6px 12px; font-size:0.78rem; color:var(--text-secondary); margin-top:8px;
+  }
+  .fx-badge b{color:var(--text-primary);}
+
+  nav.tabs{
+    display:flex; gap:4px; flex-wrap:wrap; border-bottom:1px solid var(--gridline);
+    margin-bottom:24px; position:sticky; top:0; background:var(--page-plane); z-index:10; padding-top:4px;
+  }
+  nav.tabs button{
+    background:transparent; border:none; padding:10px 16px; font-size:0.88rem;
+    color:var(--text-secondary); cursor:pointer; border-bottom:2px solid transparent;
+    font-weight:500;
+  }
+  nav.tabs button.active{color:var(--text-primary); border-bottom-color:var(--series-1);}
+  nav.tabs button:hover{color:var(--text-primary);}
+
+  section.tab{display:none;}
+  section.tab.active{display:block; animation:fade .15s ease;}
+  @keyframes fade{from{opacity:0} to{opacity:1}}
+
+  h2{font-size:1.15rem; margin:0 0 4px;}
+  h3{font-size:0.98rem; margin:28px 0 10px;}
+  p.lead{color:var(--text-secondary); margin:0 0 20px; max-width:820px;}
+
+  .kpi-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:12px; margin-bottom:24px;}
+  .stat-tile{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:12px;
+    padding:16px 18px; box-shadow:var(--card-shadow);
+  }
+  .stat-tile .label{font-size:0.76rem; color:var(--text-muted); text-transform:uppercase; letter-spacing:.03em;}
+  .stat-tile .value{font-size:1.6rem; font-weight:600; margin-top:4px;}
+  .stat-tile .note{font-size:0.78rem; color:var(--text-secondary); margin-top:4px;}
+
+  .callout{
+    border:1px solid var(--border); border-left:4px solid var(--series-1);
+    background:var(--surface-1); border-radius:8px; padding:16px 18px; margin:16px 0;
+    box-shadow:var(--card-shadow);
+  }
+  .callout.good{border-left-color:var(--status-good);}
+  .callout.critical{border-left-color:var(--status-critical);}
+  .callout h4{margin:0 0 6px; font-size:0.95rem;}
+  .callout p{margin:0; color:var(--text-secondary); font-size:0.88rem;}
+
+  table{width:100%; border-collapse:collapse; font-size:0.85rem; background:var(--surface-1); border-radius:10px; overflow:hidden;}
+  caption{text-align:left; caption-side:top; font-size:0.78rem; color:var(--text-muted); padding-bottom:6px;}
+  thead th{
+    text-align:left; font-size:0.72rem; text-transform:uppercase; letter-spacing:.03em;
+    color:var(--text-muted); border-bottom:1px solid var(--gridline); padding:9px 12px; font-weight:600;
+    background:var(--surface-1);
+  }
+  tbody td{padding:9px 12px; border-bottom:1px solid var(--gridline); vertical-align:middle;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover{background:rgba(42,120,214,0.05);}
+  td.num, th.num{text-align:right; font-variant-numeric:tabular-nums;}
+  .table-scroll{overflow-x:auto; border:1px solid var(--border); border-radius:10px; box-shadow:var(--card-shadow);}
+
+  .bar-cell{display:flex; align-items:center; gap:8px; min-width:160px;}
+  .bar-track{flex:1; height:8px; background:var(--gridline); border-radius:4px; overflow:hidden;}
+  .bar-fill{height:100%; border-radius:4px; background:var(--seq-400);}
+
+  .pill{
+    display:inline-flex; align-items:center; gap:5px; padding:3px 9px; border-radius:999px;
+    font-size:0.74rem; font-weight:600; white-space:nowrap;
+  }
+  .pill .dot{width:7px;height:7px;border-radius:50%;}
+  .pill.good{color:var(--status-good);} .pill.good .dot{background:var(--status-good);}
+  .pill.warning{color:#8a6400;} .pill.warning .dot{background:var(--status-warning);}
+  .pill.serious{color:#a1481f;} .pill.serious .dot{background:var(--status-serious);}
+  .pill.critical{color:var(--status-critical);} .pill.critical .dot{background:var(--status-critical);}
+  :root[data-theme="dark"] .pill.warning{color:var(--status-warning);}
+  :root[data-theme="dark"] .pill.serious{color:var(--status-serious);}
+
+  .tag{
+    display:inline-block; font-size:0.72rem; padding:2px 8px; border-radius:6px;
+    background:rgba(42,120,214,0.12); color:var(--series-1); font-weight:600; margin-right:4px;
+  }
+  .brand-count{font-weight:700; font-variant-numeric:tabular-nums;}
+
+  .note-box{
+    font-size:0.8rem; color:var(--text-secondary); background:var(--surface-1);
+    border:1px dashed var(--border); border-radius:8px; padding:10px 14px; margin-top:10px;
+  }
+  .note-box b{color:var(--text-primary);}
+
+  ol.steps li, ul.plain li{margin-bottom:6px; color:var(--text-secondary); font-size:0.88rem;}
+  code{background:var(--gridline); padding:1px 5px; border-radius:4px; font-size:0.82em;}
+
+  footer{margin-top:40px; padding-top:16px; border-top:1px solid var(--gridline); font-size:0.76rem; color:var(--text-muted);}
+
+  details.acc-item{
+    background:var(--surface-1); border:1px solid var(--border); border-radius:10px;
+    margin-bottom:10px; box-shadow:var(--card-shadow); overflow:hidden;
+  }
+  details.acc-item > summary{
+    list-style:none; cursor:pointer; padding:14px 16px; display:flex; align-items:center;
+    justify-content:space-between; gap:12px; font-weight:600; font-size:0.92rem;
+  }
+  details.acc-item > summary::-webkit-details-marker{display:none;}
+  details.acc-item > summary .chev{color:var(--text-muted); font-size:0.8rem; transition:transform .15s ease;}
+  details.acc-item[open] > summary .chev{transform:rotate(90deg);}
+  details.acc-item .acc-meta{display:flex; gap:8px; align-items:center; font-weight:400;}
+  details.acc-item .acc-body{padding:0 16px 16px;}
+  .acc-summary-row{display:flex; align-items:center; gap:14px; flex:1; flex-wrap:wrap;}
+  .acc-summary-row .muted{color:var(--text-muted); font-weight:400; font-size:0.8rem;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="top">
+    <div>
+      <h1>Bidcom · Oportunidad de Sourcing en China — Motopartes</h1>
+      <p class="sub">Análisis de demanda, saturación de oferta y escenarios de FOB para evaluar una nueva línea de producto propia. Preparado para reunión con Mariano.</p>
+      <div class="fx-badge">💱 Tipo de cambio usado en este documento: <b>$1.511 ARS/USD</b> (dólar mayorista/oficial importador, BCRA, 02-sep-2026)</div>
+    </div>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Modo oscuro</button>
+  </header>
+
+  <nav class="tabs" id="tabs">
+    <button data-tab="resumen" class="active">Resumen Ejecutivo</button>
+    <button data-tab="demanda">Ranking de Demanda</button>
+    <button data-tab="oferta">Oferta y Saturación</button>
+    <button data-tab="categorias">Detalle por Categoría</button>
+    <button data-tab="fob">Escenarios FOB</button>
+    <button data-tab="fob-extendido">FOB Extendido (Top 10)</button>
+    <button data-tab="metodologia">Metodología / Explicativo</button>
+  </nav>
+
+  <!-- ============ TAB 1: RESUMEN EJECUTIVO ============ -->
+  <section class="tab active" id="resumen">
+    <h2>Resumen Ejecutivo</h2>
+    <p class="lead">Objetivo: identificar oportunidades de producto para que Bidcom sourcee en China y lance una línea propia, cruzando demanda real de la plataforma (unidades y facturación), saturación de oferta actual (listados activos y conversión), y estructura competitiva por categoría.</p>
+
+    <div class="kpi-row">
+      <div class="stat-tile"><div class="label">Categorías relevadas (demanda)</div><div class="value">30</div><div class="note">Ranking completo por TGMV / unidades</div></div>
+      <div class="stat-tile"><div class="label">Categorías con deep-dive</div><div class="value">21</div><div class="note">Producto ganador + marcas + estructura competitiva</div></div>
+      <div class="stat-tile"><div class="label">TGMV combinado top 10</div><div class="value">$71 mil M</div><div class="note">Solo las 10 categorías de mayor facturación</div></div>
+      <div class="stat-tile"><div class="label">Marca más transversal</div><div class="value">NSU</div><div class="note">Aparece en 7 de las 21 categorías analizadas</div></div>
+    </div>
+
+    <div class="callout good">
+      <h4>🏆 Hallazgo más importante: el modelo ya funciona adentro de ML</h4>
+      <p>En <b>Alforjas</b>, el producto #1 en unidades vendidas es la <b>"Mochila de Delivery Mercado Libre Tienda Oficial"</b> (marca "Mercadolibre"), con 3.870 unidades y ~$484M de TGMV — el SKU individual con más revenue de todo el análisis. En <b>Camperas</b> aparece un caso similar ("Yellowstone", campera de delivery oficial amarilla). Mercado Libre ya viene ejecutando private label en la vertical de repartidores y funciona. La propuesta a Bidcom no es un experimento nuevo — es escalar algo que ya probamos, con un socio que puede sourcear en volumen en China en vez de depender de un proveedor puntual.</p>
+    </div>
+
+    <h3>Dónde entrar primero (buena demanda + oferta todavía sana)</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Categoría</th><th>Por qué</th><th>Conversión oferta</th></tr></thead>
+        <tbody>
+          <tr><td>Plásticos de Moto</td><td>Mejor conversión de todo el análisis, sin marca dominante, TGMV alto</td><td><span class="pill good"><span class="dot"></span>9.8%</span></td></tr>
+          <tr><td>Kit de Transmisión</td><td>Demanda alta, oferta sana, aunque Riffel es un líder fuerte a desplazar</td><td><span class="pill good"><span class="dot"></span>7.4%</span></td></tr>
+          <tr><td>Cascos</td><td>Segmento premium ($140k-$285k) sin líder claro dentro de un mercado grande</td><td><span class="pill good"><span class="dot"></span>5.3%</span></td></tr>
+          <tr><td>Manubrios</td><td>Sana, aunque Pro Tork es el competidor a vigilar de cerca</td><td><span class="pill good"><span class="dot"></span>5.0%</span></td></tr>
+          <tr><td>Silenciadores</td><td>Segmento de reposición genérico (no el deportivo) sin líder</td><td><span class="pill good"><span class="dot"></span>4.7%</span></td></tr>
+          <tr><td>Frenos</td><td>Fragmentado; Diafrag (Tercom) ya compite bien acá como referencia</td><td><span class="pill warning"><span class="dot"></span>~4.0%</span></td></tr>
+          <tr><td>Botas</td><td>Duopolio accesible (Alpina/Hifly) + nicho premium de cuero de alto ticket</td><td><span class="pill warning"><span class="dot"></span>4.0%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Dónde no entrar todavía (saturado pese al buen ticket)</h3>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Categoría</th><th>Por qué evitarla (por ahora)</th><th>Conversión oferta</th></tr></thead>
+        <tbody>
+          <tr><td>Camperas</td><td>La conversión más baja de todo el estudio pese al ticket más alto</td><td><span class="pill critical"><span class="dot"></span>0.7%</span></td></tr>
+          <tr><td>Alforjas</td><td>Domina un SKU propio de ML; el resto del mercado convierte muy mal</td><td><span class="pill critical"><span class="dot"></span>1.0%</span></td></tr>
+          <tr><td>Indumentaria (guantes)</td><td>Fragmentado pero saturadísimo en cantidad de listados</td><td><span class="pill critical"><span class="dot"></span>1.3%</span></td></tr>
+          <tr><td>Carburadores</td><td>La categoría con más oferta activa de todo el análisis (169k listados)</td><td><span class="pill serious"><span class="dot"></span>1.5%</span></td></tr>
+          <tr><td>Baúles Porta Cascos</td><td>Saturado, y en el segmento premium compiten Shad/Givi (marcas globales reales)</td><td><span class="pill serious"><span class="dot"></span>1.5%</span></td></tr>
+          <tr><td>Parabrisas</td><td>Pferd® Tech tiene casi el monopolio absoluto de la categoría</td><td><span class="pill serious"><span class="dot"></span>2.2%</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <h3>Competidores transversales a vigilar</h3>
+    <p class="lead" style="margin-bottom:8px;">Estas marcas no son de nicho — aparecen ganando en múltiples categorías a la vez. Cualquier categoría nueva que se evalúe debería chequearse contra esta lista.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr><th>Marca</th><th class="num"># Categorías</th><th>Dónde aparece</th></tr></thead>
+        <tbody>
+          <tr><td><b>NSU</b></td><td class="num"><span class="brand-count">7</span></td><td>Plásticos, Frenos, Carburadores, Cilindros, Tapas de Cilindros, Manubrios, Portaequipajes</td></tr>
+          <tr><td><b>Pro Tork</b></td><td class="num"><span class="brand-count">6</span></td><td>Cascos, Silenciadores, Botas, Manubrios (líder), Baúles Porta Cascos, Portaequipajes</td></tr>
+          <tr><td><b>Alpina</b></td><td class="num"><span class="brand-count">4</span></td><td>Trajes de Lluvia (líder), Botas (líder), Alforjas, Pantalones</td></tr>
+          <tr><td>Riffel</td><td class="num">2</td><td>Kit de Transmisión (líder), Frenos</td></tr>
+          <tr><td>Motegi</td><td class="num">2</td><td>Cilindros (líder), Carburadores</td></tr>
+          <tr><td>Mahle</td><td class="num">2</td><td>Tapas de Cilindros, Cilindros</td></tr>
+          <tr><td>Pferd® Tech</td><td class="num">2</td><td>Parabrisas (casi monopolio), Portaequipajes</td></tr>
+          <tr><td>MAC / Radikal</td><td class="num">2 c/u</td><td>Camperas (co-líderes), Pantalones</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TAB 2: RANKING DE DEMANDA ============ -->
+  <section class="tab" id="demanda">
+    <h2>Ranking de Demanda — Top 30 categorías de Motopartes</h2>
+    <p class="lead">Ordenado por TGMV (facturación total), que combina naturalmente volumen de unidades y ticket promedio. Fuente: reporte interno de categorías ML, unidades = TSI, facturación = TGMV LC (ARS).</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>#</th><th>Categoría</th><th class="num">Unidades (TSI)</th><th class="num">Ticket prom.</th><th>Facturación (TGMV)</th>
+        </tr></thead>
+        <tbody id="demanda-body"></tbody>
+      </table>
+    </div>
+    <div class="note-box">Datos internos de ML, no aptos para compartir fuera de la compañía. El ticket promedio es TGMV/TSI a nivel categoría — a nivel producto individual varía bastante (ver pestaña "Detalle por Categoría").</div>
+  </section>
+
+  <!-- ============ TAB 3: OFERTA Y SATURACIÓN ============ -->
+  <section class="tab" id="oferta">
+    <h2>Oferta actual y saturación</h2>
+    <p class="lead">Datos extraídos del dashboard de Live Listings (LL) de ACC Motorcycles. <b>LL</b> = publicaciones activas hoy. <b>SL</b> = publicaciones que tuvieron al menos una venta en los últimos 30 días. La conversión SL/LL indica qué tan saturada está la categoría: mucha oferta con baja conversión = muy difícil destacar con un producto nuevo.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Categoría (dashboard LL)</th><th class="num">Live Listings</th><th class="num">Successful Listings</th><th>Conversión SL/LL</th><th>Lectura</th>
+        </tr></thead>
+        <tbody id="oferta-body"></tbody>
+      </table>
+    </div>
+    <div class="note-box">Mapeo aproximado: los nombres de categoría del dashboard de oferta no siempre coinciden 1 a 1 con el árbol de categorías de demanda (ej. "Carenados" ≈ Plásticos de Moto, "Pilotos" ≈ Trajes de Lluvia, "Bloques de Cilindro" agrupa Cilindros + Tapas de Cilindros). <b>Baterías</b> y <b>Frenos</b> no tienen un dominio propio en este dashboard — no se pudo cruzar su saturación directamente.</div>
+  </section>
+
+  <!-- ============ TAB 4: DETALLE POR CATEGORÍA ============ -->
+  <section class="tab" id="categorias">
+    <h2>Detalle competitivo por categoría</h2>
+    <p class="lead">Estructura de mercado, marcas líderes y nivel de complejidad/riesgo de cada categoría analizada, en base al ranking de productos y marcas más vendidos dentro de cada una.</p>
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Categoría</th><th>Estructura de mercado</th><th>Marca(s) líder(es)</th><th>Complejidad</th><th>Nota clave</th>
+        </tr></thead>
+        <tbody id="categorias-body"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ TAB 5: ESCENARIOS FOB ============ -->
+  <section class="tab" id="fob">
+    <h2>Escenarios de FOB por producto líder</h2>
+    <p class="lead">FOB estimado "de atrás para adelante" desde el precio de lista actual en ML del producto más vendido de cada categoría, bajo 3 supuestos de estructura de costos de importación (flete, aranceles, IVA, comisiones ML, margen). <b>No son cotizaciones reales de proveedor</b> — son el techo de FOB que haría viable el negocio bajo cada escenario.</p>
+
+    <div class="fx-badge" style="margin-bottom:14px;">💱 Conversión a USD con dólar mayorista/oficial importador: <b>$1.511 ARS/USD</b> (BCRA, 02-sep-2026)</div>
+
+    <div class="kpi-row">
+      <div class="stat-tile"><div class="label">Escenario Conservador</div><div class="value">K = 5,0x</div><div class="note">Aranceles altos, flete no consolidado, margen exigido alto</div></div>
+      <div class="stat-tile"><div class="label">Escenario Base</div><div class="value">K = 4,0x</div><div class="note">Estructura típica del sector import de motopartes a Argentina</div></div>
+      <div class="stat-tile"><div class="label">Escenario Agresivo</div><div class="value">K = 3,2x</div><div class="note">Buena escala de compra + flete consolidado + financiamiento favorable</div></div>
+    </div>
+
+    <div class="table-scroll">
+      <table>
+        <thead><tr>
+          <th>Categoría</th><th>Producto líder (por unidades)</th><th>Marca ref.</th><th class="num">PVP Lista (ARS)</th>
+          <th class="num">FOB Conservador</th><th class="num">FOB Base</th><th class="num">FOB Agresivo</th>
+        </tr></thead>
+        <tbody id="fob-body"></tbody>
+      </table>
+    </div>
+    <div class="note-box"><b>FOB = Free On Board</b>, valor en dólares en fábrica/puerto de origen (China), antes de flete internacional, seguro, aranceles, IVA y costos locales. Los 3 valores de esta tabla equivalen al FOB máximo tolerable en cada escenario para que el precio final en ML se mantenga en línea con lo que hoy paga el consumidor.</div>
+  </section>
+
+  <!-- ============ TAB 5b: FOB EXTENDIDO ============ -->
+  <section class="tab" id="fob-extendido">
+    <h2>FOB Extendido — Top 10 productos por categoría</h2>
+    <p class="lead">Mismo cálculo de FOB máximo tolerable (Precio de Lista ÷ K) aplicado a los 10 productos más vendidos de cada categoría, no solo al líder. Útil para ver el rango real de precios dentro de una categoría y no anclar la decisión a un solo SKU. Desplegá cada categoría para ver el detalle.</p>
+    <div class="fx-badge" style="margin-bottom:14px;">💱 Dólar mayorista/oficial importador: <b>$1.511 ARS/USD</b> (BCRA, 02-sep-2026) · K Conservador 5,0x · Base 4,0x · Agresivo 3,2x</div>
+    <div id="fob-ext-accordion"></div>
+  </section>
+
+  <!-- ============ TAB 6: METODOLOGÍA ============ -->
+  <section class="tab" id="metodologia">
+    <h2>Metodología y explicación de los datos</h2>
+
+    <h3>1. Fuentes de datos</h3>
+    <ul class="plain">
+      <li><b>Ranking de demanda (pestaña 2):</b> reporte interno de categorías de Motopartes en Mercado Libre, con <b>TSI</b> (unidades vendidas / "Total Sold Items") y <b>TGMV LC</b> (facturación total en pesos, "Total Gross Merchandise Value, Local Currency") por categoría L2/L3/L4.</li>
+      <li><b>Detalle por categoría y producto (pestaña 4):</b> ranking de publicaciones individuales dentro de cada categoría, ordenado por unidades vendidas, con marca, precio de lista, precio actual y TGMV por publicación.</li>
+      <li><b>Oferta y saturación (pestaña 3):</b> dashboard interno de Live Listings de ACC Motorcycles, con datos por dominio de catálogo y rango de precio (con/sin envío gratis), actualización semanal con foto D-1.</li>
+    </ul>
+
+    <h3>2. Qué significa cada métrica</h3>
+    <ul class="plain">
+      <li><b>TSI:</b> unidades vendidas en el período de referencia.</li>
+      <li><b>TGMV:</b> facturación (precio × unidades) en pesos argentinos.</li>
+      <li><b>Ticket promedio:</b> TGMV ÷ TSI. A nivel categoría es un promedio ponderado; a nivel producto individual el precio real puede variar mucho del promedio de categoría.</li>
+      <li><b>LL (Live Listings):</b> cantidad de publicaciones activas en este momento para esa categoría/rango de precio.</li>
+      <li><b>SL (Successful Listings):</b> de esas publicaciones activas, cuántas tuvieron al menos una venta en los últimos 30 días.</li>
+      <li><b>Conversión SL/LL:</b> proxy de saturación. Una categoría con conversión baja tiene muchísima oferta compitiendo por pocas ventas exitosas — entrar ahí es más difícil incluso si la demanda total (TGMV) es alta.</li>
+    </ul>
+
+    <h3>3. Cómo se armó el ranking de oportunidad</h3>
+    <p style="color:var(--text-secondary); font-size:0.88rem;">Se cruzó demanda (TGMV/TSI) con saturación (conversión SL/LL) para separar categorías que "se ven bien" en revenue pero están sobre-ofertadas (ej. Camperas, Carburadores, Alforjas) de categorías con demanda sólida y oferta todavía sana (ej. Plásticos, Kit de Transmisión, Manubrios). Adicionalmente, dentro de cada categoría se identificaron las marcas líderes reales (no las marcas de moto compatibles, que son solo referencia de ajuste) para entender el nivel de concentración competitiva.</p>
+
+    <h3>4. Metodología de FOB (pestaña 5)</h3>
+    <p style="color:var(--text-secondary); font-size:0.88rem;">No se contó con cotizaciones reales de proveedores de China (Alibaba/1688) al momento de este análisis. En su lugar, se calculó el FOB máximo tolerable "de atrás para adelante", dividiendo el precio de lista actual en ML del producto líder de cada categoría por un multiplicador K que representa toda la cadena de costos de importación (flete, seguro, aranceles, tasa estadística, IVA, comisión y envío de ML, margen del importador):</p>
+    <div class="note-box"><code>FOB máximo tolerable = Precio de Lista (ML) ÷ K</code><br><br>
+      <b>K = 5,0x</b> (Conservador) &nbsp;·&nbsp; <b>K = 4,0x</b> (Base) &nbsp;·&nbsp; <b>K = 3,2x</b> (Agresivo)<br><br>
+      Los valores resultantes son razonables frente a benchmarks públicos de FOB para estos rubros (ej. cascos integrales homologados US$8-15, guantes térmicos US$2-4, baterías gel de moto US$4-8 FOB China), lo que da consistencia direccional al ejercicio — pero <b>deben confirmarse con cotizaciones reales antes de comprometer inversión.</b></p>
+    </div>
+
+    <h3>5. Tipo de cambio</h3>
+    <p style="color:var(--text-secondary); font-size:0.88rem;">Toda conversión ARS → USD de este documento usa el <b>dólar mayorista / oficial para importaciones</b>, que cerró en <b>$1.511 ARS/USD</b> el 2 de septiembre de 2026 (BCRA). Es el tipo de cambio relevante para una operación de comercio exterior real, a diferencia del dólar minorista o financiero.</p>
+
+    <h3>6. Limitaciones a tener presente</h3>
+    <ul class="plain">
+      <li>Los datos de demanda y oferta son internos de Mercado Libre — no deben compartirse fuera de la compañía.</li>
+      <li>El FOB estimado es una aproximación direccional, no una cotización real de proveedor.</li>
+      <li>Algunas categorías (baterías, electrónica con radiofrecuencia, componentes de motor de precisión) tienen barreras regulatorias o de calidad que no están reflejadas en el número de revenue — se mencionan como nota cualitativa en la pestaña de detalle.</li>
+      <li>El cruce entre el árbol de categorías de demanda y los dominios del dashboard de oferta es aproximado en algunos casos (ver nota en pestaña 3).</li>
+    </ul>
+  </section>
+
+  <footer>Documento de trabajo interno — preparado para evaluación de oportunidad Bidcom. No distribuir fuera de Mercado Libre.</footer>
+</div>
+
+<script>
+function toggleTheme(){
+  const root = document.documentElement;
+  const isDark = root.getAttribute('data-theme') === 'dark';
+  root.setAttribute('data-theme', isDark ? 'light' : 'dark');
+}
+
+document.getElementById('tabs').addEventListener('click', (e)=>{
+  const btn = e.target.closest('button[data-tab]');
+  if(!btn) return;
+  document.querySelectorAll('nav.tabs button').forEach(b=>b.classList.remove('active'));
+  document.querySelectorAll('section.tab').forEach(s=>s.classList.remove('active'));
+  btn.classList.add('active');
+  document.getElementById(btn.dataset.tab).classList.add('active');
+});
+
+function fmtARS(n){ return '$' + Math.round(n).toLocaleString('es-AR'); }
+function fmtUnits(n){ return n.toLocaleString('es-AR'); }
+function fmtUSD(n){ return 'US$ ' + n.toFixed(2).replace('.', ','); }
+
+// ---------- DEMANDA (top 30) ----------
+const demanda = [
+  ["Cascos",220057,28214439409],["Plásticos de Motos",122072,9344000589],["Baterías",123162,6960961956],
+  ["Intercomunicadores",63911,5598956502],["Kit de Transmisión",96739,5461880294],["Indumentaria (accesorios)",177636,5282332649],
+  ["Cilindros",50517,4433161195],["Camperas",27925,4410110469],["Silenciadores",31878,3996250845],
+  ["Carburadores",84999,3669349541],["Frenos",115076,3624986184],["Botas",24225,3612331549],
+  ["Trajes de Lluvia",98781,3611614036],["Alforjas",38709,3239221010],["Fundas",76175,2832993875],
+  ["Tapas de Cilindros",53265,2684195472],["Manubrios y Componentes",49314,2486783278],["Embragues",54968,2454719086],
+  ["Parabrisas",27052,2368890211],["Baúles Porta Cascos",16194,2324976770],["Kit de Filtros",39803,2275398170],
+  ["Amortiguadores",30436,2251388093],["Ópticas",48489,2158228506],["Tableros y Velocímetros",42518,2082586109],
+  ["Guardabarros",47467,1998077595],["Pantalones",18919,1950233501],["Tanques de Nafta",26357,1908248383],
+  ["Portaequipajes",19982,1878861080],["Espejos",69976,1817236644],["Conjuntos (indumentaria)",41052,1789826262],
+];
+const maxTGMV = Math.max(...demanda.map(d=>d[2]));
+const demandaBody = document.getElementById('demanda-body');
+demanda.forEach((d,i)=>{
+  const [cat,tsi,tgmv] = d;
+  const pct = (tgmv/maxTGMV*100).toFixed(1);
+  const ticket = tgmv/tsi;
+  demandaBody.insertAdjacentHTML('beforeend', `<tr>
+    <td>${i+1}</td><td>${cat}</td><td class="num">${fmtUnits(tsi)}</td><td class="num">${fmtARS(ticket)}</td>
+    <td><div class="bar-cell"><div class="bar-track"><div class="bar-fill" style="width:${pct}%"></div></div><span style="font-variant-numeric:tabular-nums;min-width:90px;text-align:right;display:inline-block;">${fmtARS(tgmv)}</span></div></td>
+  </tr>`);
+});
+
+// ---------- OFERTA / SATURACIÓN ----------
+const oferta = [
+  ["Carburadores",169310,2586],["Camperas",149234,1031],["Guantes (Indumentaria)",143934,1935],
+  ["Trajes / Pilotos",34036,1139],["Alforjas y Mochilas",109917,1122],["Cuello y Pasamontañas",109036,1994],
+  ["Cascos",91891,4880],["Espejos Retrovisores",89128,1883],["Repuestos (genérico)",74504,3016],
+  ["Fundas",62638,2342],["Juntas de Motor",55385,3553],["Candados",54708,1735],
+  ["Bloques de Cilindro (Cilindros/Tapas)",51706,1707],["Barras Anticaída",50366,793],["Velocímetros",48639,1314],
+  ["Parabrisas",47608,1038],["Kits de Transmisión",42682,3154],["Carenados (Plásticos de Moto)",41479,4058],
+  ["Baúles",35934,552],["Pantalones",24545,434],["Silenciadores",22743,1066],["Manubrios",21946,1087],
+  ["Portaequipajes",19892,695],["Escapes",16834,513],["Botas",16175,645],["Tubos de Horquilla",13748,762],
+  ["Tanques",8354,831],["Ruedas",6623,623],
+];
+function convStatus(pct){
+  if(pct>=4.5) return ['good','Saludable'];
+  if(pct>=2.5) return ['warning','Moderada'];
+  if(pct>=1.5) return ['serious','Alta'];
+  return ['critical','Muy saturada'];
+}
+const ofertaBody = document.getElementById('oferta-body');
+oferta.sort((a,b)=> (b[2]/b[1]) - (a[2]/a[1]));
+oferta.forEach(o=>{
+  const [cat,ll,sl]=o;
+  const conv = sl/ll*100;
+  const [cls,label] = convStatus(conv);
+  ofertaBody.insertAdjacentHTML('beforeend', `<tr>
+    <td>${cat}</td><td class="num">${fmtUnits(ll)}</td><td class="num">${fmtUnits(sl)}</td>
+    <td><span class="pill ${cls}"><span class="dot"></span>${conv.toFixed(2)}%</span></td><td>${label}</td>
+  </tr>`);
+});
+
+// ---------- DETALLE POR CATEGORÍA ----------
+const categorias = [
+  ["Plásticos de Moto","Muy fragmentado, sin líder","NSU, Plástica VC","Media (molde por modelo)","Mejor conversión de oferta de todo el análisis (9.8%)"],
+  ["Kit de Transmisión","Líder fuerte + cola larga","Riffel, Osaka","Media (por modelo)","Oferta sana (7.4%); Tercom no aparece con sus marcas propias acá"],
+  ["Cascos","Fragmentado con líder en mid-range","Vertigo (mid) · LS2/Axxis/NZI/GP23 (premium)","Baja-media","Segmento premium sin líder claro = mejor entrada"],
+  ["Manubrios y Componentes","Líder muy fuerte","Pro Tork","Baja","Pro Tork domina, difícil de desplazar de frente"],
+  ["Silenciadores","Dos tiers: reposición vs. deportivo","JT (reposición) · FMF/Pro Tork (deportivo)","Media","Entrar por el tier de reposición genérica, no el deportivo"],
+  ["Frenos","Fragmentado, genérico vs. original","Bajaj (OEM) · SKF/NTN (rodamientos) · Diafrag (Tercom)","Media","Diafrag de Tercom ya compite bien acá — buena referencia"],
+  ["Botas","Duopolio accesible + nicho premium","Alpina/Hifly (PVC) · Briganti/Solco (cuero)","Baja-media","Ticket premium de cuero hasta $444.000"],
+  ["Trajes de Lluvia","Muy fragmentado","Alpina, Ombu","Baja","Producto simple, sin certificación ni molde específico"],
+  ["Fundas","Fragmentado","Fiemo Fundas, MG, LP Motors","Baja","Perfil de bajo riesgo similar a indumentaria de lluvia"],
+  ["Portaequipajes","Fragmentado + Pro Tork","Peaklight, VC, Pro Tork","Baja","VC también aparece en Plásticos — marca chica transversal"],
+  ["Baterías","Duopolio genérico rebrandeado","Alpina, Bosch (genérico) · Yuasa (premium)","Alta (mercancía peligrosa, IRAM)","El modelo de negocio (rebranding genérico chino) ya está probado"],
+  ["Cilindros","Líder fuerte + riesgo técnico","Motegi · Vedamotors (competición)","Alta (tolerancias de motor)","Riesgo de calidad si no hay control técnico"],
+  ["Tapas de Cilindros","Fragmentado + riesgo técnico","Mahle, NSU","Alta (tren de válvulas)","Mismo caveat técnico que Cilindros"],
+  ["Carburadores","Muy fragmentado pero saturado","Kigcol, Motegi · Keihin (OEM real)","Media","La categoría con más oferta activa de todo el análisis"],
+  ["Intercomunicadores","Líder + cola de imitadores","Ejeas (ya es marca china) + Mixio/West/ZG/V6 Plus","Alta (homologación ENACOM)","El modelo ya está validado por varios jugadores medianos"],
+  ["Parabrisas","Casi monopolio","Pferd® Tech","Baja","Evitar — concentración más alta de todo el análisis"],
+  ["Camperas","Duopolio + premium fragmentado","MAC, Radikal · Alpinestars (premium global)","Media","La conversión más baja de oferta de todo el estudio (0.7%)"],
+  ["Indumentaria (guantes)","Ultra fragmentado pero saturado","Sportman, sin líder claro","Baja","Fragmentado no es lo mismo que sano — saturación 1.3%"],
+  ["Alforjas","Dominado por SKU propio de ML + Alpina","Mercadolibre (delivery), Alpina","Baja","Hallazgo clave del análisis — ver Resumen Ejecutivo"],
+  ["Baúles Porta Cascos","Fragmentado medio + premium global","Cucyma/CLINCK (medio) · Shad/Givi (premium)","Baja","No competir de frente contra Shad/Givi en el segmento premium"],
+  ["Pantalones","Fragmentado (excluyendo ELT, no es indumentaria moto)","Ruder, Samurai Warrior, MAC, Alpina","Baja","MAC y Radikal cruzan también desde Camperas"],
+];
+const categoriasBody = document.getElementById('categorias-body');
+categorias.forEach(c=>{
+  const [cat,estructura,marcas,complejidad,nota] = c;
+  categoriasBody.insertAdjacentHTML('beforeend', `<tr>
+    <td><b>${cat}</b></td><td>${estructura}</td><td>${marcas}</td><td>${complejidad}</td><td style="color:var(--text-secondary);">${nota}</td>
+  </tr>`);
+});
+
+// ---------- FOB ----------
+const FX = 1511;
+const K = {cons:5.0, base:4.0, agr:3.2};
+const fobData = [
+  ["Cascos","Casco Vertigo Tamashi Integral Homologado","Vertigo",42000],
+  ["Plásticos de Moto","Kit Plásticos Honda Xr150 10 piezas","Plasticos",189000],
+  ["Baterías","Batería Alpina 12N5-3B Gel","Alpina",33228],
+  ["Intercomunicadores","Ejeas V6-pro+ 6 Pilotos BT","Ejeas",98900],
+  ["Kit de Transmisión","Kit Cadena/Corona/Piñón Zanella Zb","Osaka",16509],
+  ["Indumentaria (guantes)","Guantes Térmicos Impermeables","Sportman",17768],
+  ["Cilindros","Kit Cilindro 110cc Smash","Genérica",25420],
+  ["Camperas","Campera Cordura Mac Cardinal","MAC",139248],
+  ["Silenciadores","Escape Competición Alien Tech Racing","SPR",49270],
+  ["Carburadores","Carburador Mini Cuatri ATV 50cc","Pagani",33200],
+  ["Frenos","Pastillas Bajaj NS200 Originales","Bajaj",32900],
+  ["Botas","Botas de Lluvia PVC Impermeables","Alpina",17488],
+  ["Trajes de Lluvia","Traje de Lluvia Impermeable Brasil Oficial","Alpina Br",39990],
+  ["Alforjas","Alforja Impermeable Extensible","Alpina",54175],
+  ["Fundas","Cubre Moto Impermeable UV","Fiemo Fundas",18989],
+  ["Tapas de Cilindros","Kit Válvulas Honda Titan 150","Mahle",22182],
+  ["Manubrios y Componentes","Manubrio Cromado Honda Titan 150","Pro Tork",12800],
+  ["Parabrisas","Parabrisas Universal 42cm Urban","Pferd Tech",80203],
+  ["Baúles Porta Cascos","Baúl 45L para 2 cascos impermeable","Cucyma",210049],
+  ["Pantalones","Pantalón Cordura Urban","Drostav",140855],
+  ["Portaequipajes","Base Baúl compatible Givi Kappa","VC",17500],
+];
+const fobBody = document.getElementById('fob-body');
+fobData.forEach(f=>{
+  const [cat,prod,marca,pvp]=f;
+  const c = pvp/K.cons/FX, b = pvp/K.base/FX, a = pvp/K.agr/FX;
+  fobBody.insertAdjacentHTML('beforeend', `<tr>
+    <td><b>${cat}</b></td><td>${prod}</td><td>${marca}</td><td class="num">${fmtARS(pvp)}</td>
+    <td class="num">${fmtUSD(c)}</td><td class="num">${fmtUSD(b)}</td><td class="num">${fmtUSD(a)}</td>
+  </tr>`);
+});
+
+// ---------- FOB EXTENDIDO (top 10 por categoría) ----------
+// cada item: [titulo, marca, pvp_lista_ars, tsi_unidades]
+const fobExtendido = {
+  "Cascos": [
+    ["Casco Vertigo Tamashi Integral Homologado Visor Cristal","Vertigo",42000,565],
+    ["Casco Integral Axxis Draken A11 Mate Deportivo + Visor Extra","Axxis",190000,518],
+    ["Casco Integral Vertigo V32 Vanguard Negro Mate Talle Xl","Vertigo",70385,458],
+    ["Casco Integral Vertigo V32 Vanguard Negro Mate Talle M","Vertigo",70385,456],
+    ["Casco Integral Vertigo V32 Line Negro Brillante","Vertigo",51000,448],
+    ["Casco Integral Vertigo V32 Vanguard Negro Mate Talle L","Vertigo",70385,391],
+    ["Casco Integral Halcon H5 Brillante Urbano Adulto","Halcon",31499,372],
+    ["Casco Integral Hawk Rs1 Negro","Hawk",66000,355],
+    ["Casco Vertigo V32 Influence Fucsia y Negro Dama","Vertigo",85866,349],
+    ["Casco Vertigo V32 Line Integral Negro Brillante","Vertigo",43500,333],
+  ],
+  "Plásticos de Moto": [
+    ["Kit Tornillos Cachas Carenado Honda Wave S 110 Dorado","torn",11990,313],
+    ["Cubre Óptica + Cubre Tablero Zanella Zb 110 Negro","VC",45000,299],
+    ["Cubre Tablero Original Yamaha New Crypton 110","Original Yamaha",16499,157],
+    ["Kit Tornillos Cachas Carenado Motos 110 Smash Bit Dorado","torn",12900,142],
+    ["Cubre Cadena Yamaha Xtz 125 / 250 Fas Motos Negro","Cubre Cadena",5898,136],
+    ["Cubre Piernas Keller Crono 110 Original Negro","VC",32000,107],
+    ["Juego Cachas Colin Honda Cg 150 Titan Centro","Pro Tork",32780,106],
+    ["Mascara Cacha Cubre Óptica Xr 150 Rojo/Blanco/Negro","Genérica",11900,103],
+    ["Carenado Frontal Bordó Crono Classic Keller","Keller",48608,102],
+    ["Tapa Cubre Batería Guerrero Trip 110 Negro","Guerrero",3024,101],
+  ],
+  "Baterías": [
+    ["Batería Alpina 12N5-3B Gel Zanella Zb 110/125","Alpina",33228,2235],
+    ["Batería Alpina Ytx5l-bs Gel Honda Xr 125l/150l","Alpina",35280,1427],
+    ["Batería Alpina 12N5-3B Gel Zanella Zb (var. precio)","Alpina",33228,1064],
+    ["Batería Honda Cg Titan 150 / Xr Biz 125 Derecho","Bosch",54520,814],
+    ["Batería Gel Alpina Ytx7l-bs Twister Cbx 250 Tornado","Alpina",57730,805],
+    ["Batería Gel 12N5-3B Keller 110 / Motomel S2-S3 150","Duramax",26600,722],
+    ["Batería Alpina 12N5-3B Gel Zanella Zb (var. precio 2)","Alpina",33228,685],
+    ["Batería Kiyoshi 12N5-3B Gel Libre Mantenimiento","Kiyoshi",33228,670],
+    ["Batería Alpina Ytx5l-bs Gel Honda Cg 125/150 Titan","Alpina",44100,622],
+    ["Batería Yuasa Yt7a Honda Tornado Xr 250","Yuasa",84260,560],
+  ],
+  "Intercomunicadores": [
+    ["Intercomunicador Ejeas V6-pro+ BT 1200mts 6 Pilotos","Ejeas",98900,1253],
+    ["Pack X2 Intercomunicador BT Moto V6 Plus+ Usb-c Casco","West",144577,854],
+    ["Combo Ejeas Q8 Negro BT 2 Unidades Music Sharing","Ejeas",378900,842],
+    ["2 Intercomunicadores V6-pro+ Para Casco BT Ejeas","Ejeas",261876,811],
+    ["Ejeas Q8 Intercomunicador BT 1200mts 6 Piloto Negro","Ejeas",178900,744],
+    ["Pack X2 Intercomunicador BT Moto V6 Plus+ (var.)","West",145000,707],
+    ["Intercomunicador Ejeas V6-pro+ BT (var. precio)","Ejeas",98900,683],
+    ["Intercomunicador Ejeas V6-pro+ BT (var. precio 2)","Ejeas",98900,677],
+    ["2 Intercomunicadores V6-pro+ BT Ejeas (var. precio)","Ejeas",174900,455],
+    ["Intercomunicador Mixio Y20max Casco Manos Libres Ip67","Mixio",59999,406],
+  ],
+  "Kit de Transmisión": [
+    ["Kit Transmisión 110 Cadena/Corona/Piñón Zanella Zb","Osaka",16509,398],
+    ["Kit Transmisión Riffel Honda Xr 150 49/17","Riffel",50000,261],
+    ["Kit Transmisión 110 Cadena/Corona/Piñón Zanella (var.)","Osaka",17389,251],
+    ["Kit Transmisión Zanella Zb 110 Original Completo 14/36","Zanella",19200,228],
+    ["Kit Transmisión Gilera Smash 110 35/15 Riffel Completo","Riffel",38618,219],
+    ["Transmisión Completa Riffel Bajaj 200 Ns Rouser 39/14","Riffel",62022,216],
+    ["Transmisión Completa Riffel Honda 110 Wave New 37/14","Riffel",37430,201],
+    ["Kit Transmisión Completo Cadena/Piñón/Corona Smash 110","Osaka",18300,201],
+    ["Kit Transmisión Zanella Zr 150 46/17 Caja Cerrada","Zanella",33000,188],
+    ["Kit Transmisión Riffel Yamaha Fz 16 (14-40)","Riffel",38950,176],
+  ],
+  "Indumentaria (guantes)": [
+    ["Guantes Térmicos Impermeables de Invierno","Sportman",17768,3766],
+    ["Guantes Moto City Frío Invierno Táctil Gp23","GP23",26400,1395],
+    ["Guantes Invierno Térmicos Impermeables Moto/Bici/Esquí","Los Kovas",24980,1005],
+    ["Guantes Motociclista Gadnic Touch Táctico Talle L","Gadnic",20049,818],
+    ["Guantes Motociclista Gadnic Touch Táctico Talle M","Gadnic",20049,688],
+    ["Guantes Motociclista Gadnic Touch Táctico (var. precio)","Gadnic",16649,634],
+    ["Balaclava Térmica Pasamontañas Frío Unisex","Bolduke",10295,609],
+    ["Pasamontañas Balaclava Táctica Cubierta Facial","JALOMI",3300,602],
+    ["Balaclava Térmica Pasamontañas (var. precio)","Bolduke",6558,601],
+    ["Antiparras Moto Espejada 100% Motocross Enduro","Genérica",37000,582],
+  ],
+  "Cilindros": [
+    ["Kit Cilindro 110cc Hierro Smash Bit Cerro Corto","Genérica",25420,543],
+    ["Kit Cilindro Potenciado Motegi Para Llevar 110 a 125","Motegi",60004,320],
+    ["Kit Cilindro Twister/Tornado 293cc","Vedamotors",182135,248],
+    ["Kit Cilindro Motegi Yamaha Ybr/Xtz 125 a 150cc Competición","Motegi",79683,181],
+    ["Kit Cilindro Potenciado Xr 150 a 190 Athena","Vedamotors",111599,171],
+    ["Kit Cilindro Potenciado Motegi (var. precio)","Motegi",61683,167],
+    ["Kit Cilindro Potenciado Xr 150 a 190 (var. precio)","Vedamotors",111498,143],
+    ["Kit Cilindro Potenciado Motegi (var. precio 2)","Motegi",68285,134],
+    ["Kit Cilindro Motegi Yamaha Ybr/Xtz (var. precio)","Motegi",79497,120],
+    ["Kit Cilindro Pistón/Juntas Honda Wave 100 Nf Original","Motegi",54389,110],
+  ],
+  "Camperas": [
+    ["Campera Moto Cordura Mac Cardinal Térmica Protecciones","MAC",139248,722],
+    ["Campera Moto Ruder Kaos Corta Con Protecciones","RUDER",129990,194],
+    ["Campera Mac Cardinal Térmica Protecciones Moto Delta","MAC",139243,188],
+    ["Campera de Delivery Mercado Libre Tienda Oficial Xl","Yellowstone",115500,140],
+    ["Campera Mac Cardinal Hombre Cordura Protecciones","MAC",148000,125],
+    ["Campera Radikal Ride Impermeable Protección Desmontable","Radikal",198787,121],
+    ["Campera Mac Cardinal Térmica (var. precio)","MAC",139248,117],
+    ["Campera Radikal Ride Impermeable (var. precio)","Radikal",267356,107],
+    ["Campera Radikal Concept Impermeable Protecciones","Radikal",177118,106],
+    ["Campera de Cuero Importada Moto Racing Hombre","YD",99000,106],
+  ],
+  "Silenciadores": [
+    ["Escape Competición Alien Tech Racing 110cc (+Hp)","SPR",49270,172],
+    ["Escape Competición Alien Tech Racing (var. precio)","SPR",50748,137],
+    ["Escape Deportivo Pro Circuit 110cc","Pro Circuit",43999,125],
+    ["Escape Competición Alien Tech Racing (var. precio 2)","SPR",46924,98],
+    ["Sordina Mxpro Pro Tork Power Core 3 Racing 35mm","MX PRO",32598,91],
+    ["Sordina Mxpro Pro Tork Power Core 3 Steel 42mm","MX PRO",32598,86],
+    ["Escape Tipo Original Motomel Blitz 110 Exc. Calidad","JT",46999,84],
+    ["Escape Powercore 3 Steel Completo Tornado","Pro Tork",266247,83],
+    ["Escape Competición Alien Tech Racing (var. precio 3)","SPR",54350,81],
+    ["Sordina Db Killer Escape Silenciador 51mm","HT HQ",26990,80],
+  ],
+  "Carburadores": [
+    ["Carburador Mini Cuatri Atv 50cc","Pagani",33200,499],
+    ["Carburador Gilera Smash 110 y Todas las 110","Genérica",17540,325],
+    ["Carburador Cortina Plana Competición 28-34mm Antares","Kigcol",59999,301],
+    ["Carburador Moto Cortina Plana Pwk 28-34mm","HP Factory",57200,241],
+    ["Kit 40 Chicleres Carburación Kehin Pwk Fcr Cr","Bejarano Máquinas",39999,213],
+    ["Carburador Cortina Plana Powerjet 28-34 Chicler Tobera","Kigcol",66956,191],
+    ["Kit 20 Chicler Carburador Pz 27-34 Jet","Bejarano Máquinas",19999,191],
+    ["Chicler Carburador Cortina Plana Calibre 0.90-1.70","Casber",4900,182],
+    ["Carburador Cortina Plana Powerjet Competición","Kigcol",59999,179],
+    ["Flaper Zanella 70 50cc Sol Fire Due Mr","Zanella",7890,171],
+  ],
+  "Frenos": [
+    ["Juego Pastillas Bajaj Del/Tras Ns 200 Originales","Bajaj",32900,421],
+    ["Zapata Freno Moto Diafrag 100cc Super Medida","Dia-Frag",13864,338],
+    ["Rodamientos Rulemán 6203 Blindado x10 (17x40x12mm)","KZ Bearings",22900,313],
+    ["Rodamientos Rulemán 6203 Blindado (var. precio)","KZ Bearings",22900,291],
+    ["Rodamiento/Rulemán 6200 2rs Buen Rendimiento x10","Genérica",10500,288],
+    ["Zapata Cinta Freno Bajaj Boxer 150 Bm Original","Bajaj",15900,239],
+    ["Pastillas Freno Trasero Bajaj Rouser Ns 200 As","Bajaj",17600,235],
+    ["Rodamientos Rulemanes 6001 2rs x10 (12x28x8mm)","WJH",11869,186],
+    ["Pastillas Freno Delantero Bajaj Rouser Ns 200 As","Bajaj",15600,181],
+    ["Rodamiento/Rulemán 6000 2rs x10","ALLT",10900,180],
+  ],
+  "Botas": [
+    ["Botas Para la Lluvia Pvc Impermeables","Alpina",17488,926],
+    ["Botas Touring Impermeables Hifly Premium Pvc","Hifly",19990,499],
+    ["Botas Touring Impermeables Agua Lluvia Pvc","Hifly/Alpina",18876,380],
+    ["Botas de Lluvia Pvc Impermeables Antideslizantes","Protection",28200,302],
+    ["Bota de Lluvia de Hombre Moto 35 al 44","Proforce",23990,284],
+    ["Botas de Lluvia Pvc (var. precio)","Protection",28200,248],
+    ["Protector Cubre Calzado Palanca de Cambios","RM",4590,243],
+    ["Botas Touring Impermeables Hifly (var. precio)","Hifly",17990,236],
+    ["Botas Impermeables Agua Lluvia Alpina Pvc Unisex","Alpina",12938,230],
+    ["Botas Touring Impermeables Hifly (var. precio 2)","Hifly",17990,225],
+  ],
+  "Trajes de Lluvia": [
+    ["Traje Equipo de Lluvia Impermeable Alpina Brasil","Alpina Br",39990,1461],
+    ["Traje Equipo Lluvia Moto Impermeable Reforzado","Tech",94941,1256],
+    ["Capa de Lluvia Pvc Termosellada Piloto Bil-vex","Bil-Vex",18990,1128],
+    ["Capa de Lluvia Ombu Piloto Impermeable Amarillo/Azul","Ombu",24900,1011],
+    ["Capa Tipo Poncho con Capucha Lluvia Adulto Negro","Iko Shop",24000,932],
+    ["Traje Equipo Lluvia Delta Brasil + Botas + Guantes","Delta/Hifly",71191,784],
+    ["Traje de Lluvia Impermeable Piloto Moto/Bici","Geomotor",50100,697],
+    ["Capa Impermeable Piloto Lluvia Adultos Poncho Unisex","Piloto Capa Impermeable",6500,603],
+    ["Traje Equipo de Lluvia Impermeable Alpina (var. precio)","Alpina Br",39990,552],
+    ["Capa de Lluvia Pvc Termosellada Bil-vex (var. precio)","Bil-Vex",18990,534],
+  ],
+  "Alforjas": [
+    ["Mochila de Delivery Mercado Libre Tienda Oficial","Mercadolibre",125000,3870],
+    ["Alforjas Impermeables Extensibles Engomadas Negro","Alpina",54175,788],
+    ["Alforjas Impermeables Extensibles Engomadas (var.)","Alpina",54175,510],
+    ["Mochila Térmica Bolso Delivery Para 7 Pizzas","Termofood",32900,380],
+    ["Alforjas Bolsos Laterales Impermeables Extensibles","Iael",75999,291],
+    ["Bolso Estanco 45lts Para Moto Drymaster","Drymaster",61947,273],
+    ["Alforjas Impermeables Extensibles Engomadas (var. 2)","Alpina",32000,262],
+    ["Alforjas Impermeables Extensibles Engomadas (var. 3)","Alpina",32800,223],
+    ["Alforjas Impermeables Extensibles Engomadas (var. 4)","Alpina",54175,210],
+    ["Bolso Mochila Delivery Pizzas Reforzado Premium 2.0","Alpina",35990,175],
+  ],
+  "Fundas": [
+    ["Cubre Moto Impermeable con Filtro Uv","Fiemo Fundas",18989,1262],
+    ["Cobertor Impermeable Honda Pcx/Wave/Twister/Titan","Honda",40000,649],
+    ["Cobertor Funda Honda Xr125/Xr150l/Glh150/Pcx","LPMOTORS",43000,604],
+    ["Funda Cubre Moto Impermeable Proteje Polvo","SEBADLEDS",12600,558],
+    ["Cobertor Impermeable Rouser Ns125/Ns160/Dominar400","LPMOTORS",35800,455],
+    ["Protector Calzado Cubre Palanca de Cambios","PROTEMR",3990,447],
+    ["Cobertor Impermeable Honda Xr150l/Glh150/Twister","LP MOTORS",36000,431],
+    ["Funda Cubre Moto Protección Total UV + Impermeable","Bike Cover's",14250,408],
+    ["Funda Cubre Moto Impermeable Talle L Plateado","Genérica",14999,375],
+    ["Funda Cubre Moto con Tiras Gilera Smash 110","Fiemo Fundas",18989,341],
+  ],
+  "Tapas de Cilindros": [
+    ["Pastilla Reguladora de Válvula Honda Tornado 7.50","Weskan",7579,283],
+    ["Pastilla Reguladora de Válvula 7.48 Honda Tornado","Prox",5850,263],
+    ["Pastilla Reguladora de Válvula Honda Twister/Tornado 250","Nikuro",5000,221],
+    ["Sondas Regular Válvulas 25 Hojas Moto/Auto 0.04-1.00","NSU",9200,190],
+    ["Kit Retén de Válvulas Bajaj Rouser Original x4","Bajaj",16900,165],
+    ["Sondas Galgas Válvulas Motor Moto/Cuatri/Auto 0.02-1mm","Ceg Motoparts",15213,146],
+    ["Pastilla de Válvula Bajaj Dominar 400 Original","Bajaj",6500,140],
+    ["Sondas Regular Válvulas 26 Hojas 0.04-1.00","Osaka/Eurotech",19439,136],
+    ["Pastillas Válvula Hotcams 7.48 Tornado","Hotcams",7880,126],
+    ["Sondas Regular Válvulas 26 Hojas (var. precio)","Osaka/Eurotech",19439,125],
+  ],
+  "Manubrios y Componentes": [
+    ["Manubrio Cromado Honda Cg Titan 150 Made in Brasil","Pro Tork",12800,362],
+    ["Soporte Porta Celular Anti Vibración Giro 360°","BSW",41240,333],
+    ["Punteras de Manubrio Aluminio Anodizado Contrapeso","R3",14000,272],
+    ["Puntera de Manubrio Yamaha Fz-s Fi V2.0 Original","Yamaha",6418,212],
+    ["Contrapeso Puntera Bajaj Rouser Ns 200 As Original","Bajaj",11950,208],
+    ["Puntera Manubrio Yamaha Fz16/Fz Fi/Sz 150 Original","Yamaha",6500,205],
+    ["Manubrio Honda Titan 150 Cg 150 Negro Protork","Pro Tork",14990,193],
+    ["Manubrio Honda Titan 150 Cg 150 (var. precio)","Pro Tork",13793,191],
+    ["Manubrio Honda Tornado 250 Brasil/Nx 150 Negro","Pro Tork",17500,171],
+    ["Kit Soporte Manubrio c/Perillas Dax y Siml","DAX",15900,135],
+  ],
+  "Parabrisas": [
+    ["Parabrisas Moto Universal 42cm Urban + Soporte","Pferd Tech",80203,465],
+    ["Deflector de Viento Universal Para Parabrisas","Pferd Tech",48686,398],
+    ["Parabrisas Moto Universal 42cm Urban (var. precio)","Pferd Tech",90000,239],
+    ["Spoiler Deflector Parabrisas Curvo Regulable","Pferd Tech",57999,189],
+    ["Deflector de Viento Transparente Fijo","Pferd Tech",35309,180],
+    ["Kit Tuercas Parabrisas Bajaj Dominar 400 Original","Bajaj",14980,152],
+    ["Deflector de Viento Transparente Fijo (var. precio)","Pferd Tech",38900,121],
+    ["Deflector de Viento Universal (var. precio)","Pferd Tech",53550,120],
+    ["Parabrisas Bajaj Dominar 400 Original","Bajaj",47300,101],
+    ["Parabrisas Honda Glh150","Pferd Tech",80203,91],
+  ],
+  "Baúles Porta Cascos": [
+    ["Baúl Para Moto 45L Para 2 Cascos Impermeable","Cucyma",210049,137],
+    ["Baúl Top Case Todo Aluminio Ht 65L Base Metálica","HT",399000,133],
+    ["Baúl Moto Premium 45L Desmont. Respaldo 2 Cascos","CDT",99990,123],
+    ["Baúl Trasero Universal Smart Box 4 Honda","Pro Tork",85615,122],
+    ["Valijón Trasero Baúl Baulera Reforzado 28L","Clinck Accesories",48990,115],
+    ["Baúl de Moto Apto Casco Grande con Anclajes","HP Cars",51238,108],
+    ["Baúl Top Case Todo Aluminio Ht 45L","HT",279900,107],
+    ["Baúl Valijón Trasero Baulera Reforzado 45L","Clinck Accesories",89990,106],
+    ["Baúl Trasero Shad Tr41 Terra 41L","Shad",199901,101],
+    ["Baúl Baulera Porta Casco Plástico 40x30x32","OKN",115000,99],
+  ],
+  "Pantalones": [
+    ["Pantalón Moto Hombre Ruder Kaos Cordura Con Protecciones","Ruder",129990,182],
+    ["Pantalón Moto Cordura Urban","Drostav",140855,128],
+    ["Jean Urbano Moto Reflectivo Protección Hombre","Samurai Warrior",66990,97],
+    ["Medias Motocross Largas Enduro Atv Gruesas","Sox",26650,92],
+    ["Pantalón Moto Cordura Dama Mac Cardinal Protecciones","MAC",126584,90],
+    ["Calza Con Protecciones Motocross Enduro Corta","Fly Racing",102000,88],
+    ["Jean Urbano Moto Reflectivo Protección (var. mujer)","Samurai Warrior",66990,75],
+    ["Pantalón Moto Cordura Hombre Mac Cardinal","MAC",126584,70],
+    ["Pantalón Moto Upr Hombre Protección 4 Estaciones","UPR",188900,63],
+    ["Pantalón Motocross Radikal Concept","Radikal",97000,42],
+  ],
+  "Portaequipajes": [
+    ["Base Baúl Moto Compatible Givi Kappa","VC",17500,384],
+    ["Porta Equipaje Trasero Honda Xr 250 Tornado","Peaklight",65999,205],
+    ["Porta Equipaje Metálico Yamaha Xtz 250 Abs","Peaklight",49500,167],
+    ["Base Baúl Moto Compatible Givi Kappa (var. precio)","VC",15500,155],
+    ["Respaldo Baúl Top Case Ridex 45/55/65lts Universal","Ridex",19417,120],
+    ["Parrilla Delantera Porta Objetos Honda Wave 110","Honda",37900,114],
+    ["Parrilla Porta Objeto Honda Wave S","Garelli",49050,107],
+    ["Parrilla Delantera Porta Objetos Honda Wave (var.)","Honda",49050,105],
+    ["Porta Equipaje Trasero Gilera Smash/Biz/Trip/Bit","Plastica VC",32999,104],
+    ["Soporte Universal Porta Termo/Botella/Matafuego","Pferd Tech",39322,88],
+  ],
+};
+
+const fobExtAcc = document.getElementById('fob-ext-accordion');
+Object.entries(fobExtendido).forEach(([cat, items])=>{
+  const rowsHtml = items.map(([titulo,marca,pvp,tsi])=>{
+    const c = pvp/K.cons/FX, b = pvp/K.base/FX, a = pvp/K.agr/FX;
+    return `<tr>
+      <td>${titulo}</td><td>${marca}</td><td class="num">${fmtUnits(tsi)}</td><td class="num">${fmtARS(pvp)}</td>
+      <td class="num">${fmtUSD(c)}</td><td class="num">${fmtUSD(b)}</td><td class="num">${fmtUSD(a)}</td>
+    </tr>`;
+  }).join('');
+  const pvpRange = [Math.min(...items.map(i=>i[2])), Math.max(...items.map(i=>i[2]))];
+  const det = document.createElement('details');
+  det.className = 'acc-item';
+  det.innerHTML = `
+    <summary>
+      <span class="acc-summary-row"><span class="chev">▶</span> ${cat} <span class="muted">· 10 productos · PVP ${fmtARS(pvpRange[0])} a ${fmtARS(pvpRange[1])}</span></span>
+    </summary>
+    <div class="acc-body">
+      <div class="table-scroll">
+        <table>
+          <thead><tr>
+            <th>Producto</th><th>Marca</th><th class="num">Unidades</th><th class="num">PVP Lista</th>
+            <th class="num">FOB Cons.</th><th class="num">FOB Base</th><th class="num">FOB Agr.</th>
+          </tr></thead>
+          <tbody>${rowsHtml}</tbody>
+        </table>
+      </div>
+    </div>`;
+  fobExtAcc.appendChild(det);
+});
+</script>
+</body>
+</html>
