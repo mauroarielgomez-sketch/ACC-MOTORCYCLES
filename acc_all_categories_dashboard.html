@@ -334,6 +334,7 @@ tfoot td {
 .sm-delta { font-size: 11px; font-weight: 700; }
 .sm-delta.up { color: #3fb950; }
 .sm-delta.down { color: #f85149; }
+.sm-child-count { font-size: 11px; color: #58a6ff; font-weight: 700; }
 </style>
 </head>
 <body>
@@ -1614,6 +1615,11 @@ function renderSanMartinNode(container, node, depth) {
   }
   const badgeColor = lastPct == null ? '#8b949e' : lastPct >= 66 ? '#3fb950' : lastPct >= 33 ? '#e3b341' : '#f85149';
   const hasChildren = node.children && node.children.length > 0;
+  // AGG1 (depth 0) and leaf domains always get their own monthly table.
+  // AGG2 (depth 1, when it has domain children) is just a folder: the badge
+  // above already summarizes it, so opening it goes straight to the domains
+  // instead of showing a redundant table first.
+  const showOwnTable = depth === 0 || !hasChildren;
 
   div.innerHTML = `
     <div class="agg2-card-head" onclick="toggleCard(this)">
@@ -1621,16 +1627,17 @@ function renderSanMartinNode(container, node, depth) {
       <span class="agg2-card-title" style="font-size:${depth === 0 ? '14px' : '13px'}">${node.label}</span>
       <span class="sm-badge-pct" style="background:${badgeColor}22;color:${badgeColor}">${lastPct != null ? lastPct.toFixed(1) + '% Con FS' : 'Sin datos'}</span>
       ${deltaHtml}
+      ${hasChildren && !showOwnTable ? `<span class="sm-child-count">${node.children.length} dominios ▸</span>` : ''}
       <span class="agg2-chevron" style="margin-left:auto">▼</span>
     </div>
     <div class="agg2-card-body">
       <div class="sm-node-body-inner">
-        <div class="table-wrap"><table id="${tableId}"></table></div>
+        ${showOwnTable ? `<div class="table-wrap"><table id="${tableId}"></table></div>` : ''}
         ${hasChildren ? `<div class="sm-children" id="${tableId}-children"></div>` : ''}
       </div>
     </div>`;
   container.appendChild(div);
-  renderSanMartinTable(tableId, node.monthly, months);
+  if (showOwnTable) renderSanMartinTable(tableId, node.monthly, months);
   if (hasChildren) {
     const childContainer = div.querySelector('#' + tableId + '-children');
     node.children.forEach(child => renderSanMartinNode(childContainer, child, depth + 1));
