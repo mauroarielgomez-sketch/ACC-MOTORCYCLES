@@ -380,6 +380,7 @@ body {
   justify-content: space-between;
 }
 .header-left { display: flex; align-items: center; gap: 14px; }
+.header-right { display: flex; align-items: center; gap: 18px; }
 .logo-badge {
   background: #ffe600;
   color: #0d1117;
@@ -393,15 +394,30 @@ body {
 .header-meta { font-size: 11px; color: #8b949e; text-align: right; line-height: 1.8; }
 .header-meta strong { color: #c9d1d9; }
 
+/* SAN MARTÍN TOGGLE BUTTON (header action, not a tab pill) */
+.sm-toggle-btn {
+  display: flex; align-items: center; gap: 7px;
+  padding: 9px 18px; border-radius: 8px;
+  font-size: 12px; font-weight: 800; cursor: pointer;
+  border: none; color: #0d1117; white-space: nowrap;
+  background: linear-gradient(135deg, #58a6ff, #79c0ff);
+  box-shadow: 0 2px 6px rgba(88,166,255,0.35);
+  transition: transform 0.15s, box-shadow 0.15s, background 0.15s;
+}
+.sm-toggle-btn:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(88,166,255,0.45); }
+.sm-toggle-btn.active {
+  background: #21262d; color: #f85149;
+  border: 1px solid rgba(248,81,73,0.5); box-shadow: none;
+}
+.sm-toggle-btn.active:hover { background: #2d1618; transform: none; }
+
 /* CATEGORY TABS */
-.cat-tabs-row {
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 12px; flex-wrap: wrap;
+.cat-tabs {
+  display: flex; gap: 6px; flex-wrap: wrap;
   padding: 12px 28px;
   background: #0d1117;
   border-bottom: 1px solid #30363d;
 }
-.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 .cat-tab {
   padding: 7px 16px; border-radius: 20px;
   font-size: 12px; font-weight: 700; cursor: pointer;
@@ -411,16 +427,7 @@ body {
 .cat-tab.active { background: #ffe600; border-color: #ffe600; color: #0d1117; }
 .cat-tab:hover:not(.active) { color: #e6edf3; border-color: #58a6ff; }
 
-/* GLOBAL (cross-category) TAB BUTTON */
-.global-tab-btn {
-  padding: 7px 16px; border-radius: 20px;
-  font-size: 12px; font-weight: 700; cursor: pointer;
-  border: 1px solid rgba(88,166,255,0.4); color: #58a6ff;
-  background: rgba(88,166,255,0.08); transition: all 0.15s;
-  white-space: nowrap; flex-shrink: 0;
-}
-.global-tab-btn:hover:not(.active) { background: rgba(88,166,255,0.16); }
-.global-tab-btn.active { background: #58a6ff; border-color: #58a6ff; color: #0d1117; }
+.hidden { display: none !important; }
 
 /* TABS */
 .nav-tabs {
@@ -691,16 +698,16 @@ tfoot td {
     <span class="logo-badge">MELI</span>
     <span class="header-title" id="header-title">Live Listings Dashboard</span>
   </div>
-  <div class="header-meta">
-    Datos al: <strong id="dashboard-photo-date">__PHOTO_DATE__</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA<br>
-    SL/LL = Successful Listings / Live Listings Live (últimos 30 días) &nbsp;·&nbsp; Actualización: Semanal
+  <div class="header-right">
+    <button class="sm-toggle-btn" id="btn-sanmartin-global" onclick="toggleSanMartin(this)">🚚 Plan San Martín</button>
+    <div class="header-meta">
+      Datos al: <strong id="dashboard-photo-date">__PHOTO_DATE__</strong> &nbsp;·&nbsp; Fuente: BT_LIVE_LISTINGS_MLA<br>
+      SL/LL = Successful Listings / Live Listings Live (últimos 30 días) &nbsp;·&nbsp; Actualización: Semanal
+    </div>
   </div>
 </div>
 
-<div class="cat-tabs-row">
-  <div class="cat-tabs" id="cat-tabs"></div>
-  <button class="global-tab-btn" id="btn-sanmartin-global" onclick="openSanMartinGlobal(this)">🚚 Plan San Martín</button>
-</div>
+<div class="cat-tabs" id="cat-tabs"></div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="switchTab('agrupadores',this)">Agrupadores</button>
@@ -1254,20 +1261,37 @@ function switchTab(name, btn) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('pane-' + name).classList.add('active');
   btn.classList.add('active');
-
-  const smBtn = document.getElementById('btn-sanmartin-global');
-  if (smBtn) smBtn.classList.remove('active');
-  const cat = CATEGORIES[currentCat];
-  if (cat) document.getElementById('header-title').textContent = cat.label + ' — Live Listings Dashboard';
 }
 
-// ─── GLOBAL TAB: PLAN SAN MARTÍN ─────────────────────────────────────────────
-function openSanMartinGlobal(btn) {
-  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
-  document.getElementById('pane-sanmartin').classList.add('active');
-  btn.classList.add('active');
-  document.getElementById('header-title').textContent = 'Plan San Martín — Seguimiento 15K a 33K (todas las categorías)';
+// ─── GLOBAL TOGGLE: PLAN SAN MARTÍN ──────────────────────────────────────────
+// While active, this is a whole-page mode: the category picker and the
+// per-category tabs (Agrupadores, Dominios, ...) don't apply, so they're
+// hidden entirely instead of just sitting next to an unrelated pane.
+function toggleSanMartin(btn) {
+  const catTabs = document.getElementById('cat-tabs');
+  const navTabs = document.querySelector('.nav-tabs');
+  const isActive = btn.classList.contains('active');
+
+  if (isActive) {
+    btn.classList.remove('active');
+    btn.innerHTML = '🚚 Plan San Martín';
+    catTabs.classList.remove('hidden');
+    navTabs.classList.remove('hidden');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('pane-agrupadores').classList.add('active');
+    document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+    document.querySelector('.nav-tab[onclick*="agrupadores"]').classList.add('active');
+    const cat = CATEGORIES[currentCat];
+    if (cat) document.getElementById('header-title').textContent = cat.label + ' — Live Listings Dashboard';
+  } else {
+    btn.classList.add('active');
+    btn.innerHTML = '✕ Volver a categorías';
+    catTabs.classList.add('hidden');
+    navTabs.classList.add('hidden');
+    document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+    document.getElementById('pane-sanmartin').classList.add('active');
+    document.getElementById('header-title').textContent = 'Plan San Martín — Seguimiento 15K a 33K (todas las categorías)';
+  }
 }
 
 // ─── CATEGORY SWITCHING ──────────────────────────────────────────────────────
