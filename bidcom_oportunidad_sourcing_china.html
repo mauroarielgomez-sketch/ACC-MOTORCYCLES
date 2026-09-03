@@ -338,7 +338,7 @@
     <div class="table-scroll">
       <table>
         <thead><tr>
-          <th>Categoría</th><th>Producto líder (por unidades)</th><th>Marca ref.</th><th class="num">PVP Lista (ARS)</th>
+          <th>Categoría</th><th>Producto líder (por unidades)</th><th>Marca ref.</th><th class="num">PVP Lista (ARS)</th><th class="num">PVP Lista (USD)</th>
           <th class="num">FOB Conservador</th><th class="num">FOB Base</th><th class="num">FOB Agresivo</th>
         </tr></thead>
         <tbody id="fob-body"></tbody>
@@ -537,9 +537,10 @@ const fobData = [
 const fobBody = document.getElementById('fob-body');
 fobData.forEach(f=>{
   const [cat,prod,marca,pvp]=f;
+  const pvpUsd = pvp/FX;
   const c = pvp/K.cons/FX, b = pvp/K.base/FX, a = pvp/K.agr/FX;
   fobBody.insertAdjacentHTML('beforeend', `<tr>
-    <td><b>${cat}</b></td><td>${prod}</td><td>${marca}</td><td class="num">${fmtARS(pvp)}</td>
+    <td><b>${cat}</b></td><td>${prod}</td><td>${marca}</td><td class="num">${fmtARS(pvp)}</td><td class="num">${fmtUSD(pvpUsd)}</td>
     <td class="num">${fmtUSD(c)}</td><td class="num">${fmtUSD(b)}</td><td class="num">${fmtUSD(a)}</td>
   </tr>`);
 });
@@ -804,9 +805,10 @@ const fobExtendido = {
 const fobExtAcc = document.getElementById('fob-ext-accordion');
 Object.entries(fobExtendido).forEach(([cat, items])=>{
   const rowsHtml = items.map(([titulo,marca,pvp,tsi])=>{
+    const pvpUsd = pvp/FX;
     const c = pvp/K.cons/FX, b = pvp/K.base/FX, a = pvp/K.agr/FX;
     return `<tr>
-      <td>${titulo}</td><td>${marca}</td><td class="num">${fmtUnits(tsi)}</td><td class="num">${fmtARS(pvp)}</td>
+      <td>${titulo}</td><td>${marca}</td><td class="num">${fmtUnits(tsi)}</td><td class="num">${fmtARS(pvp)}</td><td class="num">${fmtUSD(pvpUsd)}</td>
       <td class="num">${fmtUSD(c)}</td><td class="num">${fmtUSD(b)}</td><td class="num">${fmtUSD(a)}</td>
     </tr>`;
   }).join('');
@@ -821,7 +823,7 @@ Object.entries(fobExtendido).forEach(([cat, items])=>{
       <div class="table-scroll">
         <table>
           <thead><tr>
-            <th>Producto</th><th>Marca</th><th class="num">Unidades</th><th class="num">PVP Lista</th>
+            <th>Producto</th><th>Marca</th><th class="num">Unidades</th><th class="num">PVP Lista (ARS)</th><th class="num">PVP Lista (USD)</th>
             <th class="num">FOB Cons.</th><th class="num">FOB Base</th><th class="num">FOB Agr.</th>
           </tr></thead>
           <tbody>${rowsHtml}</tbody>
