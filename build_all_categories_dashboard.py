@@ -394,12 +394,14 @@ body {
 .header-meta strong { color: #c9d1d9; }
 
 /* CATEGORY TABS */
-.cat-tabs {
-  display: flex; gap: 6px; flex-wrap: wrap;
+.cat-tabs-row {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 12px; flex-wrap: wrap;
   padding: 12px 28px;
   background: #0d1117;
   border-bottom: 1px solid #30363d;
 }
+.cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; flex: 1; }
 .cat-tab {
   padding: 7px 16px; border-radius: 20px;
   font-size: 12px; font-weight: 700; cursor: pointer;
@@ -408,6 +410,17 @@ body {
 }
 .cat-tab.active { background: #ffe600; border-color: #ffe600; color: #0d1117; }
 .cat-tab:hover:not(.active) { color: #e6edf3; border-color: #58a6ff; }
+
+/* GLOBAL (cross-category) TAB BUTTON */
+.global-tab-btn {
+  padding: 7px 16px; border-radius: 20px;
+  font-size: 12px; font-weight: 700; cursor: pointer;
+  border: 1px solid rgba(88,166,255,0.4); color: #58a6ff;
+  background: rgba(88,166,255,0.08); transition: all 0.15s;
+  white-space: nowrap; flex-shrink: 0;
+}
+.global-tab-btn:hover:not(.active) { background: rgba(88,166,255,0.16); }
+.global-tab-btn.active { background: #58a6ff; border-color: #58a6ff; color: #0d1117; }
 
 /* TABS */
 .nav-tabs {
@@ -660,7 +673,11 @@ tfoot td {
 /* ── PLAN SAN MARTÍN ── */
 .sm-tree { display: flex; flex-direction: column; gap: 10px; }
 .sm-node-body-inner { padding: 12px 14px 14px 14px; }
-.sm-children { margin-top: 12px; padding-left: 18px; border-left: 2px solid #21262d; display: flex; flex-direction: column; gap: 10px; }
+.sm-children {
+  margin-top: 12px; padding-left: 18px; padding-right: 6px;
+  border-left: 2px solid #21262d; display: flex; flex-direction: column; gap: 10px;
+  max-height: 420px; overflow-y: auto;
+}
 .sm-badge-pct { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; }
 .sm-delta { font-size: 11px; font-weight: 700; }
 .sm-delta.up { color: #3fb950; }
@@ -680,7 +697,10 @@ tfoot td {
   </div>
 </div>
 
-<div class="cat-tabs" id="cat-tabs"></div>
+<div class="cat-tabs-row">
+  <div class="cat-tabs" id="cat-tabs"></div>
+  <button class="global-tab-btn" id="btn-sanmartin-global" onclick="openSanMartinGlobal(this)">🚚 Plan San Martín</button>
+</div>
 
 <div class="nav-tabs">
   <button class="nav-tab active" onclick="switchTab('agrupadores',this)">Agrupadores</button>
@@ -689,7 +709,6 @@ tfoot td {
   <button class="nav-tab" onclick="switchTab('brecha',this)">Brecha de Conversión</button>
   <button class="nav-tab" onclick="switchTab('ejecutiva',this)">Vista Ejecutiva</button>
   <button class="nav-tab" onclick="switchTab('pareto',this)">80/20</button>
-  <button class="nav-tab" onclick="switchTab('sanmartin',this)">Plan San Martín</button>
   <button class="nav-tab" onclick="switchTab('aclaracion',this)">Aclaración</button>
 </div>
 
@@ -1235,6 +1254,20 @@ function switchTab(name, btn) {
   document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
   document.getElementById('pane-' + name).classList.add('active');
   btn.classList.add('active');
+
+  const smBtn = document.getElementById('btn-sanmartin-global');
+  if (smBtn) smBtn.classList.remove('active');
+  const cat = CATEGORIES[currentCat];
+  if (cat) document.getElementById('header-title').textContent = cat.label + ' — Live Listings Dashboard';
+}
+
+// ─── GLOBAL TAB: PLAN SAN MARTÍN ─────────────────────────────────────────────
+function openSanMartinGlobal(btn) {
+  document.querySelectorAll('.tab-pane').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.nav-tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('pane-sanmartin').classList.add('active');
+  btn.classList.add('active');
+  document.getElementById('header-title').textContent = 'Plan San Martín — Seguimiento 15K a 33K (todas las categorías)';
 }
 
 // ─── CATEGORY SWITCHING ──────────────────────────────────────────────────────
