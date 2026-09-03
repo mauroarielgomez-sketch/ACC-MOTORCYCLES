@@ -230,9 +230,9 @@ tfoot td {
   color: #484f58; font-size: 12px; margin-left: 10px;
   transition: transform 0.2s; flex-shrink: 0;
 }
-.agg2-card.open .agg2-chevron { transform: rotate(180deg); }
+.agg2-card.open > .agg2-card-head > .agg2-chevron { transform: rotate(180deg); }
 .agg2-card-body { display: none; border-top: 1px solid #30363d; }
-.agg2-card.open .agg2-card-body { display: block; }
+.agg2-card.open > .agg2-card-body { display: block; }
 .agg2-card .table-wrap { border: none; border-radius: 0; }
 
 /* FOOTER */
@@ -330,6 +330,10 @@ tfoot td {
   border-left: 2px solid #21262d; display: flex; flex-direction: column; gap: 10px;
   max-height: 420px; overflow-y: auto;
 }
+/* Without flex-shrink:0, a flex column with max-height+overflow squishes its
+   children to fit instead of scrolling — that's what made domain rows render
+   as unreadable slivers. */
+.sm-children > .agg2-card { flex-shrink: 0; }
 .sm-badge-pct { font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 6px; }
 .sm-delta { font-size: 11px; font-weight: 700; }
 .sm-delta.up { color: #3fb950; }
