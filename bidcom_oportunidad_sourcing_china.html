@@ -329,17 +329,19 @@
 
     <div class="fx-badge" style="margin-bottom:14px;">💱 Conversión a USD con dólar mayorista/oficial importador: <b>$1.511 ARS/USD</b> (BCRA, 02-sep-2026)</div>
 
+    <div class="note-box" style="margin-bottom:14px;">Estos escenarios no muestran "cuánto se negocia más barato en fábrica" — muestran cuánto puede pagarse en fábrica (FOB) según qué tan eficiente sea el resto de la cadena (flete, impuestos, financiamiento). Cuanto más eficiente el resto, más margen queda disponible para pagar un FOB más alto sin perder rentabilidad — por eso "Eficiente" da el número más alto, no el más bajo.</div>
+
     <div class="kpi-row">
-      <div class="stat-tile"><div class="label">Escenario Conservador</div><div class="value">K = 5,0x</div><div class="note">Aranceles altos, flete no consolidado, margen exigido alto</div></div>
+      <div class="stat-tile"><div class="label">Escenario Conservador</div><div class="value">K = 5,0x</div><div class="note">Aranceles altos, flete no consolidado, margen exigido alto → poco margen, FOB tolerable bajo</div></div>
       <div class="stat-tile"><div class="label">Escenario Base</div><div class="value">K = 4,0x</div><div class="note">Estructura típica del sector import de motopartes a Argentina</div></div>
-      <div class="stat-tile"><div class="label">Escenario Agresivo</div><div class="value">K = 3,2x</div><div class="note">Buena escala de compra + flete consolidado + financiamiento favorable</div></div>
+      <div class="stat-tile"><div class="label">Escenario Eficiente</div><div class="value">K = 3,2x</div><div class="note">Buena escala de compra + flete consolidado + financiamiento favorable → más margen, FOB tolerable más alto</div></div>
     </div>
 
     <div class="table-scroll">
       <table>
         <thead><tr>
           <th>Categoría</th><th>Producto líder (por unidades)</th><th>Marca ref.</th><th class="num">PVP Lista (ARS)</th><th class="num">PVP Lista (USD)</th>
-          <th class="num">FOB Conservador</th><th class="num">FOB Base</th><th class="num">FOB Agresivo</th>
+          <th class="num">FOB Conservador</th><th class="num">FOB Base</th><th class="num">FOB Eficiente</th>
         </tr></thead>
         <tbody id="fob-body"></tbody>
       </table>
@@ -351,7 +353,8 @@
   <section class="tab" id="fob-extendido">
     <h2>FOB Extendido — Top 10 productos por categoría</h2>
     <p class="lead">Mismo cálculo de FOB máximo tolerable (Precio de Lista ÷ K) aplicado a los 10 productos más vendidos de cada categoría, no solo al líder. Útil para ver el rango real de precios dentro de una categoría y no anclar la decisión a un solo SKU. Desplegá cada categoría para ver el detalle.</p>
-    <div class="fx-badge" style="margin-bottom:14px;">💱 Dólar mayorista/oficial importador: <b>$1.511 ARS/USD</b> (BCRA, 02-sep-2026) · K Conservador 5,0x · Base 4,0x · Agresivo 3,2x</div>
+    <div class="fx-badge" style="margin-bottom:14px;">💱 Dólar mayorista/oficial importador: <b>$1.511 ARS/USD</b> (BCRA, 02-sep-2026) · K Conservador 5,0x · Base 4,0x · Eficiente 3,2x</div>
+    <div class="note-box" style="margin-bottom:14px;">Estos escenarios no son "cuánto se negocia más barato en fábrica" — son cuánto puede pagarse en fábrica (FOB) según qué tan eficiente sea el resto de la cadena (flete, impuestos, financiamiento). Cuanto más eficiente el resto, más margen queda disponible para pagar un FOB más alto sin perder rentabilidad — por eso "Eficiente" da el número más alto, no el más bajo.</div>
     <div id="fob-ext-accordion"></div>
   </section>
 
@@ -382,7 +385,8 @@
     <h3>4. Metodología de FOB (pestaña 5)</h3>
     <p style="color:var(--text-secondary); font-size:0.88rem;">No se contó con cotizaciones reales de proveedores (el origen de sourcing queda a definición de Bidcom) al momento de este análisis. En su lugar, se calculó el FOB máximo tolerable "de atrás para adelante", dividiendo el precio de lista actual en ML del producto líder de cada categoría por un multiplicador K que representa toda la cadena de costos de importación (flete, seguro, aranceles, tasa estadística, IVA, comisión y envío de ML, margen del importador):</p>
     <div class="note-box"><code>FOB máximo tolerable = Precio de Lista (ML) ÷ K</code><br><br>
-      <b>K = 5,0x</b> (Conservador) &nbsp;·&nbsp; <b>K = 4,0x</b> (Base) &nbsp;·&nbsp; <b>K = 3,2x</b> (Agresivo)<br><br>
+      <b>K = 5,0x</b> (Conservador) &nbsp;·&nbsp; <b>K = 4,0x</b> (Base) &nbsp;·&nbsp; <b>K = 3,2x</b> (Eficiente)<br><br>
+      Importante: un K más bajo (Eficiente) no significa "negociar un precio más barato" — significa que el resto de la cadena de costos (flete, impuestos, financiamiento) es más eficiente, lo que deja más margen disponible y permite pagar un FOB más alto en fábrica sin resignar rentabilidad. Por eso el escenario Eficiente muestra el número más alto de los tres, no el más bajo.<br><br>
       Los valores resultantes son razonables frente a benchmarks públicos de FOB para estos rubros (ej. cascos integrales homologados US$8-15, guantes térmicos US$2-4, baterías gel de moto US$4-8 FOB origen asiático, la referencia de mercado más común hoy), lo que da consistencia direccional al ejercicio — pero <b>deben confirmarse con cotizaciones reales antes de comprometer inversión.</b></p>
     </div>
 
@@ -824,7 +828,7 @@ Object.entries(fobExtendido).forEach(([cat, items])=>{
         <table>
           <thead><tr>
             <th>Producto</th><th>Marca</th><th class="num">Unidades</th><th class="num">PVP Lista (ARS)</th><th class="num">PVP Lista (USD)</th>
-            <th class="num">FOB Cons.</th><th class="num">FOB Base</th><th class="num">FOB Agr.</th>
+            <th class="num">FOB Cons.</th><th class="num">FOB Base</th><th class="num">FOB Eficiente</th>
           </tr></thead>
           <tbody>${rowsHtml}</tbody>
         </table>
