@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Bidcom · Oportunidad de Sourcing en China — Motopartes</title>
+<title>Bidcom · Oportunidad de Sourcing — Motopartes</title>
 <style>
   :root{
     color-scheme: light;
@@ -199,7 +199,7 @@
 
   <header class="top">
     <div>
-      <h1>Bidcom · Oportunidad de Sourcing en China — Motopartes</h1>
+      <h1>Bidcom · Oportunidad de Sourcing — Motopartes</h1>
       <p class="sub">Análisis de demanda, saturación de oferta y escenarios de FOB para evaluar una nueva línea de producto propia.</p>
       <div class="fx-badge">💱 Tipo de cambio usado en este documento: <b>$1.511 ARS/USD</b> (dólar mayorista/oficial importador, BCRA, 02-sep-2026)</div>
     </div>
@@ -219,18 +219,13 @@
   <!-- ============ TAB 1: RESUMEN EJECUTIVO ============ -->
   <section class="tab active" id="resumen">
     <h2>Resumen Ejecutivo</h2>
-    <p class="lead">Objetivo: identificar oportunidades de producto para que Bidcom sourcee en China y lance una línea propia, cruzando demanda real de la plataforma (unidades y facturación), saturación de oferta actual (listados activos y conversión), y estructura competitiva por categoría.</p>
+    <p class="lead">Objetivo: identificar oportunidades de producto para que Bidcom — vendedor N°1 de Mercado Libre — se diversifique hacia Motopartes con una línea propia, cruzando demanda real de la plataforma (unidades y facturación), saturación de oferta actual (listados activos y conversión), y estructura competitiva por categoría. Dónde y cómo sourcear queda a criterio de Bidcom.</p>
 
     <div class="kpi-row">
       <div class="stat-tile"><div class="label">Categorías relevadas (demanda)</div><div class="value">30</div><div class="note">Ranking completo por TGMV / unidades</div></div>
       <div class="stat-tile"><div class="label">Categorías con deep-dive</div><div class="value">21</div><div class="note">Producto ganador + marcas + estructura competitiva</div></div>
       <div class="stat-tile"><div class="label">TGMV combinado top 10</div><div class="value">$71 mil M</div><div class="note">Solo las 10 categorías de mayor facturación</div></div>
       <div class="stat-tile"><div class="label">Marca más transversal</div><div class="value">NSU</div><div class="note">Aparece en 7 de las 21 categorías analizadas</div></div>
-    </div>
-
-    <div class="callout good">
-      <h4>🏆 Hallazgo más importante: el modelo ya funciona adentro de ML</h4>
-      <p>En <b>Alforjas</b>, el producto #1 en unidades vendidas es la <b>"Mochila de Delivery Mercado Libre Tienda Oficial"</b> (marca "Mercadolibre"), con 3.870 unidades y ~$484M de TGMV — el SKU individual con más revenue de todo el análisis. En <b>Camperas</b> aparece un caso similar ("Yellowstone", campera de delivery oficial amarilla). Mercado Libre ya viene ejecutando private label en la vertical de repartidores y funciona. La propuesta a Bidcom no es un experimento nuevo — es escalar algo que ya probamos, con un socio que puede sourcear en volumen en China en vez de depender de un proveedor puntual.</p>
     </div>
 
     <h3>Dónde entrar primero (buena demanda + oferta todavía sana)</h3>
@@ -349,7 +344,7 @@
         <tbody id="fob-body"></tbody>
       </table>
     </div>
-    <div class="note-box"><b>FOB = Free On Board</b>, valor en dólares en fábrica/puerto de origen (China), antes de flete internacional, seguro, aranceles, IVA y costos locales. Los 3 valores de esta tabla equivalen al FOB máximo tolerable en cada escenario para que el precio final en ML se mantenga en línea con lo que hoy paga el consumidor.</div>
+    <div class="note-box"><b>FOB = Free On Board</b>, valor en dólares en fábrica/puerto de origen (el país de origen queda a definición de Bidcom), antes de flete internacional, seguro, aranceles, IVA y costos locales. Los 3 valores de esta tabla equivalen al FOB máximo tolerable en cada escenario para que el precio final en ML se mantenga en línea con lo que hoy paga el consumidor.</div>
   </section>
 
   <!-- ============ TAB 5b: FOB EXTENDIDO ============ -->
@@ -385,10 +380,10 @@
     <p style="color:var(--text-secondary); font-size:0.88rem;">Se cruzó demanda (TGMV/TSI) con saturación (conversión SL/LL) para separar categorías que "se ven bien" en revenue pero están sobre-ofertadas (ej. Camperas, Carburadores, Alforjas) de categorías con demanda sólida y oferta todavía sana (ej. Plásticos, Kit de Transmisión, Manubrios). Adicionalmente, dentro de cada categoría se identificaron las marcas líderes reales (no las marcas de moto compatibles, que son solo referencia de ajuste) para entender el nivel de concentración competitiva.</p>
 
     <h3>4. Metodología de FOB (pestaña 5)</h3>
-    <p style="color:var(--text-secondary); font-size:0.88rem;">No se contó con cotizaciones reales de proveedores de China (Alibaba/1688) al momento de este análisis. En su lugar, se calculó el FOB máximo tolerable "de atrás para adelante", dividiendo el precio de lista actual en ML del producto líder de cada categoría por un multiplicador K que representa toda la cadena de costos de importación (flete, seguro, aranceles, tasa estadística, IVA, comisión y envío de ML, margen del importador):</p>
+    <p style="color:var(--text-secondary); font-size:0.88rem;">No se contó con cotizaciones reales de proveedores (el origen de sourcing queda a definición de Bidcom) al momento de este análisis. En su lugar, se calculó el FOB máximo tolerable "de atrás para adelante", dividiendo el precio de lista actual en ML del producto líder de cada categoría por un multiplicador K que representa toda la cadena de costos de importación (flete, seguro, aranceles, tasa estadística, IVA, comisión y envío de ML, margen del importador):</p>
     <div class="note-box"><code>FOB máximo tolerable = Precio de Lista (ML) ÷ K</code><br><br>
       <b>K = 5,0x</b> (Conservador) &nbsp;·&nbsp; <b>K = 4,0x</b> (Base) &nbsp;·&nbsp; <b>K = 3,2x</b> (Agresivo)<br><br>
-      Los valores resultantes son razonables frente a benchmarks públicos de FOB para estos rubros (ej. cascos integrales homologados US$8-15, guantes térmicos US$2-4, baterías gel de moto US$4-8 FOB China), lo que da consistencia direccional al ejercicio — pero <b>deben confirmarse con cotizaciones reales antes de comprometer inversión.</b></p>
+      Los valores resultantes son razonables frente a benchmarks públicos de FOB para estos rubros (ej. cascos integrales homologados US$8-15, guantes térmicos US$2-4, baterías gel de moto US$4-8 FOB origen asiático, la referencia de mercado más común hoy), lo que da consistencia direccional al ejercicio — pero <b>deben confirmarse con cotizaciones reales antes de comprometer inversión.</b></p>
     </div>
 
     <h3>5. Tipo de cambio</h3>
