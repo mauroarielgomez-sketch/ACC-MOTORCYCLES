@@ -82,8 +82,9 @@ NMV_VSPLAN_FY26 = {
     'Mar': '-4%',
     'Abr': '-9%',
     'May': '-12%',
-    'Jun': '-17.2%',
-    'Jul': '-26.1%',
+    'Jun': '-17%',
+    'Jul': '-20%',
+    'Ago': '-14%',
 }
 
 # Per sub-segment (rows 155, 157, 158). Ene/Feb TBD — add when available.
@@ -735,9 +736,9 @@ DASH_DOMAIN_KEYS = [
 ]
 
 DASH_AGG2_MAP = {
-    'REPLACEMENT PARTS': 'rp',
-    'ACCESSORIES':       'ac',
-    'HELMETS':           'he',
+    'MOTORCYCLE REPLACEMENT PARTS': 'rp',
+    'MOTORCYCLE ACCESSORIES':       'ac',
+    'MOTORCYCLE HELMETS':           'he',
 }
 
 
@@ -890,7 +891,88 @@ def build_dashboard_data_js(df):
                  ",\n  ".join(f"'{r[0]}'" for r in DASH_RANGES) +
                  "\n];")
 
-    return f"// ─── RANGES ─────────────────────────────────────────────────────────────────\n{ranges_js}\n\n// ─── AGG1 / AGG2 DATA ────────────────────────────────────────────────────────\n{data_js}\n\n// ─── DOMAIN DATA ─────────────────────────────────────────────────────────────\n{dd_js}"
+    domain_order_js = ("const DOMAIN_ORDER = [\n  " +
+                       ",\n  ".join(f"'{k}'" for k in DASH_DOMAIN_KEYS) +
+                       "\n];")
+
+    domain_labels = {
+        'MOTORCYCLE_HELMETS':            'Cascos',
+        'MOTORCYCLE_FAIRINGS':           'Carenados',
+        'MOTORCYCLE_INTERCOMMUNICATORS': 'Intercomunicadores',
+        'MOTORCYCLE_BLOCK_CYLINDERS':    'Bloques de Cilindro',
+        'MOTORCYCLE_TRANSMISSION_KITS':  'Kits de Transmisión',
+        'MOTORCYCLE_JACKETS':            'Camperas',
+        'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS': 'Alforjas y Mochilas',
+        'MOTORCYCLIST_GLOVES':           'Guantes',
+        'VEHICLE_MUFFLERS':              'Silenciadores',
+        'MOTORCYCLE_RAIN_SUITS':         'Pilotos',
+        'MOTORCYCLE_CASES':              'Baúles',
+        'MOTORCYCLE_BOOTS':              'Botas',
+        'VEHICLE_CARBURETORS':           'Carburadores',
+        'BICYCLE_AND_MOTORCYCLE_LOCKS':  'Candados',
+        'VEHICLE_COVERS':                'Fundas',
+        'MOTORCYCLE_REPLACEMENTS':       'Repuestos',
+        'MOTORCYCLE_WHEELS':             'Ruedas',
+        'VEHICLE_WINDSHIELDS':           'Parabrisas',
+        'MOTORCYCLE_SPEEDOMETERS':       'Velocímetros',
+        'NECK_GAITERS_AND_BALACLAVAS':   'Cuello y Pasamontañas',
+        'MOTORCYCLE_PANTS':              'Pantalones',
+        'MOTORCYCLE_LUGGAGE_RACKS':      'Portaequipajes',
+        'MOTORCYCLE_SUITS':              'Trajes',
+        'VEHICLE_FUEL_TANKS':            'Tanques',
+        'MOTORCYCLE_REARVIEW_MIRRORS':   'Espejos Retrovisores',
+        'MOTORCYCLE_CRASH_BARS':         'Barras Anticaída',
+        'VEHICLE_ENGINE_GASKETS':        'Juntas de Motor',
+        'MOTORCYCLE_FORK_TUBES':         'Tubos de Horquilla',
+        'MOTORCYCLE_HANDLEBARS':         'Manubrios',
+        'VEHICLE_EXHAUSTS':              'Escapes',
+    }
+    domain_colors = {
+        'MOTORCYCLE_HELMETS':            '#f0883e',
+        'MOTORCYCLE_FAIRINGS':           '#58a6ff',
+        'MOTORCYCLE_INTERCOMMUNICATORS': '#a371f7',
+        'MOTORCYCLE_BLOCK_CYLINDERS':    '#79c0ff',
+        'MOTORCYCLE_TRANSMISSION_KITS':  '#56d364',
+        'MOTORCYCLE_JACKETS':            '#d2a8ff',
+        'MOTORCYCLE_SADDLEBAGS_AND_BACKPACKS': '#ffa657',
+        'MOTORCYCLIST_GLOVES':           '#ff7b72',
+        'VEHICLE_MUFFLERS':              '#7ee787',
+        'MOTORCYCLE_RAIN_SUITS':         '#39d353',
+        'MOTORCYCLE_CASES':              '#bc8cff',
+        'MOTORCYCLE_BOOTS':              '#ffa8a8',
+        'VEHICLE_CARBURETORS':           '#6ca4f0',
+        'BICYCLE_AND_MOTORCYCLE_LOCKS':  '#e6b00a',
+        'VEHICLE_COVERS':                '#8b949e',
+        'MOTORCYCLE_REPLACEMENTS':       '#88a4c9',
+        'MOTORCYCLE_WHEELS':             '#d29922',
+        'VEHICLE_WINDSHIELDS':           '#76e3ea',
+        'MOTORCYCLE_SPEEDOMETERS':       '#c9e4fa',
+        'NECK_GAITERS_AND_BALACLAVAS':   '#f2a86f',
+        'MOTORCYCLE_PANTS':              '#b392f0',
+        'MOTORCYCLE_LUGGAGE_RACKS':      '#85e89d',
+        'MOTORCYCLE_SUITS':              '#f97583',
+        'VEHICLE_FUEL_TANKS':            '#ffab70',
+        'MOTORCYCLE_REARVIEW_MIRRORS':   '#9ecbff',
+        'MOTORCYCLE_CRASH_BARS':         '#e1b96e',
+        'VEHICLE_ENGINE_GASKETS':        '#56d364',
+        'MOTORCYCLE_FORK_TUBES':         '#a5d6ff',
+        'MOTORCYCLE_HANDLEBARS':         '#d2a8ff',
+        'VEHICLE_EXHAUSTS':              '#ff7b72',
+    }
+    domain_labels_js = ("const DOMAIN_LABELS = {\n" +
+                        "".join(f"  '{k}': '{v}',\n" for k, v in domain_labels.items()) +
+                        "};")
+    domain_colors_js = ("const DOMAIN_COLORS = {\n" +
+                        "".join(f"  '{k}': '{v}',\n" for k, v in domain_colors.items()) +
+                        "};")
+
+    return (
+        f"// ─── RANGES ─────────────────────────────────────────────────────────────────\n{ranges_js}\n\n"
+        f"// ─── AGG1 / AGG2 DATA ────────────────────────────────────────────────────────\n{data_js}\n\n"
+        f"// ─── DOMAIN ORDER / LABELS / COLORS ─────────────────────────────────────────\n"
+        f"{domain_order_js}\n{domain_labels_js}\n{domain_colors_js}\n\n"
+        f"// ─── DOMAIN DATA ─────────────────────────────────────────────────────────────\n{dd_js}"
+    )
 
 
 def update_dashboard_html(df, photo_date):
