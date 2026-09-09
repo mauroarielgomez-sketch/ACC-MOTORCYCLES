@@ -1,0 +1,897 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mercado Motopartes Argentina — Guía de Capacitación 2025</title>
+<style>
+:root {
+  --bg: #0d1117;
+  --surface: #161b22;
+  --elevated: #21262d;
+  --border: #30363d;
+  --text: #e6edf3;
+  --muted: #8b949e;
+  --accent: #f97316;
+  --green: #22c55e;
+  --purple: #a855f7;
+  --blue: #60a5fa;
+  --yellow: #fbbf24;
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif; background: var(--bg); color: var(--text); line-height: 1.6; }
+
+/* NAV */
+nav { position: sticky; top: 0; z-index: 100; background: rgba(13,17,23,0.96); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); padding: 0 20px; display: flex; align-items: center; gap: 16px; height: 52px; }
+.nav-brand { font-weight: 800; font-size: 14px; color: var(--accent); white-space: nowrap; letter-spacing: -.3px; }
+.nav-links { display: flex; gap: 2px; overflow-x: auto; flex: 1; scrollbar-width: none; }
+.nav-links::-webkit-scrollbar { display: none; }
+.nav-link { padding: 5px 10px; border-radius: var(--radius-sm); font-size: 12px; color: var(--muted); text-decoration: none; white-space: nowrap; transition: all .15s; font-weight: 500; }
+.nav-link:hover { color: var(--text); background: var(--surface); }
+.nav-link.ai-link { color: #c084fc; }
+#searchInput { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 5px 12px; color: var(--text); font-size: 13px; width: 180px; outline: none; transition: border-color .2s; }
+#searchInput:focus { border-color: var(--accent); }
+#searchInput::placeholder { color: var(--muted); }
+
+/* HERO */
+.hero { background: linear-gradient(135deg, #1c0a00 0%, #0d1117 45%, #0a0d1c 100%); padding: 44px 24px 36px; text-align: center; border-bottom: 1px solid var(--border); }
+.hero-eyebrow { font-size: 12px; text-transform: uppercase; letter-spacing: .1em; color: var(--accent); font-weight: 600; margin-bottom: 10px; }
+.hero h1 { font-size: 34px; font-weight: 900; color: var(--text); margin-bottom: 6px; letter-spacing: -.5px; }
+.hero h1 span { color: var(--accent); }
+.hero-sub { color: var(--muted); font-size: 15px; margin-bottom: 28px; }
+.stats-row { display: flex; justify-content: center; gap: 40px; flex-wrap: wrap; }
+.stat { text-align: center; }
+.stat-num { font-size: 30px; font-weight: 900; color: var(--accent); display: block; }
+.stat-num.validated { color: var(--green); }
+.stat-num.ai { color: var(--purple); }
+.stat-label { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; }
+
+/* LEGEND */
+.legend { display: flex; justify-content: center; align-items: center; gap: 20px; padding: 10px 24px; background: var(--surface); border-bottom: 1px solid var(--border); flex-wrap: wrap; }
+.legend-label { font-size: 11px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .05em; }
+.badge { display: inline-flex; align-items: center; gap: 4px; padding: 2px 7px; border-radius: 4px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+.b-ok   { background: rgba(34,197,94,.12); color: var(--green); border: 1px solid rgba(34,197,94,.3); }
+.b-ai   { background: rgba(168,85,247,.12); color: var(--purple); border: 1px solid rgba(168,85,247,.3); }
+.b-loc  { background: rgba(251,191,36,.12); color: var(--yellow); border: 1px solid rgba(251,191,36,.3); }
+.b-pend { background: rgba(139,148,158,.1); color: var(--muted); border: 1px solid rgba(139,148,158,.2); }
+
+/* MAIN */
+main { max-width: 1360px; margin: 0 auto; padding: 36px 20px; display: flex; flex-direction: column; gap: 52px; }
+
+/* GROUP SECTION */
+.group-section { scroll-margin-top: 64px; }
+.group-header { display: flex; align-items: flex-start; gap: 16px; padding-bottom: 14px; border-bottom: 2px solid var(--border); margin-bottom: 18px; }
+.group-bar { width: 4px; border-radius: 2px; flex-shrink: 0; align-self: stretch; min-height: 48px; }
+.group-info { flex: 1; }
+.group-info h2 { font-size: 22px; font-weight: 800; letter-spacing: -.3px; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+.group-empresa { font-size: 13px; color: var(--muted); margin-top: 3px; }
+.group-empresa a { color: var(--blue); text-decoration: none; }
+.group-empresa a:hover { text-decoration: underline; }
+.group-totals { display: flex; gap: 20px; flex-shrink: 0; text-align: center; }
+.gt-item .gt-num { font-size: 22px; font-weight: 800; display: block; }
+.gt-item .gt-lbl { font-size: 10px; color: var(--muted); text-transform: uppercase; }
+
+/* AI GROUP NOTE */
+.ai-note { background: rgba(168,85,247,.07); border: 1px solid rgba(168,85,247,.25); border-radius: var(--radius); padding: 12px 16px; margin-bottom: 16px; font-size: 13px; color: #c084fc; display: flex; gap: 10px; }
+.ai-note strong { display: block; margin-bottom: 2px; }
+
+/* BRANDS GRID */
+.brands-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(310px, 1fr)); gap: 14px; }
+
+/* BRAND CARD */
+.brand-card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); overflow: hidden; transition: border-color .2s; }
+.brand-card:hover { border-color: rgba(249,115,22,.3); }
+.brand-card-head { display: flex; align-items: center; gap: 10px; padding: 12px 14px; cursor: pointer; user-select: none; }
+.brand-name-wrap { flex: 1; min-width: 0; }
+.brand-title { font-weight: 700; font-size: 14px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; display: flex; align-items: center; gap: 6px; }
+.brand-url { font-size: 11px; color: var(--blue); text-decoration: none; font-weight: 400; }
+.brand-url:hover { text-decoration: underline; }
+.brand-count { background: var(--elevated); padding: 2px 8px; border-radius: 20px; font-size: 11px; font-weight: 700; color: var(--muted); flex-shrink: 0; }
+.chevron { width: 16px; height: 16px; flex-shrink: 0; color: var(--muted); transition: transform .2s; }
+.brand-card.open .chevron { transform: rotate(180deg); }
+
+/* MODEL TABLE */
+.model-wrap { display: none; overflow-x: auto; }
+.brand-card.open .model-wrap { display: block; }
+.model-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+.model-table th { background: var(--elevated); color: var(--muted); text-transform: uppercase; font-size: 10.5px; letter-spacing: .05em; padding: 7px 12px; text-align: left; border-top: 1px solid var(--border); white-space: nowrap; }
+.model-table td { padding: 7px 12px; border-top: 1px solid rgba(48,54,61,.6); vertical-align: middle; }
+.model-table tr:hover td { background: rgba(255,255,255,.02); }
+.model-table td:first-child { font-weight: 500; }
+.model-hidden { display: none; }
+
+/* CC tags */
+.cc { display: inline-block; padding: 1px 6px; border-radius: 4px; font-size: 10.5px; font-weight: 700; white-space: nowrap; }
+.cc-s { background: rgba(99,102,241,.15); color: #818cf8; }
+.cc-1 { background: rgba(96,165,250,.15); color: #60a5fa; }
+.cc-125 { background: rgba(129,140,248,.15); color: #a78bfa; }
+.cc-150 { background: rgba(14,165,233,.15); color: #38bdf8; }
+.cc-200 { background: rgba(6,182,212,.15); color: #22d3ee; }
+.cc-250 { background: rgba(16,185,129,.15); color: #34d399; }
+.cc-300 { background: rgba(251,191,36,.15); color: #fbbf24; }
+.cc-big { background: rgba(249,115,22,.15); color: #fb923c; }
+
+.ficha-link { color: var(--blue); text-decoration: none; font-size: 12px; }
+.ficha-link:hover { text-decoration: underline; }
+.no-ficha { color: var(--muted); font-size: 11.5px; font-style: italic; }
+
+/* FOOTER */
+footer { border-top: 1px solid var(--border); padding: 24px; text-align: center; color: var(--muted); font-size: 12px; line-height: 2; }
+
+/* Search hide */
+.search-hidden { display: none !important; }
+
+@media (max-width: 700px) {
+  .brands-grid { grid-template-columns: 1fr; }
+  .hero h1 { font-size: 24px; }
+  .nav-links { display: none; }
+  .group-totals { display: none; }
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-brand">🏍️ Motopartes AR</div>
+  <div class="nav-links" id="navLinks"></div>
+  <input type="text" id="searchInput" placeholder="Buscar modelo..." oninput="onSearch(this.value)">
+</nav>
+
+<div class="hero">
+  <div class="hero-eyebrow">Material de Capacitación · Mercado de Motos Argentina</div>
+  <h1>Terminales <span>Motopartes</span> AR</h1>
+  <p class="hero-sub">Grupos importadores, marcas y catálogo de modelos con fichas técnicas</p>
+  <div class="stats-row">
+    <div class="stat"><span class="stat-num validated" id="statGrupos">—</span><span class="stat-label">Grupos</span></div>
+    <div class="stat"><span class="stat-num validated" id="statMarcas">—</span><span class="stat-label">Marcas</span></div>
+    <div class="stat"><span class="stat-num validated" id="statModelos">—</span><span class="stat-label">Modelos validados</span></div>
+    <div class="stat"><span class="stat-num ai" id="statAI">—</span><span class="stat-label">Modelos sugeridos IA</span></div>
+  </div>
+</div>
+
+<div class="legend">
+  <span class="legend-label">Referencias:</span>
+  <span class="badge b-ok">✓ Validado</span><span style="font-size:11px;color:var(--muted)">datos del file original</span>
+  <span class="badge b-ai">⚡ IA</span><span style="font-size:11px;color:var(--muted)">sugerido por Claude, verificar</span>
+  <span class="badge b-loc">📁 Local</span><span style="font-size:11px;color:var(--muted)">PDF en tu PC, no funciona en otras</span>
+  <span class="badge b-pend">— Sin ficha</span><span style="font-size:11px;color:var(--muted)">link pendiente</span>
+</div>
+
+<main id="mainContent"></main>
+
+<footer>
+  Elaborado por Mauro Ariel Gómez · Actualizado agosto 2026<br>
+  <span class="badge b-ok">✓ Validado</span> = datos del "Plan Motos 2025" (Google Sheets) &nbsp;|&nbsp; <span class="badge b-ai">⚡ IA</span> = agregados por Claude AI — requieren double-check contra catálogo oficial
+</footer>
+
+<script>
+// ─── CC helpers ────────────────────────────────────────────────────────────
+function ccClass(cc) {
+  return { '<110cc':'cc-s','110cc':'cc-1','125cc':'cc-125','150cc':'cc-150','200cc':'cc-200','250cc':'cc-250','300cc':'cc-300','>300cc':'cc-big' }[cc] || 'cc-1';
+}
+
+// ─── DATA ──────────────────────────────────────────────────────────────────
+const GRUPOS = [
+
+// ═══════════════════════════════════════════════
+// 1. CORVEN MOTORS ARGENTINA
+// ═══════════════════════════════════════════════
+{
+  id:'corven', nombre:'Corven Motors Argentina', colorHex:'#f97316', aiAdded:false,
+  empresas:[
+    { nombre:'Corven Motors Argentina S.A.', dir:'Marcos Ciani 2118 — Venado Tuerto, Santa Fe' },
+    { nombre:'Importadora Mediterránea S.A.', dir:'Emilio Caraffa 1921 — Villa Cabrera, Córdoba' },
+  ],
+  web:'https://corven.com.ar/negocios/',
+  totalMarcas:7, totalModelos:125,
+  marcas:[
+    { nombre:'Corven Motos', web:'https://corvenmotos.com.ar/', aiAdded:false, modelos:[
+      { n:'DX 70',                cc:'<110cc', f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Ficha-DX-70-Print.pdf' },
+      { n:'EXPERT 80',            cc:'<110cc', f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Expert-80-Print.pdf' },
+      { n:'MIRAGE 110 RT',        cc:'110cc',  f:null },
+      { n:'MIRAGE 110 AD',        cc:'110cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Nueva-Mirage-110-AD-Print.pdf' },
+      { n:'ENERGY 110 R2 RT',     cc:'110cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/New-Energy-110-AD_-Print-1.pdf' },
+      { n:'ENERGY 110 R2 AD',     cc:'110cc',  f:null },
+      { n:'ENERGY 110 TUNING',    cc:'110cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Energy-Tuning-110_Print.pdf' },
+      { n:'HUNTER 150 AD',        cc:'150cc',  f:null },
+      { n:'HUNTER 150 RT',        cc:'150cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Nueva-Hunter-150-RT-Print.pdf' },
+      { n:'HUNTER 150 R2',        cc:'150cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Hunter-150R2-AD-Print.pdf' },
+      { n:'EXPERT 150 MILANO',    cc:'150cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Expert-Milano-150-Print.pdf' },
+      { n:'EXPERT DOT 150',       cc:'150cc',  f:'https://minutomotor.com.ar/wp-content/uploads/2020/07/Ficha-Expert-DOT.pdf' },
+      { n:'TRIAX 150',            cc:'150cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Triax-150-Print.pdf' },
+      { n:'TRIAX 150 R3',         cc:'150cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Triax-150-R3-Print.pdf' },
+      { n:'TRIAX 200 R3',         cc:'200cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Triax-200-R3-Print.pdf' },
+      { n:'TRIAX 250 R3',         cc:'250cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/Triax-250-R3-Print.pdf' },
+      { n:'TRIAX TXR 250 L',      cc:'250cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/03/TXR-250-L-Print.pdf' },
+      { n:'TOURING 250',          cc:'250cc',  f:'https://corvenmotos.com.ar/wp-content/uploads/2021/02/Touring-250-Print.pdf' },
+    ]},
+    { nombre:'Bajaj', web:'https://argentina.globalbajaj.com/', aiAdded:false, modelos:[
+      { n:'ROUSER LS 125',        cc:'125cc',  f:null, local:true },
+      { n:'BOXER 150 UG',         cc:'150cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_Boxer150.pdf' },
+      { n:'ROUSER P 150',         cc:'150cc',  f:null, local:true },
+      { n:'ROUSER NS 160',        cc:'150cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_RouserNS160TD.pdf' },
+      { n:'ROUSER NS 200',        cc:'200cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_RouserNS200.pdf' },
+      { n:'ROUSER NS 200 FI',     cc:'200cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_RouserNS200Fi.pdf' },
+      { n:'ROUSER RS 200',        cc:'200cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_RouserRS200.pdf' },
+      { n:'DOMINAR 250',          cc:'250cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_Dominar250.pdf' },
+      { n:'ROUSER N 250',         cc:'250cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_RouserN250.pdf' },
+      { n:'AVENGER CRUISE 220',   cc:'250cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_AvengerCruise.pdf' },
+      { n:'AVENGER STREET 220',   cc:'250cc',  f:'https://bajajargentina.com.ar/descargas/BAJAJ_AvengerStreet.pdf' },
+      { n:'DOMINAR 400',          cc:'>300cc', f:'https://bajajargentina.com.ar/descargas/BAJAJ_Dominar400.pdf' },
+    ]},
+    { nombre:'Kawasaki', web:'https://kawasaki.ar/es/', aiAdded:false, modelos:[
+      { n:'VERSYS X 300',         cc:'300cc',  f:'https://static1.squarespace.com/static/639bda5c64492137de0500b9/t/639e859fa28276552de84164/1671333282975/2023-versys-x-300-es-la-spec-sheet.pdf' },
+      { n:'Z400',                 cc:'>300cc', f:'https://kawasaki.ar/es/z-400-abs/' },
+      { n:'NINJA 400',            cc:'>300cc', f:'https://kawasaki.ar/es/ninja-400-abs/' },
+      { n:'NINJA ZX 4RR',         cc:'>300cc', f:'https://kawasakipilar.com.ar/producto/ninja-zx-4rr/' },
+      { n:'KLR 650',              cc:'>300cc', f:'https://kawasaki.ar/es/klr-650-abs/' },
+      { n:'VERSYS 650',           cc:'>300cc', f:'https://kawasaki.ar/es/versys-650/' },
+      { n:'Z650',                 cc:'>300cc', f:'https://kawasaki.ar/es/z-650/' },
+      { n:'NINJA 650',            cc:'>300cc', f:'https://kawasaki.ar/es/ninja-650-abs/' },
+      { n:'NINJA ZX 6R',          cc:'>300cc', f:'https://kawasaki.ar/es/ninja-zx-6r/' },
+      { n:'VULCAN S',             cc:'>300cc', f:'https://kawasaki.ar/es/vulcan-s-abs/' },
+      { n:'Z900',                 cc:'>300cc', f:'https://kawasaki.ar/es/z-900-abs/' },
+      { n:'Z900 RS',              cc:'>300cc', f:'https://kawasaki.ar/es/z-900-rs-abs/' },
+      { n:'Z900 RS CAFE',         cc:'>300cc', f:'https://kawasaki.ar/es/z-900-rs-cafe-abs/' },
+      { n:'VULCAN 900 CUSTOM',    cc:'>300cc', f:'https://kawasaki.ar/es/vulcan-900-custom/' },
+      { n:'VERSYS 1000',          cc:'>300cc', f:'https://kawasaki.ar/es/versys-1000/' },
+      { n:'NINJA 1000 SX',        cc:'>300cc', f:'https://kawasaki.ar/es/ninja-1000-sx-abs/' },
+      { n:'NINJA ZX 10R',         cc:'>300cc', f:'https://kawasaki.ar/es/zx-10r-krt-abs/' },
+      { n:'NINJA H2',             cc:'>300cc', f:'https://kawasaki.ar/es/ninja-h2/' },
+      { n:'NINJA H2 SX SE',       cc:'>300cc', f:'https://kawasaki.ar/es/ninja-h2-sx-se/' },
+      { n:'NINJA ZX 14R',         cc:'>300cc', f:'https://kawasaki.ar/es/ninja-zx-14r-abs/' },
+    ]},
+    { nombre:'Kymco', web:'https://www.kymcoargentina.com.ar/es/', aiAdded:false, modelos:[
+      { n:'AGILITY 125',          cc:'125cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/agility-125/' },
+      { n:'AGILITY RS 125 NAKED', cc:'125cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/agility-rs-125-naked/' },
+      { n:'MICARE 125',           cc:'125cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/micare-125/' },
+      { n:'LIKE 125',             cc:'125cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/like-125/' },
+      { n:'NEW LIKE 150I',        cc:'150cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/new-like-150i/' },
+      { n:'NEW PEOPLE S 150I',    cc:'150cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/new-people-s-150i/' },
+      { n:'LIKE 200I',            cc:'200cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/like-200i/' },
+      { n:'AGILITY 200I',         cc:'200cc',  f:'https://www.kymcoargentina.com.ar/es/scooters/agility-200i/' },
+      { n:'X-TOWN 250I',          cc:'250cc',  f:'https://www.kymcoargentina.com.ar/es/maxiscooters/x-town-250i/' },
+      { n:'DOWNTOWN 350I TCS',    cc:'>300cc', f:'https://www.kymcoargentina.com.ar/es/maxiscooters/downtown-350itcs/' },
+      { n:'DTX 350',              cc:'>300cc', f:'https://www.kymcoargentina.com.ar/es/maxiscooters/dtx-350/' },
+      { n:'XCITING S 450I',       cc:'>300cc', f:'https://www.kymcoargentina.com.ar/es/maxiscooters/xciting_s400i/' },
+    ]},
+    { nombre:'Mondial', web:'https://mondial.com.ar/es-ar/', aiAdded:false, modelos:[
+      { n:'DAX 70',               cc:'<110cc', f:'https://mondial.com.ar/es-ar/index.php/streets/dax70/' },
+      { n:'LD 110 MAX AUTO',      cc:'110cc',  f:'https://mondial.com.ar/es-ar/index.php/cubs/ld110-max-auto/' },
+      { n:'LD 110 MAX AD',        cc:'110cc',  f:'https://mondial.com.ar/es-ar/index.php/cubs/ld110-max-ad/' },
+      { n:'LD 110 MAX RT',        cc:'110cc',  f:'https://mondial.com.ar/es-ar/index.php/cubs/ld110-max-rt/' },
+      { n:'LD 110 S',             cc:'110cc',  f:'https://mondial.com.ar/es-ar/index.php/cubs/ld110-s/' },
+      { n:'RV 125',               cc:'125cc',  f:'https://mondial.com.ar/es-ar/index.php/streets/rv125/' },
+      { n:'MD 150 ALLEGRO',       cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/scooters/mdallegro/' },
+      { n:'MD 150',               cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/scooters/md150/' },
+      { n:'RD 150 RT',            cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/streets/rd150rt/' },
+      { n:'RD 150 AD',            cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/streets/rd-150-ad/' },
+      { n:'RD 150 CLASSIC',       cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/streets/rd150-classic/' },
+      { n:'TD 150',               cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/enduro/td150/' },
+      { n:'HD 150',               cc:'150cc',  f:'https://mondial.com.ar/es-ar/index.php/exclusivas/hd-150/' },
+      { n:'TD 250',               cc:'250cc',  f:'https://mondial.com.ar/es-ar/index.php/enduro/td250/' },
+      { n:'HD 250',               cc:'250cc',  f:'https://mondial.com.ar/es-ar/index.php/exclusivas/hd250/' },
+    ]},
+    { nombre:'Triumph', web:'https://www.triumphmotorcycles.com.ar/', aiAdded:false, modelos:[
+      { n:'TIGER SPORT 660',         cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/adventure/tiger-sport-660' },
+      { n:'TIGER 850 SPORT',         cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/adventure/tiger-850-sport' },
+      { n:'TIGER 900',               cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/adventure/tiger-900-2023' },
+      { n:'TIGER 1200',              cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/adventure/tiger-1200' },
+      { n:'SPEED TWIN 900',          cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-speed-twin-900' },
+      { n:'BONNEVILLE T100',         cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-t100' },
+      { n:'SCRAMBLER 900',           cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-scrambler-900' },
+      { n:'SCRAMBLER 1200',          cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-scrambler-1200' },
+      { n:'BONNEVILLE T120',         cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-t120' },
+      { n:'SPEED TWIN 1200',         cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-speed-twin-1200' },
+      { n:'BONNEVILLE BOBBER',       cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-bobber' },
+      { n:'BONNEVILLE SPEEDMASTER',  cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/bonneville-speedmaster' },
+      { n:'THRUXTON RS',             cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/classic/thruxton-rs' },
+      { n:'TRIDENT 660',             cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/roadsters/trident' },
+      { n:'STREET TRIPLE 765',       cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/roadsters/street-triple-765' },
+      { n:'STREET TRIPLE 765 MOTO2', cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/roadsters/street-triple-moto2' },
+      { n:'SPEED TRIPLE 1200 RS',    cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/roadsters/speed-triple-1200' },
+      { n:'SPEED TRIPLE 1200RR',     cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/roadsters/speed-triple-1200-rr' },
+      { n:'ROCKET 3',                cc:'>300cc', f:'https://www.triumphmotorcycles.com.ar/bikes/rocket-3/rocket-3' },
+    ]},
+    { nombre:'Zanella', web:'https://zanella.com.ar/', aiAdded:false, modelos:[
+      { n:'HOT 90 SHOT',          cc:'<110cc', f:null },
+      { n:'CECCATO 60',           cc:'<110cc', f:null },
+      { n:'DUE CLASSIC 110',      cc:'110cc',  f:'https://zanella.com.ar/wp-content/uploads/2022/07/FICHA-TECNICA-_-Due110.pdf' },
+      { n:'ZB 110 LT',            cc:'110cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/08/FICHA-TECNICA-_-ZB-110-LT_Print.pdf' },
+      { n:'ZB 110 RT',            cc:'110cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/08/FICHA-TECNICA-_-ZB-110-RT_Print.pdf' },
+      { n:'ZB 125 R',             cc:'125cc',  f:null },
+      { n:'SAPUCAI 150',          cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2022/02/fichatecnica_street_sapucai_150.pdf' },
+      { n:'RX 150 Z7',            cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-RX-150-Z7_Print.pdf' },
+      { n:'RX 150 Z7 FULL',       cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/08/FICHA-TECNICA-_-RX-150-Z7-F_-Print.pdf' },
+      { n:'CECCATO R150',         cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2022/02/fichatecnica_ceccato_r150.pdf' },
+      { n:'ZT 150',               cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/10/FICHA-TECNICA-_-ZT-150_Print.pdf' },
+      { n:'ZR 150 OHC',           cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/08/FICHA-TECNICA-_-ZR-150-OHC_Print_Baja_compressed.pdf' },
+      { n:'EXCLUSIVE LT',         cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/10/Ficha-tecnica_Exclusive-LT_print.pdf' },
+      { n:'EXCLUSIVE EDIZIONE',   cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/10/Ficha-tecnica_Exclusive-Edizione_print.pdf' },
+      { n:'CRUISER X',            cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TE%CC%81CNICA-_-Cruiser-X_Print.pdf' },
+      { n:'STYLER RS',            cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/Ficha-tecnica_Styler-RS_print.pdf' },
+      { n:'PATAGONIAN EAGLE 150', cc:'150cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-Patagonian-Eagle-150-ST_Print_compressed.pdf' },
+      { n:'CRUISER X1',           cc:'200cc',  f:'https://zanella.com.ar/wp-content/uploads/2022/07/FICHA-TE%CC%81CNICA-_-Cruiser-X1_Print-OK.pdf' },
+      { n:'ZR 200 OHC',           cc:'200cc',  f:'https://zanella.com.ar/wp-content/uploads/2023/07/FICHA-TECNICA-_-ZR-200-OHC-1.pdf' },
+      { n:'ZMAX 200 II',          cc:'200cc',  f:'https://zanella.com.ar/wp-content/uploads/2022/06/FICHA_TECNICA-ZMAX-200.pdf' },
+      { n:'ZMAX 200',             cc:'200cc',  f:'https://zanella.com.ar/wp-content/uploads/2023/11/FICHA-TECNICA-_-ZMAX200_Print.pdf' },
+      { n:'CECCATO X 250',        cc:'250cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-Ceccato-250X_ok.pdf' },
+      { n:'ZR 250 OHC',           cc:'250cc',  f:'https://zanella.com.ar/wp-content/uploads/2023/07/FICHA-TECNICA-_-ZR-250-OHC.pdf' },
+      { n:'PATAGONIAN EAGLE 250', cc:'250cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/fichatecnica_custom__patagonian_eagle_250.pdf' },
+      { n:'RZ 300',               cc:'300cc',  f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TE%CC%81CNICA-_-RZ300_Print-OK.pdf' },
+      { n:'RZ 400',               cc:'>300cc', f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-RZ400_Print-OK-2.pdf' },
+      { n:'RZ 650',               cc:'>300cc', f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-RZ650_Print-OK-1.pdf' },
+      { n:'RZ 650 MT',            cc:'>300cc', f:'https://zanella.com.ar/wp-content/uploads/2021/03/FICHA-TECNICA-_-RZ650mt_Print-OK-1.pdf' },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 2. GRUPO SIMPA
+// ═══════════════════════════════════════════════
+{
+  id:'simpa', nombre:'Grupo SIMPA', colorHex:'#3b82f6', aiAdded:false,
+  empresas:[{ nombre:'Grupo SIMPA S.A.', dir:'Thames 333 — Boulogne Sur Mer, Bs As' }],
+  web:'https://simpa.com.ar/',
+  totalMarcas:15, totalModelos:106,
+  aiNote:'Los modelos >300cc de SIMPA no estaban detallados individualmente en el archivo fuente (solo el total: 93 modelos). Los marcados con ⚡ IA fueron agregados por Claude y requieren verificación.',
+  marcas:[
+    { nombre:'CFMOTO', web:'https://cfmotoargentina.com.ar/', aiAdded:false, modelos:[
+      { n:'300NK',            cc:'300cc',  f:'https://cfmotoargentina.com.ar/300nk/' },
+      { n:'300SR',            cc:'300cc',  f:'https://cfmotoargentina.com.ar/300sr/' },
+      { n:'300CL-X',          cc:'300cc',  f:'https://cfmotobahia.com.ar/300clx/' },
+      { n:'400NK',            cc:'>300cc', f:'https://cfmotoargentina.com.ar/400nk/', ai:true },
+      { n:'450SS',            cc:'>300cc', f:'https://cfmotoargentina.com.ar/450ss/', ai:true },
+      { n:'650NK',            cc:'>300cc', f:'https://cfmotoargentina.com.ar/650nk/', ai:true },
+      { n:'650MT',            cc:'>300cc', f:'https://cfmotoargentina.com.ar/650mt/', ai:true },
+      { n:'700CL-X',          cc:'>300cc', f:'https://cfmotoargentina.com.ar/700clx/', ai:true },
+      { n:'700CL-X Sport',    cc:'>300cc', f:'https://cfmotoargentina.com.ar/700clx-sport/', ai:true },
+      { n:'800MT Adventure',  cc:'>300cc', f:'https://cfmotoargentina.com.ar/800mt-adventure/', ai:true },
+      { n:'800MT Explorer',   cc:'>300cc', f:'https://cfmotoargentina.com.ar/800mt-explorer/', ai:true },
+      { n:'1250TR-G',         cc:'>300cc', f:'https://cfmotoargentina.com.ar/', ai:true },
+    ]},
+    { nombre:'Royal Enfield', web:'https://royalenfieldar.com/', aiAdded:false, modelos:[
+      { n:'Meteor 350',          cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/meteor-350', ai:true },
+      { n:'Classic 350',         cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/classic-350', ai:true },
+      { n:'Hunter 350',          cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/hunter-350', ai:true },
+      { n:'Scram 411',           cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/scram-411', ai:true },
+      { n:'Himalayan 450',       cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/himalayan', ai:true },
+      { n:'Super Meteor 650',    cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/super-meteor-650', ai:true },
+      { n:'Interceptor 650',     cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/interceptor-650', ai:true },
+      { n:'Continental GT 650',  cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/continental-gt-650', ai:true },
+      { n:'Bear 650',            cc:'>300cc', f:'https://royalenfieldar.com/motorcycles/bear-650', ai:true },
+    ]},
+    { nombre:'KTM', web:'https://ktmargentina.com.ar/', aiAdded:false, modelos:[
+      { n:'DUKE 200',             cc:'200cc',  f:'https://ktmargentina.com.ar/2023-ktm-200-duke/' },
+      { n:'RC 200',               cc:'200cc',  f:'https://ktmargentina.com.ar/2023-ktm-rc-200/' },
+      { n:'250 ADVENTURE',        cc:'250cc',  f:'https://ktmargentina.com.ar/2023-ktm-250-adventure/' },
+      { n:'DUKE 250',             cc:'250cc',  f:'https://ktmargentina.com.ar/2024-ktm-250-duke/' },
+      { n:'390 DUKE',             cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-390-duke/', ai:true },
+      { n:'390 ADVENTURE',        cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-390-adventure/', ai:true },
+      { n:'490 DUKE',             cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-490-duke/', ai:true },
+      { n:'490 ADVENTURE',        cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-490-adventure/', ai:true },
+      { n:'690 DUKE',             cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-690-duke/', ai:true },
+      { n:'890 DUKE',             cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-890-duke/', ai:true },
+      { n:'890 ADVENTURE R',      cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-890-adventure-r/', ai:true },
+      { n:'1290 SUPER DUKE R',    cc:'>300cc', f:'https://ktmargentina.com.ar/2024-ktm-1290-super-duke-r/', ai:true },
+      { n:'1290 SUPER ADVENTURE S',cc:'>300cc',f:'https://ktmargentina.com.ar/2024-ktm-1290-super-adventure-s/', ai:true },
+      { n:'1390 SUPER DUKE R',    cc:'>300cc', f:'https://ktmargentina.com.ar/', ai:true },
+      { n:'1390 SUPER ADVENTURE S',cc:'>300cc',f:'https://ktmargentina.com.ar/', ai:true },
+    ]},
+    { nombre:'Husqvarna', web:'https://www.husqvarna-motorcycles.com/es-ar.html', aiAdded:false, modelos:[
+      { n:'SVARTPILEN 200',  cc:'200cc',  f:'https://husqvarnapilar.com.ar/svartpilen-200/' },
+      { n:'SVARTPILEN 250',  cc:'250cc',  f:'https://www.husqvarna-motorcycles.com/es-ar/models/naked/svartpilen/svartpilen-250-2024.html' },
+      { n:'SVARTPILEN 401',  cc:'>300cc', f:'https://www.husqvarna-motorcycles.com/es-ar/models/naked/svartpilen/svartpilen-401.html', ai:true },
+      { n:'VITPILEN 401',    cc:'>300cc', f:'https://www.husqvarna-motorcycles.com/es-ar/models/naked/vitpilen/vitpilen-401.html', ai:true },
+      { n:'701 SVARTPILEN',  cc:'>300cc', f:'https://www.husqvarna-motorcycles.com/es-ar/models/naked/svartpilen/svartpilen-701.html', ai:true },
+      { n:'701 VITPILEN',    cc:'>300cc', f:'https://www.husqvarna-motorcycles.com/es-ar/models/naked/vitpilen/vitpilen-701.html', ai:true },
+      { n:'NORDEN 901',      cc:'>300cc', f:'https://www.husqvarna-motorcycles.com/es-ar/models/adventure/norden/norden-901.html', ai:true },
+      { n:'NORDEN 901 EXPEDITION',cc:'>300cc',f:'https://www.husqvarna-motorcycles.com/es-ar/models/adventure/norden/norden-901-expedition.html', ai:true },
+    ]},
+    { nombre:'Motomorini', web:'https://www.motomorini.com.ar/', aiAdded:false, modelos:[
+      { n:'X-CAPE 650',        cc:'>300cc', f:'https://www.motomorini.com.ar/x-cape-650/', ai:true },
+      { n:'X-CAPE 700',        cc:'>300cc', f:'https://www.motomorini.com.ar/x-cape-700/', ai:true },
+      { n:'SEIEMMEZZO SCR 6.5',cc:'>300cc', f:'https://www.motomorini.com.ar/seiemmezzo-scr/', ai:true },
+      { n:'SEIEMMEZZO STR 6.5',cc:'>300cc', f:'https://www.motomorini.com.ar/seiemmezzo-str/', ai:true },
+      { n:'SUPER SEIEMMEZZO',  cc:'>300cc', f:'https://www.motomorini.com.ar/', ai:true },
+      { n:'CORSARO ZZ 1200',   cc:'>300cc', f:'https://www.motomorini.com.ar/', ai:true },
+      { n:'V.85 TRAIL',        cc:'>300cc', f:'https://www.motomorini.com.ar/', ai:true },
+    ]},
+    { nombre:'Harley Davidson', web:'https://harley-davidson.com.ar/index', aiAdded:false, modelos:[
+      { n:'Nightster 975',       cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/nightster/nightster.html', ai:true },
+      { n:'Sportster S 1250',    cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/sportster/sportster-s.html', ai:true },
+      { n:'Pan America 1250',    cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/adventure/pan-america.html', ai:true },
+      { n:'Fat Bob 114',         cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/fat-bob.html', ai:true },
+      { n:'Street Bob 114',      cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/street-bob.html', ai:true },
+      { n:'Softail Standard',    cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/softail-standard.html', ai:true },
+      { n:'Fat Boy 114',         cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/fat-boy.html', ai:true },
+      { n:'Heritage Classic 114',cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/heritage-classic.html', ai:true },
+      { n:'Low Rider S',         cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/low-rider-s.html', ai:true },
+      { n:'Breakout',            cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/softail/breakout.html', ai:true },
+      { n:'Road King Special',   cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/touring/road-king-special.html', ai:true },
+      { n:'Street Glide',        cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/touring/street-glide.html', ai:true },
+      { n:'Road Glide',          cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/touring/road-glide.html', ai:true },
+      { n:'Ultra Limited',       cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/touring/ultra-limited.html', ai:true },
+      { n:'CVO Street Glide',    cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/cvo/cvo-street-glide.html', ai:true },
+      { n:'Tri Glide Ultra',     cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/trike/tri-glide-ultra.html', ai:true },
+      { n:'LiveWire ONE',        cc:'>300cc', f:'https://www.harley-davidson.com/ar/es/motorcycles/livewire/livewire-one.html', ai:true },
+    ]},
+    { nombre:'Aprilia', web:'https://www.apriliaoficial.com.ar/', aiAdded:false, modelos:[
+      { n:'SR 160',   cc:'150cc', f:'https://www.apriliaoficial.com.ar/' },
+      { n:'SXR 160',  cc:'150cc', f:'https://www.apriliaoficial.com.ar/' },
+      { n:'RS 660',   cc:'>300cc', f:'https://www.apriliaoficial.com.ar/', ai:true },
+      { n:'Tuono 660',cc:'>300cc', f:'https://www.apriliaoficial.com.ar/', ai:true },
+      { n:'Tuono V4', cc:'>300cc', f:'https://www.apriliaoficial.com.ar/', ai:true },
+      { n:'RSV4',     cc:'>300cc', f:'https://www.apriliaoficial.com.ar/', ai:true },
+    ]},
+    { nombre:'CAN-AM', web:'https://can-am.brp.com/lam/es/', aiAdded:false, modelos:[
+      { n:'Ryker 600',     cc:'>300cc', f:'https://can-am.brp.com/lam/es/', ai:true },
+      { n:'Spyder F3',     cc:'>300cc', f:'https://can-am.brp.com/lam/es/', ai:true },
+      { n:'Spyder RT',     cc:'>300cc', f:'https://can-am.brp.com/lam/es/', ai:true },
+    ]},
+    { nombre:'GasGas', web:'https://www.gasgas.com/es-es.html', aiAdded:false, modelos:[
+      { n:'SM 700',  cc:'>300cc', f:'https://www.gasgas.com/es-es/models/supermoto/sm-700.html', ai:true },
+      { n:'ES 700',  cc:'>300cc', f:'https://www.gasgas.com/es-es/models/enduro/es-700.html', ai:true },
+    ]},
+    { nombre:'Vespa', web:'https://www.vespaoficial.com.ar/', aiAdded:false, modelos:[
+      { n:'VXL 150', cc:'150cc',  f:'https://www.vespaoficial.com.ar/' },
+      { n:'GTS 300', cc:'>300cc', f:'https://www.vespaoficial.com.ar/' },
+    ]},
+    { nombre:'Moto Guzzi', web:'https://www.motoguzzioficial.com.ar/', aiAdded:false, modelos:[
+      { n:'V7 Stone',         cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V7 Special',       cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V9 Bobber',        cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V9 Roamer',        cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V85 TT',           cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V85 TT Travel',    cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V100 Mandello',    cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V100 Mandello S',  cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'Stelvio',          cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'V100 Aviazione',   cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'Eldorado',         cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'California 1400',  cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+      { n:'MGX-21',           cc:'>300cc', f:'https://www.motoguzzioficial.com.ar/', ai:true },
+    ]},
+    { nombre:'Piaggio', web:'https://www.piaggiooficial.com.ar/', aiAdded:false, modelos:[
+      { n:'MP3 530 Business', cc:'>300cc', f:'https://www.piaggiooficial.com.ar/', ai:true },
+      { n:'MP3 530 HPE',      cc:'>300cc', f:'https://www.piaggiooficial.com.ar/', ai:true },
+    ]},
+    { nombre:'Segway', web:'https://www.segway-ninebot.com.ar/', aiAdded:false, modelos:[
+      { n:'Ninebot MAX G30',  cc:'<110cc', f:'https://www.segway-ninebot.com.ar/', ai:true },
+      { n:'E-Scooter GT2',    cc:'<110cc', f:'https://www.segway-ninebot.com.ar/', ai:true },
+    ]},
+    { nombre:'Super Soco', web:'https://vmotosoco.ar/', aiAdded:false, modelos:[
+      { n:'TC MAX', cc:'<110cc', f:'https://vmotosoco.ar/soco-tc-max/', ai:true },
+      { n:'TC', cc:'<110cc', f:'https://vmotosoco.ar/', ai:true },
+      { n:'TS', cc:'<110cc', f:'https://vmotosoco.ar/', ai:true },
+    ]},
+    { nombre:'QJ Motor', web:'https://qjmotor.com.ar/', aiAdded:false, modelos:[
+      { n:'SRK 400',  cc:'>300cc', f:'https://qjmotor.com.ar/', ai:true },
+      { n:'SRK 600',  cc:'>300cc', f:'https://qjmotor.com.ar/srk-600/', ai:true },
+      { n:'SRK 700',  cc:'>300cc', f:'https://qjmotor.com.ar/srk-700/', ai:true },
+      { n:'SRV 700',  cc:'>300cc', f:'https://qjmotor.com.ar/', ai:true },
+      { n:'SK600',    cc:'>300cc', f:'https://qjmotor.com.ar/', ai:true },
+      { n:'MV600',    cc:'>300cc', f:'https://qjmotor.com.ar/', ai:true },
+      { n:'TR800',    cc:'>300cc', f:'https://qjmotor.com.ar/', ai:true },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 3. LA EMILIA
+// ═══════════════════════════════════════════════
+{
+  id:'emilia', nombre:'La Emilia', colorHex:'#22c55e', aiAdded:false,
+  empresas:[{ nombre:'La Emilia S.A.', dir:'Raulet 55 — Capital Federal, Bs As' }],
+  web:'https://grupolaemilia.com.ar/motos/',
+  totalMarcas:6, totalModelos:54,
+  marcas:[
+    { nombre:'Motomel', web:'https://motomel.com.ar/', aiAdded:false, modelos:[
+      { n:'Blitz 110 Black Edition',      cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-110-black-edition.pdf' },
+      { n:'Blitz 110 V8',                 cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-110-start.pdf' },
+      { n:'Blitz 110 V8 Automatica',      cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-110-full.pdf' },
+      { n:'Blitz 110 V8 Full Aleacion',   cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-110-full.pdf' },
+      { n:'Blitz Tunning 110 V8',         cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-110-tunning.pdf' },
+      { n:'Blitz Plus',                   cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-blitz-plus.pdf' },
+      { n:'DLX Deluxe',                   cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-dlx-110.pdf' },
+      { n:'MAX 110',                      cc:'110cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-max-110.pdf' },
+      { n:'Skua 125 Xtreme',              cc:'125cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-skua-125.pdf' },
+      { n:'S2 150',                       cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-s2-150-start.pdf' },
+      { n:'S2 150 Full Aleacion',         cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-s2-150-aleacion.pdf' },
+      { n:'Victory 150',                  cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-victory150.pdf' },
+      { n:'Skua 150 Silver Edition',      cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-skua-150-silver.pdf' },
+      { n:'Skua 150',                     cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-skua-150-nueva.pdf' },
+      { n:'Strato Euro 150 LED',          cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-strato-euro-150-led.pdf' },
+      { n:'Strato Alpino 150',            cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-strato-alpino-150.pdf' },
+      { n:'Motocargo 150',                cc:'150cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-motocargo-150.pdf' },
+      { n:'Sirius 190',                   cc:'200cc',  f:null },
+      { n:'Motocargo 200',                cc:'200cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-motocargo-200.pdf' },
+      { n:'Skua 250',                     cc:'250cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-skua-250.pdf' },
+      { n:'Skua 250 Adventure',           cc:'250cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-skua-250-adventure.pdf' },
+      { n:'XMM 250',                      cc:'250cc',  f:'https://motomel.com.ar/fichas-tecnicas/ficha-tecnica-xmm-250.pdf' },
+    ]},
+    { nombre:'Keeway', web:'https://www.keeway.com/ar-es/', aiAdded:false, modelos:[
+      { n:'RK 150',     cc:'150cc',  f:'https://www.keeway.com/ar-es/products/rk-150' },
+      { n:'K-Light 202',cc:'200cc',  f:'https://www.keeway.com/ar-es/products/k-light-202' },
+      { n:'V302 C',     cc:'300cc',  f:'https://www.keeway.com/ar-es/products/v302-c' },
+    ]},
+    { nombre:'Suzuki', web:'https://suzukimotosarg.com.ar/', aiAdded:false, modelos:[
+      { n:'AX-100',        cc:'<110cc', f:'https://suzukimotosarg.com.ar/wp-content/uploads/2021/08/Ficha-tecnica-AX100.pdf' },
+      { n:'GN-125F',       cc:'125cc',  f:'https://suzukimotosarg.com.ar/wp-content/uploads/2021/09/FichaTecnicaGN125F.pdf' },
+      { n:'GSX-125R',      cc:'125cc',  f:'https://suzukimotosarg.com.ar/wp-content/uploads/2023/05/Ficha-tecnica-GSX125R.pdf' },
+      { n:'GIXXER 150I',   cc:'150cc',  f:'https://suzukimotosarg.com.ar/wp-content/uploads/2024/04/Ficha-tecnica-Gixxer-150-4.pdf' },
+      { n:'DR 650',        cc:'>300cc', f:'https://suzukimotosarg.com.ar/wp-content/uploads/2024/01/Ficha-tecnica-DR-650.pdf' },
+      { n:'GSX-S 750',     cc:'>300cc', f:'https://suzukimotosarg.com.ar/wp-content/uploads/2021/09/Ficha-tecnica-GSXS750.pdf' },
+      { n:'V-STROM 650 XT',cc:'>300cc', f:'https://suzukimotosarg.com.ar/wp-content/uploads/2021/09/Ficha-tecnica-VSTROM-650-XT-1.pdf' },
+      { n:'V-STROM 1050 DE',cc:'>300cc',f:'https://suzukimotosarg.com.ar/wp-content/uploads/2023/12/Ficha-tecnica-V-strom-1050-DE-1.pdf' },
+      { n:'GSX-R 1000 R',  cc:'>300cc', f:'https://suzukimotosarg.com.ar/wp-content/uploads/2023/05/Ficha-tecnica-GSX-R-1000.pdf' },
+    ]},
+    { nombre:'Benelli', web:'https://www.benelli.com/ar-es', aiAdded:false, modelos:[
+      { n:'TNT 15',           cc:'150cc',  f:'https://www.benelli.com/ar-es/products/tnt-15' },
+      { n:'180 S',            cc:'200cc',  f:'https://www.benelli.com/ar-es/products/180s' },
+      { n:'251 S',            cc:'250cc',  f:'https://www.benelli.com/ar-es/products/251s' },
+      { n:'TRK 251',          cc:'250cc',  f:'https://www.benelli.com/ar-es/products/trk-251' },
+      { n:'Leoncino 250',     cc:'250cc',  f:'https://www.benelli.com/ar-es/products/leoncino-250' },
+      { n:'302 S',            cc:'300cc',  f:'https://www.benelli.com/ar-es/products/302s' },
+      { n:'Imperiale 400',    cc:'>300cc', f:'https://www.benelli.com/ar-es/products/imperiale-400-2' },
+      { n:'TRK 502',          cc:'>300cc', f:'https://www.benelli.com/ar-es/products/trk-502' },
+      { n:'TRK 502 X',        cc:'>300cc', f:'https://www.benelli.com/ar-es/products/trk-502x' },
+      { n:'Leoncino 500 Trail',cc:'>300cc',f:'https://www.benelli.com/ar-es/products/leoncino-500-trail' },
+      { n:'502 C',            cc:'>300cc', f:'https://www.benelli.com/ar-es/products/502c' },
+      { n:'TNT 600I',         cc:'>300cc', f:'https://www.benelli.com/ar-es/products/tnt-600i' },
+      { n:'TRK 702',          cc:'>300cc', f:'https://www.benelli.com/ar-es/products/trk-702' },
+      { n:'TRK 702 X',        cc:'>300cc', f:'https://www.benelli.com/ar-es/products/trk-702x' },
+      { n:'752 S',            cc:'>300cc', f:'https://www.benelli.com/ar-es/products/752s-3' },
+      { n:'Leoncino 800 Trail',cc:'>300cc',f:'https://www.benelli.com/ar-es/products/leoncino-800-trail' },
+    ]},
+    { nombre:'SYM', web:'https://sym-argentina.com.ar/', aiAdded:false, modelos:[
+      { n:'Orbit II 125',     cc:'125cc',  f:'https://sym-argentina.com.ar/modelos/orbit-ii-125/' },
+      { n:'Citycom S 300i',   cc:'300cc',  f:'https://sym-argentina.com.ar/modelos/citycom-s-300i/' },
+      { n:'MAXSYM TL 508',    cc:'>300cc', f:'https://sym-argentina.com.ar/modelos/tl508/' },
+      { n:'JET 14 200',       cc:'200cc',  f:'https://sym-argentina.com.ar/', ai:true },
+    ]},
+    { nombre:'Teknial', web:'https://teknial.com.ar/scooters-electricas/', aiAdded:false, modelos:[
+      { n:'Catálogo Scooters Eléctricas', cc:'<110cc', f:'https://teknial.com.ar/scooters-electricas/', ai:true },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 4. GILERA MOTORS ARGENTINA
+// ═══════════════════════════════════════════════
+{
+  id:'gilera', nombre:'Gilera Motors Argentina', colorHex:'#ef4444', aiAdded:false,
+  empresas:[{ nombre:'Gilera Motors Argentina S.A.', dir:'Marconi 805 — Carlos Spegazzini, Bs As' }],
+  web:'https://gileramotors.com.ar/',
+  totalMarcas:3, totalModelos:33,
+  marcas:[
+    { nombre:'Gilera', web:'https://gileramotors.com.ar/', aiAdded:false, modelos:[
+      { n:'SMASH VS',       cc:'110cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_VS_CBS.pdf' },
+      { n:'SMASH AT',       cc:'110cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_AUTOM_CBS.pdf' },
+      { n:'SMASH FULL',     cc:'110cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_FULL_CBS.pdf' },
+      { n:'SMASH R FULL',   cc:'110cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_R_FULL.pdf' },
+      { n:'SMASH R TUNING', cc:'110cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_R_TUNING.pdf' },
+      { n:'SMASH X 125',    cc:'125cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMASH_X125.pdf' },
+      { n:'VC 150',         cc:'150cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_VC150.pdf' },
+      { n:'SAHEL 150',      cc:'150cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SAHEL.pdf' },
+      { n:'SMX 200',        cc:'200cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMX200_END.pdf' },
+      { n:'SMX 200 ADV',    cc:'200cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMX200_ADV.pdf' },
+      { n:'AC4 250 4V',     cc:'250cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_AC4.pdf' },
+      { n:'SMX 250 ADV',    cc:'250cc',  f:'https://gileramotors.com.ar/wp-content/uploads/2024/12/GLR_FICHA_SMX250_ADV.pdf' },
+    ]},
+    { nombre:'Voge', web:'https://vogeargentina.com.ar/', aiAdded:false, modelos:[
+      { n:'300 AC',   cc:'300cc',  f:'https://vogeargentina.com.ar/300ac/' },
+      { n:'300R',     cc:'300cc',  f:'https://vogeargentina.com.ar/300r/' },
+      { n:'300DS',    cc:'300cc',  f:'https://vogeargentina.com.ar/300ds/' },
+      { n:'300 RALLY',cc:'300cc',  f:'https://vogeargentina.com.ar/300rally/' },
+      { n:'500 RALLY',cc:'300cc',  f:'https://vogeargentina.com.ar/500rally/', ai:true },
+      { n:'AC350',    cc:'>300cc', f:'https://vogeargentina.com.ar/ac350/' },
+      { n:'SR4 MAX',  cc:'>300cc', f:'https://vogeargentina.com.ar/sr4max/' },
+      { n:'500AC',    cc:'>300cc', f:'https://vogeargentina.com.ar/500ac/' },
+      { n:'500R',     cc:'>300cc', f:'https://vogeargentina.com.ar/500r/' },
+      { n:'500DS',    cc:'>300cc', f:'https://vogeargentina.com.ar/500ds/' },
+      { n:'500DSX',   cc:'>300cc', f:'https://vogeargentina.com.ar/500dsx/' },
+      { n:'DS525X',   cc:'>300cc', f:'https://vogeargentina.com.ar/ds525x/' },
+      { n:'650DS',    cc:'>300cc', f:'https://vogeargentina.com.ar/650ds/' },
+      { n:'650DSX',   cc:'>300cc', f:'https://vogeargentina.com.ar/650dsx/' },
+      { n:'DS900X',   cc:'>300cc', f:'https://vogeargentina.com.ar/ds900x/' },
+    ]},
+    { nombre:'Hero', web:'https://heromotos.com.ar/', aiAdded:false, modelos:[
+      { n:'Ignitor 125',          cc:'125cc',  f:'https://heromotos.com.ar/urbanas/ignitor-125/' },
+      { n:'Dash 125',             cc:'125cc',  f:'https://heromotos.com.ar/scooter/nueva-dash-125/' },
+      { n:'Hunk 150 DD',          cc:'150cc',  f:'https://heromotos.com.ar/urbanas/hunk-150-dd/' },
+      { n:'HUNK 160R',            cc:'150cc',  f:'https://heromotos.com.ar/urbanas/hunk-160r/' },
+      { n:'Hunk 190R',            cc:'200cc',  f:'https://heromotos.com.ar/urbanas/hunk-190r/' },
+      { n:'Xpulse 200T',          cc:'200cc',  f:'https://heromotos.com.ar/urbanas/xpulse-200t/' },
+      { n:'Xpulse 200 Advance',   cc:'200cc',  f:'https://heromotos.com.ar/doble-proposito/xpulse-200-advance/' },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 5. HONDA
+// ═══════════════════════════════════════════════
+{
+  id:'honda', nombre:'Honda Motor de Argentina', colorHex:'#dc2626', aiAdded:false,
+  empresas:[{ nombre:'Honda Motor de Argentina S.A.', dir:'Ruta N°6 km 195 — Campana, Bs As' }],
+  web:'https://motos.honda.com.ar/',
+  totalMarcas:1, totalModelos:16,
+  marcas:[
+    { nombre:'Honda', web:'https://motos.honda.com.ar/', aiAdded:false, modelos:[
+      { n:'WAVE 110S C/D',       cc:'110cc',  f:'https://motos.honda.com.ar/uploads/modelos/21/fichas_tecnicas/21c-1ficha-tecnica-wave.pdf' },
+      { n:'WAVE 110S',           cc:'110cc',  f:'https://motos.honda.com.ar/uploads/modelos/21/fichas_tecnicas/21c-1ficha-tecnica-wave.pdf' },
+      { n:'NAVI',                cc:'110cc',  f:'https://motos.honda.com.ar/uploads/modelos/61/fichas_tecnicas/61c-0ficha-tecnica-navi.pdf' },
+      { n:'CB125F TWISTER',      cc:'125cc',  f:'https://motos.honda.com.ar/uploads/modelos/34/fichas_tecnicas/34c-1ficha-tecnica-cb125f-twister.pdf' },
+      { n:'Elite 125',           cc:'125cc',  f:'https://motos.honda.com.ar/uploads/modelos/65/fichas_tecnicas/65c-0ficha-tecnica-elite-125.pdf' },
+      { n:'GLH 150',             cc:'150cc',  f:'https://motos.honda.com.ar/uploads/modelos/53/fichas_tecnicas/53c-0ficha-tecnica-glh150.pdf' },
+      { n:'XR150L',              cc:'150cc',  f:'https://motos.honda.com.ar/uploads/modelos/26/fichas_tecnicas/26c-1ficha-tecnica-xr150l.pdf' },
+      { n:'PCX 160',             cc:'150cc',  f:'https://motos.honda.com.ar/uploads/modelos/55/fichas_tecnicas/55c-0ficha-tecnica-pcx-160.pdf' },
+      { n:'XR190L',              cc:'200cc',  f:'https://motos.honda.com.ar/uploads/modelos/27/fichas_tecnicas/27c-0ficha-tecnica-xr190l.pdf' },
+      { n:'XR250 TORNADO',       cc:'250cc',  f:'https://motos.honda.com.ar/uploads/modelos/28/fichas_tecnicas/28c-128c-1ft-tornado-ver-2023-digital.pdf' },
+      { n:'CB300F TWISTER',      cc:'300cc',  f:'https://motos.honda.com.ar/uploads/modelos/54/fichas_tecnicas/54c-0ficha-tecnica-cb300f-twister.pdf' },
+      { n:'XR300L TORNADO',      cc:'300cc',  f:'https://motos.honda.com.ar/uploads/modelos/63/fichas_tecnicas/63c-0ficha-tecnica-xr300l-tornado.pdf' },
+      { n:'CB500X',              cc:'>300cc', f:'https://motos.honda.com.ar/uploads/modelos/52/fichas_tecnicas/52c-0ficha-tecnica-cb500x.pdf' },
+      { n:'CB750 HORNET',        cc:'>300cc', f:'https://motos.honda.com.ar/uploads/modelos/56/fichas_tecnicas/56c-0ficha-tecnica-cb750-hornet.pdf' },
+      { n:'NC750X',              cc:'>300cc', f:'https://motos.honda.com.ar/uploads/modelos/43/fichas_tecnicas/43c-0ficha-tecnica-nc750x.pdf' },
+      { n:'CRF1100 AFRICA TWIN', cc:'>300cc', f:'https://motos.honda.com.ar/uploads/modelos/50/fichas_tecnicas/50c-0ficha-tecnica-crf1100al-africa-twin.pdf' },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 6. YAMAHA
+// ═══════════════════════════════════════════════
+{
+  id:'yamaha', nombre:'Yamaha Motor Argentina', colorHex:'#2563eb', aiAdded:false,
+  empresas:[{ nombre:'Yamaha Motor Argentina S.A.', dir:'Ruta 24 KM 20,200 — Gral. Rodríguez, Bs As' }],
+  web:'https://www.yamaha-motor.com.ar/',
+  totalMarcas:1, totalModelos:14,
+  marcas:[
+    { nombre:'Yamaha', web:'https://www.yamaha-motor.com.ar/', aiAdded:false, modelos:[
+      { n:'Crypton T110',    cc:'110cc',  f:'https://yamaha-motor.com.uy/modelo/pdf/crypton' },
+      { n:'Ray ZR',          cc:'110cc',  f:null, local:true },
+      { n:'YBR 125 ED',      cc:'125cc',  f:'https://www.yamaha-motor.com.ar/modelo/pdf/ybr125-ed' },
+      { n:'YBR 125 Z',       cc:'125cc',  f:'https://www.yamaha-motor.com.ar/modelo/pdf/ybr125-z' },
+      { n:'XTZ 125 E',       cc:'125cc',  f:null, local:true },
+      { n:'Fascino 125',     cc:'125cc',  f:'https://www.yamaha.expomotosa.com.ar/files/productos/1611850144_ficha-fascino.pdf' },
+      { n:'FZ-S FI',         cc:'150cc',  f:'https://www.yamaha.expomotosa.com.ar/files/productos/1591631236_fz-s-d.pdf' },
+      { n:'FZ S D',          cc:'150cc',  f:'https://www.yamaha.expomotosa.com.ar/files/productos/1591631236_fz-s-d.pdf' },
+      { n:'XTZ 150',         cc:'150cc',  f:'https://www.yamaha.expomotosa.com.ar/files/productos/1591630667_xtz-150.pdf' },
+      { n:'XTZ 250A',        cc:'250cc',  f:'https://www.yamaha.expomotosa.com.ar/files/productos/1591631337_xtz-250a.pdf' },
+      { n:'FZ25',            cc:'250cc',  f:'https://www.yamaha-motor.com.ar/fz25/res/front/pdf/ficha-tecnica-fz25.pdf' },
+      { n:'MT-03 ABS',       cc:'300cc',  f:'https://www.yamaha-motor.com.ar/modelo/pdf/mt-03-abs' },
+      { n:'YZF-R6',          cc:'>300cc', f:'https://www.yamaha.expomotosa.com.ar/files/productos/1657199377_yzf-r6.pdf' },
+      { n:'YZF-R1',          cc:'>300cc', f:'https://www.yamaha.expomotosa.com.ar/files/productos/1657199825_yzf-r1.pdf' },
+      { n:'MT-09',           cc:'>300cc', f:null, local:true },
+      { n:'XT1200ZE Super Tenere', cc:'>300cc', f:'https://www.yamaha.expomotosa.com.ar/files/productos/1657200693_xt1200ze-super-tenere.pdf' },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 7. KELLER
+// ═══════════════════════════════════════════════
+{
+  id:'keller', nombre:'Keller — Emp. Industrial Mediterráneo', colorHex:'#64748b', aiAdded:false,
+  empresas:[{ nombre:'Emprendimiento Industrial Mediterráneo S.A.', dir:'Av. La Voz del Interior 6926 — Córdoba, CP 5008' }],
+  web:'https://motoskeller.com.ar/',
+  totalMarcas:1, totalModelos:11,
+  marcas:[
+    { nombre:'Keller Motos', web:'https://motoskeller.com.ar/', aiAdded:false, modelos:[
+      { n:'Crono Tunning 70',        cc:'<110cc', f:'https://motoskeller.com.ar/tunning-70/' },
+      { n:'Crono Classic ECO 110',   cc:'110cc',  f:'https://motoskeller.com.ar/crono-classic-eco-110/' },
+      { n:'Crono Classic Plus 110',  cc:'110cc',  f:'https://motoskeller.com.ar/crono-classic-plus-110/' },
+      { n:'Crono Classic Full 110',  cc:'110cc',  f:'https://motoskeller.com.ar/crono-classic-full-110/' },
+      { n:'Crono Tunning 125',       cc:'125cc',  f:'https://motoskeller.com.ar/tunning-125/' },
+      { n:'Stratus 150 ECO',         cc:'150cc',  f:'https://motoskeller.com.ar/stratus-150-eco-2/' },
+      { n:'Stratus 150 Plus',        cc:'150cc',  f:'https://motoskeller.com.ar/stratus-150-plus/' },
+      { n:'Stratus 150 Full',        cc:'150cc',  f:'https://motoskeller.com.ar/stratus-150-full/' },
+      { n:'Miracle 150',             cc:'150cc',  f:'https://motoskeller.com.ar/miracle-150-evo/' },
+      { n:'Miracle 200 EVO',         cc:'200cc',  f:'https://motoskeller.com.ar/miracle-200-evo/' },
+      { n:'Quasar 250',              cc:'250cc',  f:'https://motoskeller.com.ar/quasar250/' },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 8. BETA MOTOR  ⚡ AI ADDED
+// ═══════════════════════════════════════════════
+{
+  id:'beta', nombre:'Beta Motor Argentina', colorHex:'#a855f7', aiAdded:true,
+  empresas:[{ nombre:'Beta Motor S.A.', dir:'Argentina (marca italiana con presencia local)' }],
+  web:'https://betamotor.com.ar/',
+  totalMarcas:1, totalModelos:0,
+  aiNote:'Grupo agregado por Claude AI. Beta es una marca italiana con fuerte presencia en enduro/offroad en Argentina. Verificar modelos disponibles contra el catálogo oficial en betamotor.com.ar.',
+  marcas:[
+    { nombre:'Beta Motor', web:'https://betamotor.com.ar/', aiAdded:true, modelos:[
+      { n:'RR 125 4T',      cc:'125cc',  f:'https://betamotor.com.ar/', ai:true },
+      { n:'X-Trainer 250',  cc:'250cc',  f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 250 2T',      cc:'250cc',  f:'https://betamotor.com.ar/', ai:true },
+      { n:'X-Trainer 300',  cc:'300cc',  f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 300 2T',      cc:'300cc',  f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 350 4T',      cc:'>300cc', f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 390 4T',      cc:'>300cc', f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 430 4T',      cc:'>300cc', f:'https://betamotor.com.ar/', ai:true },
+      { n:'RR 480 4T',      cc:'>300cc', f:'https://betamotor.com.ar/', ai:true },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 9. BRAVA  ⚡ AI ADDED
+// ═══════════════════════════════════════════════
+{
+  id:'brava', nombre:'Brava Motorcycles', colorHex:'#f59e0b', aiAdded:true,
+  empresas:[{ nombre:'Brava Motorcycles', dir:'Argentina' }],
+  web:'https://www.bravamotorcycles.com.ar/',
+  totalMarcas:1, totalModelos:0,
+  aiNote:'Grupo agregado por Claude AI. Brava es una marca argentina de motos urbanas/commuter. Datos de modelos y fichas técnicas pendientes de completar contra el catálogo oficial.',
+  marcas:[
+    { nombre:'Brava', web:'https://www.bravamotorcycles.com.ar/', aiAdded:true, modelos:[
+      { n:'Ver catálogo oficial', cc:'150cc', f:'https://www.bravamotorcycles.com.ar/', ai:true },
+    ]},
+  ]
+},
+
+// ═══════════════════════════════════════════════
+// 10. OKINOI  ⚡ AI ADDED
+// ═══════════════════════════════════════════════
+{
+  id:'okinoi', nombre:'Okinoi', colorHex:'#06b6d4', aiAdded:true,
+  empresas:[{ nombre:'Okinoi', dir:'Argentina (scooters eléctricos)' }],
+  web:'https://www.okinoi.com.ar/',
+  totalMarcas:1, totalModelos:0,
+  aiNote:'Grupo agregado por Claude AI. Okinoi es una marca de scooters eléctricos en Argentina. Datos de modelos y fichas técnicas pendientes de completar contra el catálogo oficial.',
+  marcas:[
+    { nombre:'Okinoi', web:'https://www.okinoi.com.ar/', aiAdded:true, modelos:[
+      { n:'Ver catálogo oficial', cc:'<110cc', f:'https://www.okinoi.com.ar/', ai:true },
+    ]},
+  ]
+},
+
+]; // end GRUPOS
+
+// ─── RENDER ────────────────────────────────────────────────────────────────
+function renderFicha(m) {
+  if (m.local) return `<span class="badge b-loc" title="Archivo local — solo funciona en la PC original">📁 Local</span>`;
+  if (m.ai && m.f) return `<a class="ficha-link" href="${m.f}" target="_blank">🔗 Ver modelo</a> <span class="badge b-ai">⚡ IA</span>`;
+  if (m.f) return `<a class="ficha-link" href="${m.f}" target="_blank">📄 Ficha técnica</a>`;
+  return `<span class="no-ficha">— sin ficha</span>`;
+}
+
+function renderBadgeRow(m) {
+  let badges = '';
+  if (m.ai) badges += ` <span class="badge b-ai" title="Sugerido por IA — requiere verificación">⚡ IA</span>`;
+  return badges;
+}
+
+function renderBrand(marca, groupAI) {
+  const totalModels = marca.modelos.length;
+  const hasAI = marca.aiAdded || groupAI || marca.modelos.some(m => m.ai);
+  const brandBadge = marca.aiAdded ? '<span class="badge b-ai" style="font-size:10px">⚡ IA</span>' : '';
+  const rows = marca.modelos.map(m => `
+    <tr class="model-row ${m.ai ? 'ai-row' : ''}">
+      <td>${m.n}${renderBadgeRow(m)}</td>
+      <td><span class="cc ${ccClass(m.cc)}">${m.cc}</span></td>
+      <td>${renderFicha(m)}</td>
+    </tr>`).join('');
+
+  return `
+  <div class="brand-card" id="bc-${marca.nombre.replace(/\s+/g,'-').toLowerCase()}">
+    <div class="brand-card-head" onclick="toggleCard(this)">
+      <div class="brand-name-wrap">
+        <div class="brand-title">${marca.nombre} ${brandBadge}
+          <a class="brand-url" href="${marca.web}" target="_blank" onclick="event.stopPropagation()">↗ web</a>
+        </div>
+      </div>
+      <span class="brand-count">${totalModels} modelos</span>
+      <svg class="chevron" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 6l4 4 4-4"/></svg>
+    </div>
+    <div class="model-wrap">
+      <table class="model-table">
+        <thead><tr><th>Modelo</th><th>Cilindrada</th><th>Ficha Técnica / Enlace</th></tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+  </div>`;
+}
+
+function renderGroup(g) {
+  const aiClass = g.aiAdded ? ' style="opacity:.9"' : '';
+  const aiGroupBadge = g.aiAdded ? '<span class="badge b-ai">⚡ Agregado por IA</span>' : '<span class="badge b-ok">✓ Validado</span>';
+  const empresasHtml = g.empresas.map(e =>
+    `<div>${e.nombre} · <span style="opacity:.7">${e.dir}</span></div>`
+  ).join('');
+  const aiNoteHtml = g.aiNote ? `<div class="ai-note">⚡ <div><strong>Nota sobre datos IA</strong>${g.aiNote}</div></div>` : '';
+  const brandsHtml = g.marcas.map(m => renderBrand(m, g.aiAdded)).join('');
+  const totalModels = g.marcas.reduce((s,m) => s + m.modelos.length, 0);
+
+  return `
+<section class="group-section" id="g-${g.id}"${aiClass}>
+  <div class="group-header">
+    <div class="group-bar" style="background:${g.colorHex}"></div>
+    <div class="group-info">
+      <h2 style="color:${g.colorHex}">${g.nombre} ${aiGroupBadge}</h2>
+      <div class="group-empresa">
+        ${empresasHtml}
+        <div><a href="${g.web}" target="_blank">${g.web}</a></div>
+      </div>
+    </div>
+    <div class="group-totals">
+      <div class="gt-item"><span class="gt-num" style="color:${g.colorHex}">${g.totalMarcas}</span><span class="gt-lbl">marcas</span></div>
+      <div class="gt-item"><span class="gt-num" style="color:${g.colorHex}">${totalModels}</span><span class="gt-lbl">modelos</span></div>
+    </div>
+  </div>
+  ${aiNoteHtml}
+  <div class="brands-grid">${brandsHtml}</div>
+</section>`;
+}
+
+// Build page
+const navEl = document.getElementById('navLinks');
+const mainEl = document.getElementById('mainContent');
+
+let totalValidated = 0, totalAI = 0, totalMarcas = 0, totalGrupos = 0;
+
+GRUPOS.forEach(g => {
+  totalGrupos++;
+  if (!g.aiAdded) totalMarcas += g.totalMarcas;
+  g.marcas.forEach(m => {
+    m.modelos.forEach(mo => {
+      if (mo.ai || m.aiAdded || g.aiAdded) totalAI++;
+      else totalValidated++;
+    });
+  });
+
+  // Nav link
+  const a = document.createElement('a');
+  a.className = 'nav-link' + (g.aiAdded ? ' ai-link' : '');
+  a.href = `#g-${g.id}`;
+  a.textContent = g.aiAdded ? `⚡ ${g.nombre}` : g.nombre;
+  navEl.appendChild(a);
+
+  // Section
+  mainEl.innerHTML += renderGroup(g);
+});
+
+document.getElementById('statGrupos').textContent = totalGrupos;
+document.getElementById('statMarcas').textContent = totalMarcas;
+document.getElementById('statModelos').textContent = totalValidated;
+document.getElementById('statAI').textContent = totalAI;
+
+// ─── ACCORDION ─────────────────────────────────────────────────────────────
+function toggleCard(head) {
+  const card = head.closest('.brand-card');
+  card.classList.toggle('open');
+}
+
+// ─── SEARCH ────────────────────────────────────────────────────────────────
+function onSearch(q) {
+  q = q.trim().toLowerCase();
+  document.querySelectorAll('.brand-card').forEach(card => {
+    const rows = card.querySelectorAll('.model-row');
+    let anyVisible = false;
+    rows.forEach(row => {
+      const text = row.textContent.toLowerCase();
+      const match = !q || text.includes(q);
+      row.classList.toggle('model-hidden', !match);
+      if (match) anyVisible = true;
+    });
+    if (q) {
+      card.classList.toggle('search-hidden', !anyVisible);
+      if (anyVisible) card.classList.add('open');
+    } else {
+      card.classList.remove('search-hidden');
+    }
+  });
+  // Hide empty groups
+  document.querySelectorAll('.group-section').forEach(sec => {
+    const visibleCards = sec.querySelectorAll('.brand-card:not(.search-hidden)');
+    sec.classList.toggle('search-hidden', q && visibleCards.length === 0);
+  });
+}
+</script>
+</body>
+</html>
